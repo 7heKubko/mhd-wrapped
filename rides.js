@@ -45,11 +45,26 @@ export const vehicleSeriesBA = [
 ];
 
 export const vehicleSeriesOVA = [
-  { type: "Iveco Urbanway 12M", start: 7001, end: 7050 },
-  { type: "Iveco Urbanway 18M", start: 7101, end: 7150 },
-  { type: "Solaris Urbino 12", start: 7201, end: 7250 },
-  { type: "Solaris Urbino 18", start: 7301, end: 7350 },
-  { type: "Trolejbus Škoda 26Tr", start: 7501, end: 7550 }
+  { type: "ČKD Tatra KT8D5", start: 1500, end: 1515 },
+  { type: "ČKD Tatra T3", start: 701, end: 799 },
+  { type: "ČKD Tatra T3SU", start: 901, end: 905 },
+  { type: "ČKD Tatra T3SUCS", start: 906, end: 1027 },
+  { type: "Inekon Trio", start: 1251, end: 1259 },
+  { type: "Pragoimex K2", start: 1402, end: 1403 },
+  { type: "Pragoimex VarioLF2", start: 1401, end: 1401 },
+  { type: "Pragoimex VarioLF2", start: 1411, end: 1411 },
+  { type: "Pragoimex VarioLF3", start: 1601, end: 1602 },
+  { type: "Pragoimex VarioLF3", start: 1651, end: 1653 },
+  { type: "Pragoimex T3", start: 1311, end: 1373 },
+  { type: "Škoda 39T", start: 1751, end: 1788 },
+  { type: "Škoda Astra LTM 10.08", start: 1201, end: 1214 },
+  { type: "Stadler Tango", start: 1701, end: 1740 },
+
+  { type: "Škoda 36 Tr", start: 3741, end: 3757 },
+  { type: "Škoda 27 Tr", start: 3802, end: 3818 },
+  { type: "Škoda 26 Tr", start: 3715, end: 3740 },
+  { type: "Solaris Trollino III", start: 3608, end: 3614 },
+  { type: "Solaris Trollino II", start: 3702, end: 3730 },
 ];
 
 export function getVehicleSeries() {

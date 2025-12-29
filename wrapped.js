@@ -22,8 +22,9 @@ export function getFavBus(rides) {
   const map = {};
 
   rides.forEach((r) => {
-    if (!map[r.number]) map[r.number] = 0;
-    map[r.number]++;
+    const name = r.vehicle.trim();
+    if (!map[name]) map[name] = 0;
+    map[name]++;
   });
 
   const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
@@ -32,6 +33,7 @@ export function getFavBus(rides) {
 
   return [sorted[0][0], sorted[0][1]];
 }
+
 
 export function getPersona(rides) {
   const total = rides.length;
