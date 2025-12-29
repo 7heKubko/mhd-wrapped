@@ -1,0 +1,111 @@
+body {
+  background:#0b0b0b;
+  color:white;
+  font-family:system-ui;
+  padding:16px;
+}
+h1 { text-align:center; color:#c4161c; margin-bottom:24px; }
+.card {
+  background:#141414;
+  padding:20px;
+  border-radius:16px;
+  margin-bottom:20px;
+  box-shadow:0 0 12px #000;
+}
+input, button {
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border-radius:8px;
+  border:none;
+  font-size:16px;
+}
+button {
+  background:#c4161c;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+.wrapped-card {
+  background: linear-gradient(90deg,#0b0b0b,#2c0000);
+  padding:16px;
+  border-radius:12px;
+  margin-top:12px;
+}
+canvas {
+  margin-top:20px;
+  background:#141414;
+  border-radius:12px;
+  padding:12px;
+}
+
+/* zoznam jázd */
+#ridesList li,
+#lastRides li {
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+#ridesList button {
+  width:auto;
+  padding:6px 10px;
+  font-size:14px;
+}
+
+/* filtre */
+.filters {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.date-filters {
+  display:flex;
+  gap:8px;
+}
+.date-filters input {
+  width:100%;
+}
+
+/* stránkovanie */
+#ridesPagination {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin-top:12px;
+}
+#ridesPagination button {
+  width:auto;
+  padding:6px 12px;
+  font-size:14px;
+}
+
+/* toast */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f8b4c; /* zelená */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  opacity: 0;
+  transition: 0.4s;
+  pointer-events: none;
+  font-weight: bold;
+}
+#toast.show {
+  opacity: 1;
+}
+#toast.error {
+  background:#c4161c; /* červená pre chyby */
+}
+
+@media(max-width:768px){
+  body { padding:8px; }
+  .card { padding:12px; margin-bottom:12px; }
+  input, button { font-size:14px; padding:10px; }
+  .date-filters { flex-direction:column; }
+}

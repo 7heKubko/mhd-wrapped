@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MHD Wrapped</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h1>🚌 MHD Wrapped</h1>
+
+<section class="card">
+  <h2>Nová jazda</h2>
+  <input id="line" placeholder="Linka" list="lines">
+  <datalist id="lines"></datalist>
+
+  <input id="number" placeholder="Evidenčné číslo (EVČ)" list="numbers">
+  <datalist id="numbers"></datalist>
+
+  <button id="add">Uložiť jazdu</button>
+</section>
+
+<section class="card" id="wrapped-section">
+  <h2>Wrapped 2026</h2>
+  <div class="wrapped-card">
+    <p>Počet jázd: <span id="total"></span></p>
+    <p>Top linka: <span id="topLine"></span></p>
+    <p>Obľúbený bus: <span id="favBus"></span></p>
+    <p>Persona: <span id="persona"></span></p>
+  </div>
+  <canvas id="topLinesChart"></canvas>
+</section>
+
+<section class="card">
+  <h2>Filtre</h2>
+  <div class="filters">
+
+    <input id="filterLine" placeholder="Filtrovať podľa linky" list="filterLines">
+    <datalist id="filterLines"></datalist>
+
+    <input id="filterNumber" placeholder="Filtrovať podľa EVČ" list="filterNumbers">
+    <datalist id="filterNumbers"></datalist>
+
+    <input id="filterVehicle" placeholder="Filtrovať podľa typu vozidla" list="filterVehicles">
+    <datalist id="filterVehicles"></datalist>
+
+    <div class="date-filters">
+      <input id="filterDateFrom" type="date">
+      <input id="filterDateTo" type="date">
+    </div>
+
+    <button id="clearFilters">Vymazať filtre</button>
+  </div>
+</section>
+
+
+<section class="card">
+  <h2>Moje jazdy</h2>
+  <ul id="ridesList"></ul>
+  <div id="ridesPagination">
+    <button id="prevPage">&lt;</button>
+    <span id="pageInfo"></span>
+    <button id="nextPage">&gt;</button>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Naposledy si išiel</h2>
+  <ul id="lastRides"></ul>
+</section>
+
+<div id="toast"></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
