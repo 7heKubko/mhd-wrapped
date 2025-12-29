@@ -1,4 +1,12 @@
-import { applyTheme, renderLastRides, renderQuickStats, showToast, renderFilterSuggestions, setDayOffset, lineColors } from "./ui.js";
+import {
+  applyTheme,
+  renderLastRides,
+  renderQuickStats,
+  showToast,
+  renderFilterSuggestions,
+  setDayOffset,
+  getLineColors
+} from "./ui.js";
 import { addRide } from "./rides.js";
 
 applyTheme();
@@ -11,6 +19,8 @@ const prevDayBtn = document.getElementById("prevDay");
 const nextDayBtn = document.getElementById("nextDay");
 
 const linesList = document.getElementById("lines");
+const lineColors = getLineColors();
+
 if (linesList) {
   Object.keys(lineColors).forEach((l) => {
     const opt = document.createElement("option");
@@ -18,7 +28,6 @@ if (linesList) {
     linesList.appendChild(opt);
   });
 }
-
 
 const numbersList = document.getElementById("numbers");
 

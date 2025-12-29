@@ -1,6 +1,6 @@
 import { loadRides, saveRides } from "./storage.js";
 
-export const vehicleSeries = [
+export const vehicleSeriesBA = [
   { type: "Škoda 29T1 ForCity Plus", start: 7401, end: 7460 },
   { type: "Škoda 30T0 ForCity Plus", start: 7501, end: 7540 },
   { type: "ČKD Tatra T6A5", start: 7901, end: 7958 },
@@ -41,13 +41,27 @@ export const vehicleSeries = [
   { type: "SOR NB 18 City", start: 2202, end: 2251 },
   { type: "Irisbus Citelis 12M", start: 2331, end: 2365 },
   { type: "Irisbus Citelis 12M", start: 1031, end: 1036 },
-  { type: "Mercedes-Benz O 530 GL CapaCity", start: 4020, end: 4941 },
+  { type: "Mercedes-Benz O 530 GL CapaCity", start: 4020, end: 4941 }
 ];
+
+export const vehicleSeriesOVA = [
+  { type: "Iveco Urbanway 12M", start: 7001, end: 7050 },
+  { type: "Iveco Urbanway 18M", start: 7101, end: 7150 },
+  { type: "Solaris Urbino 12", start: 7201, end: 7250 },
+  { type: "Solaris Urbino 18", start: 7301, end: 7350 },
+  { type: "Trolejbus Škoda 26Tr", start: 7501, end: 7550 }
+];
+
+export function getVehicleSeries() {
+  const city = localStorage.getItem("city") || "bratislava";
+  return city === "ostrava" ? vehicleSeriesOVA : vehicleSeriesBA;
+}
 
 export function getVehicleType(number) {
   const num = parseInt(number);
+  const series = getVehicleSeries();
 
-  for (const s of vehicleSeries) {
+  for (const s of series) {
     if (num >= s.start && num <= s.end) {
       return s.type;
     }
@@ -62,7 +76,6 @@ function generateId() {
 
 export function addRide({ line, number }) {
   const rides = loadRides();
-
   const now = new Date();
 
   const ride = {

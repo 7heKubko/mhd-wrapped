@@ -3,6 +3,21 @@ import { loadRides, saveRides, clearAll } from "./storage.js";
 
 applyTheme();
 
+const citySelect = document.getElementById("citySelect");
+const saveCityBtn = document.getElementById("saveCity");
+
+if (citySelect && saveCityBtn) {
+  const currentCity = localStorage.getItem("city") || "bratislava";
+  citySelect.value = currentCity;
+
+  saveCityBtn.onclick = () => {
+    const newCity = citySelect.value;
+    localStorage.setItem("city", newCity);
+    showToast("Mesto bolo zmenené");
+    location.reload();
+  };
+}
+
 const themeToggle = document.getElementById("themeToggle");
 
 function syncToggleWithTheme() {

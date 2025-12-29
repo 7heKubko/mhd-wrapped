@@ -1,4 +1,4 @@
-import { applyTheme, showToast, lineColors } from "./ui.js";
+import { applyTheme, showToast, getLineColors } from "./ui.js";
 import { loadRides } from "./storage.js";
 import { getTotal, getTopLine, getFavBus, getPersona } from "./wrapped.js";
 
@@ -45,6 +45,8 @@ function renderLinesChart() {
 
   const ctx = document.getElementById("chartLines");
   if (!ctx) return;
+
+  const lineColors = getLineColors();
 
   if (chartLinesInstance) chartLinesInstance.destroy();
 
@@ -168,6 +170,7 @@ function renderMonthStats() {
 
   const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
 
+  const lineColors = getLineColors();
   monthStats.innerHTML = "";
 
   if (!sorted.length) {

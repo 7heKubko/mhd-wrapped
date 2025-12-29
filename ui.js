@@ -1,4 +1,4 @@
-export const lineColors = {
+export const lineColorsBA = {
   1: "#f56200",
   3: "#e31e24",
   4: "#5071b9",
@@ -199,8 +199,107 @@ export const lineColors = {
   X1: "#ff7f1a",
   X3: "#ff7f1a",
   X4: "#ff7f1a",
-  X9: "#ff7f1a",
+  X9: "#ff7f1a"
 };
+
+export const lineColorsOVA = {
+  1: "#d9534f",
+  2: "#d9534f",
+  3: "#d9534f",
+  4: "#d9534f",
+  5: "#d9534f",
+  7: "#d9534f",
+  8: "#d9534f",
+  10: "#d9534f",
+  11: "#d9534f",
+  12: "#d9534f",
+  13: "#d9534f",
+  14: "#d9534f",
+  15: "#d9534f",
+  17: "#d9534f",
+  18: "#d9534f",
+  19: "#d9534f",
+
+  21: "#5bc0de",
+  22: "#5bc0de",
+  23: "#5bc0de",
+  24: "#5bc0de",
+  25: "#5bc0de",
+  26: "#5bc0de",
+  27: "#5bc0de",
+  28: "#5bc0de",
+  29: "#5bc0de",
+  30: "#5bc0de",
+  31: "#5bc0de",
+  
+  33: "#5bc0de",
+  34: "#5bc0de",
+  35: "#5bc0de",
+
+  37: "#5bc0de",
+  38: "#5bc0de",
+  39: "#5bc0de",
+  40: "#5bc0de",
+  41: "#5bc0de",
+  
+  43: "#5bc0de",
+  44: "#5bc0de",
+  45: "#5bc0de",
+  46: "#5bc0de",
+  47: "#5bc0de",
+  48: "#5bc0de",
+  49: "#5bc0de",
+
+  52: "#5bc0de",
+  54: "#5bc0de",
+  55: "#5bc0de",
+  56: "#5bc0de",
+  57: "#5bc0de",
+  58: "#5bc0de",
+  59: "#5bc0de",
+
+  61: "#5bc0de",
+  62: "#5bc0de",
+  64: "#5bc0de",
+  67: "#5bc0de",
+  68: "#5bc0de",
+
+  71: "#5bc0de",
+  72: "#5bc0de",
+  74: "#5bc0de",
+  76: "#5bc0de",
+  77: "#5bc0de",
+  78: "#5bc0de",
+  79: "#5bc0de",
+
+  81: "#5bc0de",
+  
+  92: "#5bc0de",
+  96: "#5bc0de",
+  97: "#5bc0de",
+  98: "#5bc0de",
+  99: "#5bc0de",
+  AE: "#5bc0de",
+
+  101: "#00cc8b",
+  102: "#00cc8b",
+  103: "#00cc8b",
+  104: "#00cc8b",
+  105: "#00cc8b",
+  106: "#00cc8b",
+  107: "#00cc8b",
+  108: "#00cc8b",
+  109: "#00cc8b",
+
+  111: "#00cc8b",
+  112: "#00cc8b",
+  113: "#00cc8b",
+};
+
+export function getLineColors() {
+  const city = localStorage.getItem("city") || "bratislava";
+  return city === "ostrava" ? lineColorsOVA : lineColorsBA;
+}
 
 export function applyTheme() {
   if (!localStorage.getItem("theme")) {
@@ -259,6 +358,7 @@ export function renderLastRides() {
   dayLabel.textContent = d.toLocaleDateString("sk-SK");
 
   const filtered = rides.filter((r) => r.date === dayStr);
+  const lineColors = getLineColors();
 
   list.innerHTML = "";
 
@@ -387,6 +487,8 @@ export function renderRidesList() {
   const start = (currentPage - 1) * perPage;
   const pageItems = filtered.slice(start, start + perPage);
 
+  const lineColors = getLineColors();
+
   list.innerHTML = "";
 
   if (!pageItems.length) {
@@ -399,7 +501,7 @@ export function renderRidesList() {
 
     li.innerHTML = `
       <span>
-        ${formatDate(r.date, r.time)} –
+        ${formatDate(r.date, r.time)} -
         <span class="line-badge" style="--badge-color:${lineColors[r.line] || "#888"}">${r.line}</span>
         ${r.number}
       </span>
