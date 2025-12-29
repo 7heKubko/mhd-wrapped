@@ -4,7 +4,6 @@ import { getTotal, getTopLine, getFavBus, getPersona } from "./wrapped.js";
 
 applyTheme();
 
-// DOM ELEMENTY
 const wTotal = document.getElementById("wTotal");
 const wTopLine = document.getElementById("wTopLine");
 const wTopBus = document.getElementById("wTopBus");
@@ -16,7 +15,6 @@ const monthStats = document.getElementById("monthStats");
 const prevMonthBtn = document.getElementById("prevMonth");
 const nextMonthBtn = document.getElementById("nextMonth");
 
-// WRAPPED – HLAVNÉ ŠTATISTIKY
 function renderWrappedStats() {
   const rides = loadRides();
 
@@ -31,7 +29,6 @@ function renderWrappedStats() {
   wPersona.textContent = getPersona(rides);
 }
 
-// GRAF – NAJČASTEJŠIE LINKY
 let chartLinesInstance = null;
 
 function renderLinesChart() {
@@ -69,7 +66,6 @@ function renderLinesChart() {
   });
 }
 
-// GRAF – TYPY VOZIDIEL
 let chartVehiclesInstance = null;
 
 function renderVehiclesChart() {
@@ -106,7 +102,6 @@ function renderVehiclesChart() {
   });
 }
 
-// GRAF – JAZDY PODĽA HODÍN
 let chartHoursInstance = null;
 
 function renderHoursChart() {
@@ -141,7 +136,6 @@ function renderHoursChart() {
   });
 }
 
-// MESAČNÉ ŠTATISTIKY
 let currentMonthOffset = 0;
 
 function getMonthName(date) {
@@ -201,7 +195,6 @@ nextMonthBtn.onclick = () => {
   renderMonthStats();
 };
 
-// PRVOTNÉ VYKRESLENIE
 renderWrappedStats();
 renderLinesChart();
 renderVehiclesChart();

@@ -1,7 +1,3 @@
-// =====================================
-// FARBY LINIEK (TVOJ ZOZNAM)
-// =====================================
-
 export const lineColors = {
   1: "#f56200",
   3: "#e31e24",
@@ -206,10 +202,6 @@ export const lineColors = {
   X9: "#ff7f1a",
 };
 
-// =====================================
-// TÉMA (TMAVÝ REŽIM DEFAULT + SYNC)
-// =====================================
-
 export function applyTheme() {
   if (!localStorage.getItem("theme")) {
     localStorage.setItem("theme", "dark");
@@ -218,13 +210,8 @@ export function applyTheme() {
   document.body.classList.toggle("dark", mode === "dark");
 }
 
-// =====================================
-// IMPORTY A ZÁKLAD
-// =====================================
-
 import { loadRides, saveRides } from "./storage.js";
 
-// TOAST
 export function showToast(text) {
   const toast = document.getElementById("toast");
   if (!toast) return;
@@ -233,7 +220,6 @@ export function showToast(text) {
   setTimeout(() => toast.classList.remove("show"), 2000);
 }
 
-// GLOBÁLNE PREMENNÉ
 let dayOffset = 0;
 let currentPage = 1;
 
@@ -245,7 +231,6 @@ let filters = {
   dateTo: ""
 };
 
-// FORMÁTOVANIE DÁTUMU
 export function formatDate(dateStr, timeStr) {
   const d = new Date(dateStr + "T" + timeStr);
   return d.toLocaleString("sk-SK", {
@@ -257,12 +242,10 @@ export function formatDate(dateStr, timeStr) {
   });
 }
 
-// DENNÝ PREPÍNAČ
 export function setDayOffset(change) {
   dayOffset += change;
 }
 
-// POSLEDNÉ JAZDY
 export function renderLastRides() {
   const rides = loadRides();
   const list = document.getElementById("lastRides");
@@ -289,13 +272,12 @@ export function renderLastRides() {
     li.classList.add("fade-in");
     li.innerHTML = `
       <span class="line-badge" style="--badge-color:${lineColors[r.line] || "#888"}">${r.line}</span>
-      ${r.number} – ${r.time}
+      ${r.number} - ${r.time}
     `;
     list.appendChild(li);
   });
 }
 
-// RÝCHLE ŠTATISTIKY
 export function renderQuickStats() {
   const rides = loadRides();
 
@@ -338,7 +320,6 @@ export function renderQuickStats() {
   }
 }
 
-// FILTRE – NÁVRHY
 export function renderFilterSuggestions() {
   const rides = loadRides();
 
@@ -368,20 +349,17 @@ export function renderFilterSuggestions() {
   fill("filterVehicles", vehicles);
 }
 
-// FILTRE – APLIKÁCIA
 export function setFilters(f) {
   filters = f;
   currentPage = 1;
   renderRidesList();
 }
 
-// STRÁNKOVANIE
 export function changePage(delta) {
   currentPage += delta;
   renderRidesList();
 }
 
-// HISTÓRIA – HLAVNÝ RENDER
 export function renderRidesList() {
   const rides = loadRides();
   const list = document.getElementById("ridesList");
@@ -447,7 +425,6 @@ export function renderRidesList() {
   });
 }
 
-// EDITÁCIA JAZDY
 export function startEditRide(id) {
   const rides = loadRides();
   const ride = rides.find((r) => r.id === id);

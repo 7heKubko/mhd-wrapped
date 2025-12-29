@@ -3,7 +3,6 @@ import { loadRides, saveRides, clearAll } from "./storage.js";
 
 applyTheme();
 
-// TÉMA (prepínač)
 const themeToggle = document.getElementById("themeToggle");
 
 function syncToggleWithTheme() {
@@ -22,7 +21,6 @@ if (themeToggle) {
   };
 }
 
-// EXPORT DÁT
 document.getElementById("exportBtn").onclick = () => {
   const rides = loadRides();
   const blob = new Blob([JSON.stringify(rides, null, 2)], {
@@ -38,7 +36,6 @@ document.getElementById("exportBtn").onclick = () => {
   showToast("Dáta boli exportované");
 };
 
-// IMPORT DÁT
 document.getElementById("importBtn").onclick = () => {
   const fileInput = document.getElementById("importFile");
   const file = fileInput.files[0];
@@ -64,7 +61,6 @@ document.getElementById("importBtn").onclick = () => {
   reader.readAsText(file);
 };
 
-// RESET DÁT
 document.getElementById("resetBtn").onclick = () => {
   if (!confirm("Naozaj chceš vymazať všetky dáta?")) return;
 

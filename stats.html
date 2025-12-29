@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MHD Wrapped – Štatistiky</title>
+  <title>MHD Wrapped - Štatistiky</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -14,7 +13,6 @@
 
     <h1 class="page-title">📈 Štatistiky</h1>
 
-    <!-- WRAPPED HLAVNÉ ČÍSLA -->
     <section class="card fade-in">
       <h2>Wrapped</h2>
       <div class="wrapped-grid">
@@ -37,25 +35,21 @@
       </div>
     </section>
 
-    <!-- GRAF LINKY -->
     <section class="card fade-in">
       <h2>Najčastejšie linky</h2>
       <canvas id="chartLines"></canvas>
     </section>
 
-    <!-- GRAF VOZIDLÁ -->
     <section class="card fade-in">
       <h2>Typy vozidiel</h2>
       <canvas id="chartVehicles"></canvas>
     </section>
 
-    <!-- GRAF HODINY -->
     <section class="card fade-in">
       <h2>Jazdy podľa hodín</h2>
       <canvas id="chartHours"></canvas>
     </section>
 
-    <!-- MESAČNÉ ŠTATISTIKY -->
     <section class="card fade-in">
       <h2>Mesačné štatistiky</h2>
 
@@ -70,7 +64,6 @@
 
   </main>
 
-  <!-- SPODNÁ NAVIGÁCIA -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
       <div class="nav-icon">🏠</div>
@@ -90,10 +83,8 @@
     </a>
   </nav>
 
-  <!-- TOAST -->
   <div id="toast"></div>
 
-  <!-- JS -->
   <script type="module" src="stats.js"></script>
 </body>
 </html>

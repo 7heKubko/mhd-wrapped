@@ -1,6 +1,5 @@
 import { loadRides, saveRides } from "./storage.js";
 
-// SÉRIE VOZIDIEL (ak chceš, môžeš upraviť podľa reality)
 export const vehicleSeries = [
   { type: "Solaris 12", start: 3001, end: 3050 },
   { type: "Solaris 18", start: 3501, end: 3550 },

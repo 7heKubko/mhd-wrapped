@@ -1,9 +1,7 @@
-// Celkový počet jázd
 export function getTotal(rides) {
   return rides.length;
 }
 
-// Najčastejšia linka
 export function getTopLine(rides) {
   const map = {};
 
@@ -20,7 +18,6 @@ export function getTopLine(rides) {
   return [sorted[0][0], { count: sorted[0][1] }];
 }
 
-// Najčastejšie vozidlo
 export function getFavBus(rides) {
   const map = {};
 
@@ -36,7 +33,6 @@ export function getFavBus(rides) {
   return [sorted[0][0], sorted[0][1]];
 }
 
-// Persona
 export function getPersona(rides) {
   const total = rides.length;
 

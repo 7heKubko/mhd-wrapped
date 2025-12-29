@@ -3,7 +3,6 @@ import { addRide } from "./rides.js";
 
 applyTheme();
 
-// DOM ELEMENTY
 const lineInput = document.getElementById("line");
 const numberInput = document.getElementById("number");
 const addBtn = document.getElementById("add");
@@ -11,7 +10,6 @@ const addBtn = document.getElementById("add");
 const prevDayBtn = document.getElementById("prevDay");
 const nextDayBtn = document.getElementById("nextDay");
 
-// GENEROVANIE LINKOV (z lineColors)
 const linesList = document.getElementById("lines");
 if (linesList) {
   Object.keys(lineColors).forEach((l) => {
@@ -21,17 +19,14 @@ if (linesList) {
   });
 }
 
-// GENEROVANIE EVČ (už nemáme pevne, len ručný vstup – ak chceš, môžeme doplniť)
 
 const numbersList = document.getElementById("numbers");
 
-// Predvyplnené hodnoty
 if (lineInput) lineInput.value = Object.keys(lineColors)[0] || "";
 if (numberInput && numbersList && numbersList.options[0]) {
   numberInput.value = numbersList.options[0].value;
 }
 
-// PRIDANIE JAZDY
 if (addBtn) {
   addBtn.onclick = () => {
     const lineVal = lineInput.value.trim();
@@ -58,7 +53,6 @@ if (addBtn) {
   };
 }
 
-// PREPÍNANIE DNÍ
 if (prevDayBtn) {
   prevDayBtn.onclick = () => {
     setDayOffset(-1);
@@ -72,7 +66,6 @@ if (nextDayBtn) {
   };
 }
 
-// PRVOTNÉ VYKRESLENIE
 renderLastRides();
 renderQuickStats();
 renderFilterSuggestions();

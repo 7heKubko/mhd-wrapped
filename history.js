@@ -2,7 +2,6 @@ import { applyTheme, renderRidesList, renderFilterSuggestions, setFilters, chang
 
 applyTheme();
 
-// DOM ELEMENTY
 const filterLine = document.getElementById("filterLine");
 const filterNumber = document.getElementById("filterNumber");
 const filterVehicle = document.getElementById("filterVehicle");
@@ -13,7 +12,6 @@ const clearFiltersBtn = document.getElementById("clearFilters");
 const prevPageBtn = document.getElementById("prevPage");
 const nextPageBtn = document.getElementById("nextPage");
 
-// FILTRE
 function updateFilters() {
   setFilters({
     line: filterLine.value.trim(),
@@ -39,11 +37,9 @@ clearFiltersBtn.onclick = () => {
   updateFilters();
 };
 
-// STRÁNKOVANIE
 prevPageBtn.onclick = () => changePage(-1);
 nextPageBtn.onclick = () => changePage(1);
 
-// EDITÁCIA JAZDY
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("edit-btn")) {
     const id = e.target.dataset.id;
@@ -51,7 +47,6 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// PRVOTNÉ VYKRESLENIE
 renderRidesList();
 renderFilterSuggestions();
 updateFilters();
