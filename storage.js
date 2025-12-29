@@ -1,7 +1,21 @@
-const RIDES_KEY = 'mhd_rides';
-const ACH_KEY = 'mhd_achievements';
+const KEY = "mhd-wrapped-rides";
 
-export const loadRides = () => JSON.parse(localStorage.getItem(RIDES_KEY) || '[]');
-export const saveRides = r => localStorage.setItem(RIDES_KEY, JSON.stringify(r));
-export const loadAchievements = () => JSON.parse(localStorage.getItem(ACH_KEY) || '{}');
-export const saveAchievements = a => localStorage.setItem(ACH_KEY, JSON.stringify(a));
+export function loadRides() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data)) return [];
+    return data;
+  } catch {
+    return [];
+  }
+}
+
+export function saveRides(rides) {
+  localStorage.setItem(KEY, JSON.stringify(rides));
+}
+
+export function clearAll() {
+  localStorage.removeItem(KEY);
+}

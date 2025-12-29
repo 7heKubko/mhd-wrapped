@@ -1,77 +1,93 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MHD Wrapped</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MHD Wrapped - Domov</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<h1>🚌 MHD Wrapped</h1>
+  <main class="page">
 
-<section class="card">
-  <h2>Nová jazda</h2>
-  <input id="line" placeholder="Linka" list="lines">
-  <datalist id="lines"></datalist>
+    <h1 class="page-title">MHD Wrapped</h1>
 
-  <input id="number" placeholder="Evidenčné číslo (EVČ)" list="numbers">
-  <datalist id="numbers"></datalist>
+    <!-- FORMULÁR NA PRIDANIE JAZDY -->
+    <section class="card fade-in">
+      <h2>Nová jazda</h2>
 
-  <button id="add">Uložiť jazdu</button>
-</section>
+      <input id="line" placeholder="Linka" list="lines">
+      <datalist id="lines"></datalist>
 
-<section class="card" id="wrapped-section">
-  <h2>Wrapped 2026</h2>
-  <div class="wrapped-card">
-    <p>Počet jázd: <span id="total"></span></p>
-    <p>Top linka: <span id="topLine"></span></p>
-    <p>Obľúbený bus: <span id="favBus"></span></p>
-    <p>Persona: <span id="persona"></span></p>
-  </div>
-  <canvas id="topLinesChart"></canvas>
-</section>
+      <input id="number" placeholder="EVČ" list="numbers">
+      <datalist id="numbers"></datalist>
 
-<section class="card">
-  <h2>Filtre</h2>
-  <div class="filters">
+      <button id="add">Zadať jazdu</button>
+    </section>
 
-    <input id="filterLine" placeholder="Filtrovať podľa linky" list="filterLines">
-    <datalist id="filterLines"></datalist>
+    <!-- RÝCHLE ŠTATISTIKY -->
+    <section class="card fade-in">
+      <h2>Rýchle štatistiky</h2>
 
-    <input id="filterNumber" placeholder="Filtrovať podľa EVČ" list="filterNumbers">
-    <datalist id="filterNumbers"></datalist>
+      <div class="quick-stats">
+        <div class="stat-box">
+          <div class="stat-label">Počet jázd</div>
+          <div class="stat-value" id="total">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Top linka</div>
+          <div class="stat-value" id="topLine">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Obľúbené vozidlo</div>
+          <div class="stat-value" id="favBus">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Persona</div>
+          <div class="stat-value" id="persona">Nováčik</div>
+        </div>
+      </div>
+    </section>
 
-    <input id="filterVehicle" placeholder="Filtrovať podľa typu vozidla" list="filterVehicles">
-    <datalist id="filterVehicles"></datalist>
+    <!-- POSLEDNÉ JAZDY + DENNÝ PREPÍNAČ -->
+    <section class="card fade-in">
+      <h2>Posledné jazdy</h2>
 
-    <div class="date-filters">
-      <input id="filterDateFrom" type="date">
-      <input id="filterDateTo" type="date">
-    </div>
+      <div class="day-switch">
+        <button id="prevDay">← Predchádzajúci deň</button>
+        <span id="dayLabel"></span>
+        <button id="nextDay">Nasledujúci deň →</button>
+      </div>
 
-    <button id="clearFilters">Vymazať filtre</button>
-  </div>
-</section>
+      <ul id="lastRides"></ul>
+    </section>
 
+  </main>
 
-<section class="card">
-  <h2>Moje jazdy</h2>
-  <ul id="ridesList"></ul>
-  <div id="ridesPagination">
-    <button id="prevPage">&lt;</button>
-    <span id="pageInfo"></span>
-    <button id="nextPage">&gt;</button>
-  </div>
-</section>
+  <!-- SPODNÁ NAVIGÁCIA -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item active">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-text">Domov</div>
+    </a>
+    <a href="history.html" class="nav-item">
+      <div class="nav-icon">📚</div>
+      <div class="nav-text">História</div>
+    </a>
+    <a href="stats.html" class="nav-item">
+      <div class="nav-icon">📈</div>
+      <div class="nav-text">Štatistiky</div>
+    </a>
+    <a href="settings.html" class="nav-item">
+      <div class="nav-icon">⚙️</div>
+      <div class="nav-text">Nastavenia</div>
+    </a>
+  </nav>
 
-<section class="card">
-  <h2>Naposledy si išiel</h2>
-  <ul id="lastRides"></ul>
-</section>
+  <!-- TOAST -->
+  <div id="toast"></div>
 
-<div id="toast"></div>
-
-<script type="module" src="app.js"></script>
+  <!-- JS -->
+  <script type="module" src="app.js"></script>
 </body>
 </html>

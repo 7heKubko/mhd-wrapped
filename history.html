@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MHD Wrapped – História</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="page">
+
+    <h1 class="page-title">📚 História jázd</h1>
+
+    <!-- FILTRE -->
+    <section class="card fade-in">
+      <h2>Filtre</h2>
+
+      <input id="filterLine" placeholder="Linka" list="filterLines">
+      <datalist id="filterLines"></datalist>
+
+      <input id="filterNumber" placeholder="EVČ" list="filterNumbers">
+      <datalist id="filterNumbers"></datalist>
+
+      <input id="filterVehicle" placeholder="Typ vozidla" list="filterVehicles">
+      <datalist id="filterVehicles"></datalist>
+
+      <label>Od dátumu</label>
+      <input id="filterDateFrom" type="date">
+
+      <label>Do dátumu</label>
+      <input id="filterDateTo" type="date">
+
+      <button id="clearFilters">Vymazať filtre</button>
+    </section>
+
+    <!-- ZOZNAM JÁZD -->
+    <section class="card fade-in">
+      <h2>Všetky jazdy</h2>
+      <ul id="ridesList"></ul>
+
+      <div id="ridesPagination">
+        <button id="prevPage">Predchádzajúca</button>
+        <span id="pageInfo">1 / 1</span>
+        <button id="nextPage">Nasledujúca</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SPODNÁ NAVIGÁCIA -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-text">Domov</div>
+    </a>
+    <a href="history.html" class="nav-item active">
+      <div class="nav-icon">📚</div>
+      <div class="nav-text">História</div>
+    </a>
+    <a href="stats.html" class="nav-item">
+      <div class="nav-icon">📈</div>
+      <div class="nav-text">Štatistiky</div>
+    </a>
+    <a href="settings.html" class="nav-item">
+      <div class="nav-icon">⚙️</div>
+      <div class="nav-text">Nastavenia</div>
+    </a>
+  </nav>
+
+  <!-- TOAST -->
+  <div id="toast"></div>
+
+  <!-- JS -->
+  <script type="module" src="history.js"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MHD Wrapped – Nastavenia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <main class="page">
+
+    <h1 class="page-title">⚙️ Nastavenia</h1>
+
+    <!-- TÉMA -->
+    <section class="card fade-in">
+      <h2>Vzhľad</h2>
+
+      <div class="setting-row">
+        <span>Tmavý mód</span>
+        <label class="switch">
+          <input type="checkbox" id="themeToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- EXPORT -->
+    <section class="card fade-in">
+      <h2>Export dát</h2>
+      <p>Stiahneš si všetky jazdy vo formáte JSON.</p>
+      <button id="exportBtn">Exportovať</button>
+    </section>
+
+    <!-- IMPORT -->
+    <section class="card fade-in">
+      <h2>Import dát</h2>
+      <p>Načítaj JSON súbor s jazdami.</p>
+      <input type="file" id="importFile" accept=".json">
+      <button id="importBtn">Importovať</button>
+    </section>
+
+    <!-- RESET -->
+    <section class="card fade-in">
+      <h2>Vymazať všetky dáta</h2>
+      <p>Toto odstráni všetky jazdy. Nedá sa vrátiť späť.</p>
+      <button id="resetBtn" class="danger">Vymazať všetko</button>
+    </section>
+
+    <!-- INFO -->
+    <section class="card fade-in">
+      <h2>O aplikácii</h2>
+      <p><strong>MHD Wrapped PRO</strong></p>
+      <p>Verzia 1.0 – modern + iOS hybrid</p>
+      <p>Vytvorené pre osobné použitie.</p>
+    </section>
+
+  </main>
+
+  <!-- SPODNÁ NAVIGÁCIA -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-text">Domov</div>
+    </a>
+    <a href="history.html" class="nav-item">
+      <div class="nav-icon">📚</div>
+      <div class="nav-text">História</div>
+    </a>
+    <a href="stats.html" class="nav-item">
+      <div class="nav-icon">📈</div>
+      <div class="nav-text">Štatistiky</div>
+    </a>
+    <a href="settings.html" class="nav-item active">
+      <div class="nav-icon">⚙️</div>
+      <div class="nav-text">Nastavenia</div>
+    </a>
+  </nav>
+
+  <!-- TOAST -->
+  <div id="toast"></div>
+
+  <!-- JS -->
+  <script type="module" src="settings.js"></script>
+
+</body>
+</html>

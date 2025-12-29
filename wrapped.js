@@ -1,31 +1,47 @@
-export const getTotal = r => r.length;
+// Celkový počet jázd
+export function getTotal(rides) {
+  return rides.length;
+}
 
+// Najčastejšia linka
 export function getTopLine(rides) {
   const map = {};
-  rides.forEach(r => {
-    const mainLine = r.line.split('/')[0];
-    if (!map[mainLine]) map[mainLine] = { count:0, courses:[] };
-    map[mainLine].count++;
-    map[mainLine].courses.push(r.line);
+
+  rides.forEach((r) => {
+    const main = r.line.split("/")[0];
+    if (!map[main]) map[main] = 0;
+    map[main]++;
   });
-  return Object.entries(map).sort((a,b)=>b[1].count-a[1].count)[0] || ['-',{count:0,courses:[]}];
+
+  const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
+
+  if (!sorted.length) return ["-", { count: 0 }];
+
+  return [sorted[0][0], { count: sorted[0][1] }];
 }
 
+// Najčastejšie vozidlo
 export function getFavBus(rides) {
-  const m = {};
-  rides.forEach(r => {
-    const k = r.vehicle+' '+r.number;
-    m[k] = (m[k] || 0) + 1;
+  const map = {};
+
+  rides.forEach((r) => {
+    if (!map[r.number]) map[r.number] = 0;
+    map[r.number]++;
   });
-  return Object.entries(m)[0] || ['-',0];
+
+  const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
+
+  if (!sorted.length) return ["-", 0];
+
+  return [sorted[0][0], sorted[0][1]];
 }
 
+// Persona
 export function getPersona(rides) {
-  if (!rides.length) return '-';
-  let night = 0;
-  rides.forEach(r => {
-    const h = parseInt(r.time);
-    if (h >= 22 || h < 5) night++;
-  });
-  return night > rides.length * 0.3 ? 'Nočný jazdec' : 'Denný jazdec';
+  const total = rides.length;
+
+  if (total === 0) return "Nováčik";
+  if (total < 20) return "Príležitostný cestujúci";
+  if (total < 100) return "MHD nadšenec";
+  return "MHD legenda";
 }
