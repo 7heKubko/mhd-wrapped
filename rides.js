@@ -55,7 +55,7 @@ export const vehicleSeriesOVA = [
   { type: "Pragoimex VarioLF2", start: 1411, end: 1411 },
   { type: "Pragoimex VarioLF3", start: 1601, end: 1602 },
   { type: "Pragoimex VarioLF3", start: 1651, end: 1653 },
-  { type: "Pragoimex T3", start: 1311, end: 1373 },
+  { type: "Pragoimex VarioLF", start: 1311, end: 1373 },
   { type: "Škoda 39T", start: 1751, end: 1788 },
   { type: "Škoda Astra LTM 10.08", start: 1201, end: 1214 },
   { type: "Stadler Tango", start: 1701, end: 1740 },
