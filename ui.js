@@ -220,6 +220,7 @@ export const lineColorsOVA = {
   18: "#d9534f",
   19: "#d9534f",
 
+
   21: "#5bc0de",
   22: "#5bc0de",
   23: "#5bc0de",
@@ -279,7 +280,14 @@ export const lineColorsOVA = {
   97: "#5bc0de",
   98: "#5bc0de",
   99: "#5bc0de",
+
+  374: "#5bc0de",
+  445: "#5bc0de",
+  270: "#5bc0de",
+  286: "#5bc0de",
+  941: "#5bc0de",
   AE: "#5bc0de",
+
 
   101: "#00cc8b",
   102: "#00cc8b",
@@ -294,6 +302,36 @@ export const lineColorsOVA = {
   111: "#00cc8b",
   112: "#00cc8b",
   113: "#00cc8b",
+
+  
+  S1: "#00cc8b",
+  S2: "#00cc8b",
+  S3: "#00cc8b",
+  S4: "#9235cf",
+  S5: "#00cc8b",
+  S6: "#00cc8b",
+  S7: "#00cc8b",
+  S8: "#00cc8b",
+  S9: "#00cc8b",
+  S10: "#00cc8b",
+  S11: "#00cc8b",
+  S12: "#00cc8b",
+  S13: "#00cc8b",
+  S15: "#00cc8b",
+  S16: "#00cc8b",
+  S17: "#00cc8b",
+  S18: "#00cc8b",
+
+  S31: "#00cc8b",
+  S32: "#00cc8b",
+  S33: "#00cc8b",
+  S34: "#00cc8b",
+  
+  R8: "#fabb00",
+  R27: "#00cc8b",
+  R60: "#00cc8b",
+  R61: "#00cc8b",
+
 };
 
 export function getLineColors() {

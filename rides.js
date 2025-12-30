@@ -81,7 +81,6 @@ export const vehicleSeriesOVA = [
   { type: "Solaris Urbino 18 III", start: 7801, end: 7807 },
   { type: "Solaris Urbino 18 III CNG", start: 7851, end: 7865 },
   { type: "UNVI Urbis", start: 7991, end: 7992 },
-
 ];
 
 export function getVehicleSeries() {
