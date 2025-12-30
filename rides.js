@@ -51,11 +51,12 @@ export const vehicleSeriesOVA = [
   { type: "ČKD Tatra T3SUCS", start: 906, end: 1027 },
   { type: "Inekon Trio", start: 1251, end: 1259 },
   { type: "Pragoimex K2", start: 1402, end: 1403 },
-  { type: "Pragoimex VarioLF2", start: 1401, end: 1401 },
-  { type: "Pragoimex VarioLF2", start: 1411, end: 1411 },
+  { type: "Pragoimex VarioLF2", start: 1401, end: 1403 },
+  { type: "Pragoimex VarioLF2+", start: 1411, end: 1411 },
   { type: "Pragoimex VarioLF3", start: 1601, end: 1602 },
   { type: "Pragoimex VarioLF3", start: 1651, end: 1653 },
   { type: "Pragoimex VarioLF", start: 1311, end: 1373 },
+
   { type: "Škoda 39T", start: 1751, end: 1788 },
   { type: "Škoda Astra LTM 10.08", start: 1201, end: 1214 },
   { type: "Stadler Tango", start: 1701, end: 1740 },
@@ -68,9 +69,9 @@ export const vehicleSeriesOVA = [
 
   { type: "Ekova Electron", start: 5005, end: 5007 },
   { type: "ROŠERO - P First", start: 5301, end: 5305 },
-  { type: "Solaris Urbino IV", start: 5008, end: 5031 },
+  { type: "Solaris Urbino IV Electric", start: 5008, end: 5031 },
 
-  { type: "Dekstra LE", start: 7304, end: 7310 },
+  { type: "Iveco Dekstra LE 37", start: 7304, end: 7310 },
   { type: "ROŠERO - P First", start: 7311, end: 7312 },
   { type: "Solaris Urbino 12 IV CNG", start: 7211, end: 7275 },
   { type: "Solaris Urbino 18 IV CNG", start: 7866, end: 7922 },
@@ -80,7 +81,7 @@ export const vehicleSeriesOVA = [
   { type: "Solaris Urbino 12 III", start: 7725, end: 7787 },
   { type: "Solaris Urbino 18 III", start: 7801, end: 7807 },
   { type: "Solaris Urbino 18 III CNG", start: 7851, end: 7865 },
-  { type: "UNVI Urbis", start: 7991, end: 7992 },
+  { type: "Scania UNVI Urbis Doubledecker", start: 7991, end: 7992 },
 ];
 
 export function getVehicleSeries() {
