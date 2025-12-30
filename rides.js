@@ -65,6 +65,23 @@ export const vehicleSeriesOVA = [
   { type: "Škoda 26 Tr", start: 3715, end: 3740 },
   { type: "Solaris Trollino III", start: 3608, end: 3614 },
   { type: "Solaris Trollino II", start: 3702, end: 3730 },
+
+  { type: "Ekova Electron", start: 5005, end: 5007 },
+  { type: "ROŠERO - P First", start: 5301, end: 5305 },
+  { type: "Solaris Urbino IV", start: 5008, end: 5031 },
+
+  { type: "Dekstra LE", start: 7304, end: 7310 },
+  { type: "ROŠERO - P First", start: 7311, end: 7312 },
+  { type: "Solaris Urbino 12 IV CNG", start: 7211, end: 7275 },
+  { type: "Solaris Urbino 18 IV CNG", start: 7866, end: 7922 },
+  { type: "Solaris Urbino 12 III CNG", start: 7121, end: 7210 },
+  { type: "Solaris Urbino 10 III", start: 7505, end: 7524 },
+  { type: "Solaris Urbino 15 III", start: 7617, end: 7630 },
+  { type: "Solaris Urbino 12 III", start: 7725, end: 7787 },
+  { type: "Solaris Urbino 18 III", start: 7801, end: 7807 },
+  { type: "Solaris Urbino 18 III CNG", start: 7851, end: 7865 },
+  { type: "UNVI Urbis", start: 7991, end: 7992 },
+
 ];
 
 export function getVehicleSeries() {
