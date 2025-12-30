@@ -61,9 +61,11 @@ export const vehicleSeriesOVA = [
   { type: "Škoda Astra LTM 10.08", start: 1201, end: 1214 },
   { type: "Stadler Tango", start: 1701, end: 1740 },
 
+  { type: "Sor TNB 12", start: 3912, end: 3912 },
   { type: "Škoda 36 Tr", start: 3741, end: 3757 },
-  { type: "Škoda 27 Tr", start: 3802, end: 3818 },
-  { type: "Škoda 26 Tr", start: 3715, end: 3740 },
+  { type: "Škoda 27 Tr III", start: 3802, end: 3812 },
+  { type: "Škoda 27 Tr IV", start: 3813, end: 3818 },
+  { type: "Škoda 26 Tr III", start: 3715, end: 3740 },
   { type: "Solaris Trollino III", start: 3608, end: 3614 },
   { type: "Solaris Trollino II", start: 3702, end: 3730 },
 
