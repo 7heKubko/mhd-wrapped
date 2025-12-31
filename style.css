@@ -278,6 +278,16 @@ input:checked + .slider:before {
   animation: fadeIn 0.35s ease forwards;
 }
 
+#lastRides {
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 6px;
+
+  scrollbar-width: thin;
+  scrollbar-color: #8d8d8d transparent;
+}
+
+
 .day-switch,
 .month-switch {
   display: flex;
