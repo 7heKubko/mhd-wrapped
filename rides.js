@@ -4,7 +4,7 @@ export const vehicleSeriesBA = [
   { type: "Škoda 29T1 ForCity Plus", start: 7401, end: 7460 },
   { type: "Škoda 30T0 ForCity Plus", start: 7501, end: 7540 },
   { type: "ČKD Tatra T6A5", start: 7901, end: 7958 },
-  { type: "ČKD Tatra K2", start: 309, end: 394 },
+  { type: "ČKD Tatra K2", start: 7115, end: 7185 },
   { type: "ČKD Tatra K2YU", start: 7085, end: 7187 },
   { type: "ČKD Tatra K2S", start: 7126, end: 7134 },
   { type: "ČKD Tatra T3", start: 7704, end: 7719 },
@@ -48,7 +48,7 @@ export const vehicleSeriesBA = [
   { type: "SOR CN 12.3", start: 8551, end: 8650 },
   { type: "SOR CN 10.5", start: 8521, end: 8530 },
   { type: "Rošero First FCLEI", start: 8501, end: 8503 },
-  { type: "Irisbus Crossway LE Line 12M", start: 8877, end: 8896 },
+  { type: "Irisbus Crossway LE Line 12M", start: 8877, end: 8896 }
 ];
 
 export const vehicleSeriesOVA = [
@@ -91,6 +91,12 @@ export const vehicleSeriesOVA = [
   { type: "Solaris Urbino 18 III", start: 7801, end: 7807 },
   { type: "Solaris Urbino 18 III CNG", start: 7851, end: 7865 },
   { type: "Scania UNVI Urbis Doubledecker", start: 7991, end: 7992 },
+  
+  { type: "Iveco Crossway LE Line 12M - Transdev", start: 0, end: 0 },
+  { type: "Iveco Crossway LE City 12M - Z-Group", start: 0, end: 0 },
+  { type: "Setra S415 LE", start: 0, end: 0 },
+  { type: "Scania Citywide LE 12M CNG", start: 0, end: 0 },
+  { type: "Scania Citywide Suburban LE 15M", start: 0, end: 0 }
 ];
 
 export function getVehicleSeries() {
