@@ -308,7 +308,7 @@ export const lineColorsOVA = {
   S1: "#00cc8b",
   S2: "#00cc8b",
   S3: "#00cc8b",
-  S4: "#9235cf",
+  S4: "#00cc8b",
   S5: "#00cc8b",
   S6: "#00cc8b",
   S7: "#00cc8b",
