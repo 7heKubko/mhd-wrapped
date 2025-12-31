@@ -137,3 +137,4 @@ export function addRide({ line, number }) {
   rides.push(ride);
   saveRides(rides);
 }
+
