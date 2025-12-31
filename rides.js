@@ -41,7 +41,14 @@ export const vehicleSeriesBA = [
   { type: "SOR NB 18 City", start: 2202, end: 2251 },
   { type: "Irisbus Citelis 12M", start: 2331, end: 2365 },
   { type: "Irisbus Citelis 12M", start: 1031, end: 1036 },
-  { type: "Mercedes-Benz O 530 GL CapaCity", start: 4020, end: 4941 }
+  { type: "Mercedes-Benz O 530 GL CapaCity", start: 4020, end: 4941 },
+
+  { type: "Iveco Crossway LE Line 14.5M", start: 8801, end: 8810 },
+  { type: "Iveco Crossway LE Line 12M", start: 1031, end: 1036 },
+  { type: "SOR CN 12.3", start: 8551, end: 8650 },
+  { type: "SOR CN 10.5", start: 8521, end: 8530 },
+  { type: "Rošero First FCLEI", start: 8501, end: 8503 },
+  { type: "Irisbus Crossway LE Line 12M", start: 8877, end: 8896 },
 ];
 
 export const vehicleSeriesOVA = [
