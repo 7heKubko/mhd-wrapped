@@ -59,7 +59,7 @@ export const vehicleSeriesBA = [
   { type: "Vectron", start: 193, end: 193, mode: "Vlak" },
   { type: "Princezná", start: 263, end: 263, mode: "Vlak" },
   
-  { type: "Anča", start: 811, end: 811, mode: "Vlak" },
+  { type: "Anča", start: 810, end: 812, mode: "Vlak" },
   { type: "Rakva", start: 843, end: 843, mode: "Vlak" },
   { type: "Regionova", start: 814, end: 814, mode: "Vlak" },
   { type: "Taurus", start: 1216, end: 1216, mode: "Vlak" },
@@ -135,7 +135,7 @@ export const vehicleSeriesOVA = [
   { type: "Vectron", start: 193, end: 193, mode: "Vlak" },
   { type: "Princezná", start: 263, end: 263, mode: "Vlak" },
   
-  { type: "Anča", start: 811, end: 811, mode: "Vlak" },
+  { type: "Anča", start: 810, end: 812, mode: "Vlak" },
   { type: "Rakva", start: 843, end: 843, mode: "Vlak" },
   { type: "Regionova", start: 814, end: 814, mode: "Vlak" },
   { type: "Taurus", start: 1216, end: 1216, mode: "Vlak" },
