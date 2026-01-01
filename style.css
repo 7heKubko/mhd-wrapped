@@ -1,12 +1,109 @@
-:root {
-  --bg: #f5f5f7;
-  --text: #111;
-  --card: #ffffff;
-  --accent: #007aff;
-  --danger: #ff3b30;
-  --nav-bg: #ffffff;
-  --nav-active: #007aff;
-  --shadow: 0 4px 16px rgba(0,0,0,0.08);
+/* Spodný padding pod filter bar pre konzistentný odstup */
+.stats-filter-bar {
+  margin-bottom: 28px !important;
+}
+/* Drag & drop sortable list for settings */
+/* Sortable list for settings - modern card look */
+.sortable-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  background: var(--card);
+  overflow: hidden;
+}
+.sortable-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border-bottom: 1px solid #eee;
+  padding: 14px 18px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: grab;
+  transition: background 0.18s, box-shadow 0.18s;
+  user-select: none;
+  position: relative;
+}
+.sortable-item:last-child {
+  border-bottom: none;
+}
+.sortable-item:active {
+  background: #e6f0ff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  color: #111 !important;
+}
+.sortable-item:hover {
+  background: #f5f8ff;
+  color: #111 !important;
+}
+.sortable-item::before {
+  content: '≡';
+  font-size: 20px;
+  color: #bbb;
+  margin-right: 10px;
+  flex-shrink: 0;
+  opacity: 0.7;
+  letter-spacing: 2px;
+}
+
+/* Mesačné a ročné prepínače a zoznamy - zjednotené */
+.month-switch, .year-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.month-switch button, .year-switch button {
+  font-size: 15px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.month-switch button:active, .year-switch button:active {
+  background: #e6f0ff;
+}
+#monthStats, #yearStats {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#monthStats li, #yearStats li {
+  background: var(--card);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow);
+}
+.line-badge {
+  display: inline-block;
+  min-width: 32px;
+  text-align: center;
+  background: var(--badge-color, #eee);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-weight: 600;
+  margin-right: 6px;
+  color: #111; /* default fallback */
+}
+.line-badge--black {
+  color: #111 !important;
+}
+.line-badge--white {
+  color: #fff !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.18);
 }
 
 body.dark {
@@ -325,24 +422,7 @@ input:checked + .slider:before {
   margin-top: 12px;
 }
 
-.day-switch button,
-.month-switch button {
-  width: auto;
-  padding: 8px 14px;
-}
 
-.line-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 13px;
-  font-size: 15px;
-  font-weight: 600;
-  border: 2px solid var(--badge-color);
-  color: var(--text);
-  background: var(--card);
-  margin-right: 6px;
-  transition: 0.25s ease;
-}
 
 .line-badge:hover {
   transform: scale(1.08);

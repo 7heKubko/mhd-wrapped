@@ -1,3 +1,77 @@
+// --- Prispôsobenie poradia sekcií štatistík ---
+const defaultStatsOrder = [
+  'chartLines',
+  'chartVehicles',
+  'chartHours',
+  'chartByWeekday',
+  'chartByMonth',
+  'chartByDriveType',
+  'chartByHoliday',
+  'chartByVehicleType',
+  'monthStats',
+  'yearStats',
+  'longestStreak',
+  'longestPause',
+  'wrappedGrid'
+];
+
+const statsOrderList = document.getElementById('statsOrderList');
+const saveStatsOrderBtn = document.getElementById('saveStatsOrderBtn');
+if (statsOrderList && saveStatsOrderBtn) {
+  // Načítaj uložené poradie alebo default
+  let order = JSON.parse(localStorage.getItem('statsOrder') || 'null') || defaultStatsOrder;
+  function renderOrderList() {
+    statsOrderList.innerHTML = '';
+    order.forEach(id => {
+      const li = document.createElement('li');
+      li.textContent = getStatsSectionName(id);
+      li.dataset.id = id;
+      li.draggable = true;
+      li.className = 'sortable-item';
+      statsOrderList.appendChild(li);
+    });
+  }
+  function getStatsSectionName(id) {
+    return {
+      chartLines: 'Najpoužívanejšie linky',
+      chartVehicles: 'Typy vozidiel',
+      chartHours: 'Jazdy podľa hodín',
+      chartByWeekday: 'Počet jázd podľa dní v týždni',
+      chartByMonth: 'Počet jázd podľa mesiacov',
+      chartByDriveType: 'Počet jázd podľa typu pohonu',
+      chartByHoliday: 'Počet jázd počas sviatkov/prázdnin',
+      chartByVehicleType: 'Počet jázd podľa typu vozidla',
+      monthStats: 'Mesačné štatistiky',
+      yearStats: 'Ročné štatistiky',
+      longestStreak: 'Najdlhšia séria dní s jazdou',
+      longestPause: 'Najdlhšia pauza bez MHD',
+      wrappedGrid: 'Wrapped štatistiky'
+    }[id] || id;
+  }
+  // Drag & drop
+  let dragSrc = null;
+  statsOrderList.addEventListener('dragstart', e => {
+    dragSrc = e.target;
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  statsOrderList.addEventListener('dragover', e => {
+    e.preventDefault();
+    const over = e.target.closest('li');
+    if (over && over !== dragSrc) {
+      statsOrderList.insertBefore(dragSrc, over.nextSibling);
+    }
+  });
+  statsOrderList.addEventListener('drop', e => {
+    e.preventDefault();
+    order = Array.from(statsOrderList.children).map(li => li.dataset.id);
+  });
+  saveStatsOrderBtn.onclick = () => {
+    order = Array.from(statsOrderList.children).map(li => li.dataset.id);
+    localStorage.setItem('statsOrder', JSON.stringify(order));
+    showToast('Poradie sekcií uložené!');
+  };
+  renderOrderList();
+}
 import { applyTheme, showToast } from "./ui.js";
 import { loadRides, saveRides, clearAll } from "./storage.js";
 import { getSupabase, signInWithEmail, signUpWithEmail, signOut, getCurrentUser } from "./supabase.js";

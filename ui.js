@@ -433,8 +433,18 @@ export function renderLastRides() {
   filtered.forEach((r) => {
     const li = document.createElement("li");
     li.classList.add("fade-in");
+    // Dynamicky nastav farbu textu podľa mesta a čísla linky
+    let badgeClass = 'line-badge';
+    const city = localStorage.getItem('city') || 'bratislava';
+    const n = parseInt(r.line, 10);
+    if (city === 'bratislava') {
+      if (!isNaN(n) && n >= 205 && n <= 999) badgeClass += ' line-badge--black';
+      else badgeClass += ' line-badge--white';
+    } else if (city === 'ostrava') {
+      badgeClass += ' line-badge--black';
+    }
     li.innerHTML = `
-      <span class="line-badge" style="--badge-color:${lineColors[r.line] || "#888"}">${r.line}</span>
+      <span class="${badgeClass}" style="--badge-color:${lineColors[r.line] || "#888"}">${r.line}</span>
       ${r.number} - ${r.time}
     `;
     list.appendChild(li);
@@ -561,12 +571,20 @@ export function renderRidesList() {
   pageItems.forEach((r) => {
     const li = document.createElement("li");
     li.classList.add("slide-up");
-
-
+    // Dynamicky nastav farbu textu podľa mesta a čísla linky
+    let badgeClass = 'line-badge';
+    const city = localStorage.getItem('city') || 'bratislava';
+    const n = parseInt(r.line, 10);
+    if (city === 'bratislava') {
+      if (!isNaN(n) && n >= 205 && n <= 999) badgeClass += ' line-badge--black';
+      else badgeClass += ' line-badge--white';
+    } else if (city === 'ostrava') {
+      badgeClass += ' line-badge--black';
+    }
     li.innerHTML = `
       <span style="display: flex; align-items: center; gap: 8px;">
         <span>${formatDate(r.date, r.time)}</span>
-        <span class="line-badge" style="--badge-color:${lineColors[r.line] || "#888"}">${r.line}</span>
+        <span class="${badgeClass}" style="--badge-color:${lineColors[r.line] || "#888"}">${r.line}</span>
         <span>${r.number}</span>
       </span>
       <div class="ride-actions">
@@ -574,7 +592,6 @@ export function renderRidesList() {
         <button class="delete-btn" data-id="${r.id}" title="Vymazať jazdu"><img src="icons/remove_icon.png" alt="Vymazať" style="width:20px;height:20px;vertical-align:middle;opacity:0.7;filter: grayscale(1);"></button>
       </div>
     `;
-
     list.appendChild(li);
   });
 

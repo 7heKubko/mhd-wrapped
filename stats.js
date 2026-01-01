@@ -39,6 +39,280 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 function main() {
+    // --- Dynamické poradie sekcií podľa localStorage ---
+    const defaultStatsOrder = [
+      'chartLines',
+      'chartVehicles',
+      'chartHours',
+      'chartByWeekday',
+      'chartByMonth',
+      'chartByDriveType',
+      'chartByHoliday',
+      'chartByVehicleType',
+      'monthStats',
+      'yearStats',
+      'longestStreak',
+      'longestPause',
+      'wrappedGrid'
+    ];
+    let statsOrder = JSON.parse(localStorage.getItem('statsOrder') || 'null') || defaultStatsOrder;
+    const sectionMap = {
+      chartLines: document.querySelector('section:has(#chartLines)'),
+      chartVehicles: document.querySelector('section:has(#chartVehicles)'),
+      chartHours: document.querySelector('section:has(#chartHours)'),
+      chartByWeekday: document.querySelector('section:has(#chartByWeekday)'),
+      chartByMonth: document.querySelector('section:has(#chartByMonth)'),
+      chartByDriveType: document.querySelector('section:has(#chartByDriveType)'),
+      chartByHoliday: document.querySelector('section:has(#chartByHoliday)'),
+      chartByVehicleType: document.querySelector('section:has(#chartByVehicleType)'),
+      monthStats: document.querySelector('section:has(#monthStats)'),
+      yearStats: document.querySelector('section:has(#yearStats)'),
+      longestStreak: document.querySelector('section:has(#longestStreak)'),
+      longestPause: document.querySelector('section:has(#longestPause)'),
+      wrappedGrid: document.querySelector('section:has(.wrapped-grid)')
+    };
+    function reorderSections() {
+      const main = document.querySelector('main.page');
+      statsOrder.forEach(id => {
+        const sec = sectionMap[id];
+        if (sec) main.appendChild(sec);
+      });
+    }
+  // Hook na výber roku
+  const yearSelect = document.getElementById('statsYearSelect');
+  let selectedYear = 'all';
+  let allRides = loadRides();
+  // Zisti všetky roky v dátach
+  // --- Ročné prepínanie ---
+  let allYears = Array.from(new Set(allRides.map(r => r.date.split('-')[0]))).sort((a,b)=>b-a);
+  let currentYearIdx = 0;
+  if (yearSelect) {
+    yearSelect.innerHTML = '<option value="all">Všetky roky</option>' + allYears.map(y => `<option value="${y}">${y}</option>`).join('');
+    yearSelect.addEventListener('change', () => {
+      if (yearSelect.value === 'all') {
+        selectedYear = 'all';
+        rerenderAll();
+      } else {
+        const idx = allYears.indexOf(yearSelect.value);
+        if (idx !== -1) {
+          currentYearIdx = idx;
+          updateYearLabel();
+          renderYearStats();
+        }
+      }
+    });
+  }
+  const prevYearBtn = document.getElementById('prevYear');
+  const nextYearBtn = document.getElementById('nextYear');
+  function getCurrentYear() {
+    return allYears[currentYearIdx] || null;
+  }
+  function updateYearLabel() {
+    const yearLabel = document.getElementById('yearLabel');
+    if (yearLabel) yearLabel.textContent = getCurrentYear() || '';
+  }
+  if (prevYearBtn) prevYearBtn.onclick = () => {
+    if (currentYearIdx < allYears.length - 1) {
+      currentYearIdx++;
+      updateYearLabel();
+      renderYearStats();
+    }
+  };
+  if (nextYearBtn) nextYearBtn.onclick = () => {
+    if (currentYearIdx > 0) {
+      currentYearIdx--;
+      updateYearLabel();
+      renderYearStats();
+    }
+  };
+  function getRides() {
+    if (selectedYear === 'all') return allRides;
+    return allRides.filter(r => r.date.startsWith(selectedYear+'-'));
+  }
+  function renderYearStats() {
+    // Presne rovnaké UI ako mesačné štatistiky, ale pre celý rok
+    const rides = allRides.filter(r => r.date.startsWith(getCurrentYear() + '-'));
+    const map = {};
+    rides.forEach(r => {
+      const main = r.line.split("/")[0];
+      if (!map[main]) map[main] = 0;
+      map[main]++;
+    });
+    const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
+      // Render bar chart
+      const ctx = document.getElementById('chartByYear');
+      if (ctx) {
+        if (chartByYearInstance) chartByYearInstance.destroy();
+        if (sorted.length) {
+          const lineColors = getLineColors();
+          chartByYearInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: sorted.map(([line]) => line),
+              datasets: [{
+                data: sorted.map(([, count]) => count),
+                backgroundColor: sorted.map(([line]) => lineColors[line] || '#888')
+              }]
+            },
+            options: { plugins: { legend: { display: false } }, responsive: true }
+          });
+        } else {
+          ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+        }
+      }
+    const yearStats = document.getElementById('yearStats');
+    if (!yearStats) return;
+    yearStats.innerHTML = '';
+    if (!sorted.length) {
+      yearStats.innerHTML = '<li>Žiadne jazdy v tomto roku</li>';
+      return;
+    }
+    const lineColors = getLineColors();
+    sorted.forEach(([line, count]) => {
+      const li = document.createElement('li');
+      // Dynamicky nastav farbu textu podľa mesta a čísla linky
+      let badgeClass = 'line-badge';
+      const city = localStorage.getItem('city') || 'bratislava';
+      const n = parseInt(line, 10);
+      if (city === 'bratislava') {
+        if (!isNaN(n) && n >= 205 && n <= 999) badgeClass += ' line-badge--black';
+        else badgeClass += ' line-badge--white';
+      } else if (city === 'ostrava') {
+        badgeClass += ' line-badge--black';
+      }
+      li.innerHTML = `
+        <span class="${badgeClass}" style="--badge-color:${lineColors[line] || '#888'}">${line}</span>
+        ${count}×
+      `;
+      yearStats.appendChild(li);
+    });
+  }
+    // --- NOVÉ GRAFY A ŠTATISTIKY ---
+    function renderByWeekdayChart() {
+      const rides = getRides();
+      const days = ['Pondelok','Utorok','Streda','Štvrtok','Piatok','Sobota','Nedeľa'];
+      const counts = Array(7).fill(0);
+      rides.forEach(r => {
+        const d = new Date(r.date);
+        const idx = (d.getDay() + 6) % 7; // 0=pondelok
+        counts[idx]++;
+      });
+      const ctx = document.getElementById('chartByWeekday');
+      if (!ctx) return;
+      if (ctx.chart) ctx.chart.destroy();
+      ctx.chart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: days, datasets: [{ data: counts, backgroundColor: '#007aff' }] },
+        options: { plugins: { legend: { display: false } }, responsive: true }
+      });
+    }
+
+    function renderByMonthChart() {
+      const rides = getRides();
+      const months = Array(12).fill(0);
+      rides.forEach(r => {
+        const m = parseInt(r.date.split('-')[1], 10) - 1;
+        if (m >= 0 && m < 12) months[m]++;
+      });
+      const ctx = document.getElementById('chartByMonth');
+      if (!ctx) return;
+      if (ctx.chart) ctx.chart.destroy();
+      ctx.chart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: ['Jan','Feb','Mar','Apr','Máj','Jún','Júl','Aug','Sep','Okt','Nov','Dec'], datasets: [{ data: months, backgroundColor: '#34c759' }] },
+        options: { plugins: { legend: { display: false } }, responsive: true }
+      });
+    }
+
+    function renderLongestStreak() {
+      const rides = getRides();
+      if (!rides.length) { document.getElementById('longestStreak').textContent = '-'; return; }
+      const days = Array.from(new Set(rides.map(r => r.date))).sort();
+      let maxStreak = 1, curStreak = 1;
+      for (let i = 1; i < days.length; i++) {
+        const prev = new Date(days[i-1]);
+        const curr = new Date(days[i]);
+        if ((curr - prev) === 86400000) curStreak++;
+        else curStreak = 1;
+        if (curStreak > maxStreak) maxStreak = curStreak;
+      }
+      document.getElementById('longestStreak').textContent = maxStreak + ' dní';
+    }
+
+    function renderLongestPause() {
+      const rides = getRides();
+      if (!rides.length) { document.getElementById('longestPause').textContent = '-'; return; }
+      const days = Array.from(new Set(rides.map(r => r.date))).sort();
+      let maxPause = 0;
+      for (let i = 1; i < days.length; i++) {
+        const prev = new Date(days[i-1]);
+        const curr = new Date(days[i]);
+        const diff = (curr - prev) / 86400000;
+        if (diff > maxPause) maxPause = diff;
+      }
+      document.getElementById('longestPause').textContent = maxPause + ' dní';
+    }
+
+    function renderByDriveTypeChart() {
+      const rides = getRides();
+      const map = {};
+      rides.forEach(r => {
+        const drive = r.driveType || r.vehicleMode || 'neznámy';
+        if (!map[drive]) map[drive] = 0;
+        map[drive]++;
+      });
+      const ctx = document.getElementById('chartByDriveType');
+      if (!ctx) return;
+      if (ctx.chart) ctx.chart.destroy();
+      ctx.chart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: Object.keys(map), datasets: [{ data: Object.values(map), backgroundColor: '#ffcc00' }] },
+        options: { plugins: { legend: { display: false } }, responsive: true }
+      });
+    }
+
+    function renderByHolidayChart() {
+      // Prázdniny/sviatky: použijeme pole slovenských sviatkov + víkendy
+      const rides = getRides();
+      // Základný zoznam slovenských sviatkov (pridaj ďalšie podľa potreby)
+      const holidaysSK = [
+        '-01-01','-01-06','-05-01','-05-08','-07-05','-08-29','-09-01','-09-15','-11-01','-11-17','-12-24','-12-25','-12-26'
+      ];
+      let holidays = 0, workdays = 0;
+      rides.forEach(r => {
+        const d = new Date(r.date);
+        const day = d.getDay();
+        const isHoliday = day === 0 || day === 6 || holidaysSK.some(h => r.date.endsWith(h));
+        if (isHoliday) holidays++;
+        else workdays++;
+      });
+      const ctx = document.getElementById('chartByHoliday');
+      if (!ctx) return;
+      if (ctx.chart) ctx.chart.destroy();
+      ctx.chart = new Chart(ctx, {
+        type: 'pie',
+        data: { labels: ['Sviatky/prázdniny','Pracovné dni'], datasets: [{ data: [holidays, workdays], backgroundColor: ['#ff6384','#36a2eb'] }] },
+        options: { responsive: true }
+      });
+    }
+
+    function renderByVehicleTypeChart() {
+      const rides = getRides();
+      const map = {};
+      rides.forEach(r => {
+        const type = r.vehicleMode || 'neznámy';
+        if (!map[type]) map[type] = 0;
+        map[type]++;
+      });
+      const ctx = document.getElementById('chartByVehicleType');
+      if (!ctx) return;
+      if (ctx.chart) ctx.chart.destroy();
+      ctx.chart = new Chart(ctx, {
+        type: 'pie',
+        data: { labels: Object.keys(map), datasets: [{ data: Object.values(map), backgroundColor: ['#007aff','#34c759','#ff9500','#ff6384','#36a2eb','#888'] }] },
+        options: { responsive: true }
+      });
+    }
   // Robust element selection
   const wTotal = document.getElementById("wTotal");
   const wTopLine = document.getElementById("wTopLine");
@@ -262,12 +536,22 @@ function main() {
       return;
     }
     sorted.forEach(([line, count]) => {
-      const li = document.createElement("li");
+      const li = document.createElement('li');
+      // Dynamicky nastav farbu textu podľa mesta a čísla linky
+      let badgeClass = 'line-badge';
+      const city = localStorage.getItem('city') || 'bratislava';
+      if (city === 'bratislava') {
+        const n = parseInt(line, 10);
+        if (!isNaN(n) && n >= 205 && n <= 999) badgeClass += ' line-badge--black';
+        else badgeClass += ' line-badge--white';
+      } else if (city === 'ostrava') {
+        badgeClass += ' line-badge--black';
+      }
       li.innerHTML = `
-        <span class="line-badge" style="--badge-color:${lineColors[line] || "#888"}">${line}</span>
+        <span class="${badgeClass}" style="--badge-color:${lineColors[line] || '#888'}">${line}</span>
         ${count}×
       `;
-      if (monthStats) monthStats.appendChild(li);
+      monthStats.appendChild(li);
     });
   }
 
@@ -286,10 +570,22 @@ function main() {
     };
   }
 
-  renderWrappedStats();
-  renderLinesChart();
-  renderVehiclesChart();
-  renderHoursChart();
-  renderMonthStats();
+  function rerenderAll() {
+    renderLinesChart();
+    renderVehiclesChart();
+    renderHoursChart();
+    renderByWeekdayChart();
+    renderByMonthChart();
+    renderByDriveTypeChart();
+    renderByHolidayChart();
+    renderByVehicleTypeChart();
+    renderMonthStats();
+    renderYearStats();
+    renderLongestStreak();
+    renderLongestPause();
+    renderWrappedStats();
+  }
+  reorderSections();
+  rerenderAll();
 }
 

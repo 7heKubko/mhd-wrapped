@@ -13,8 +13,86 @@
 <body>
   <main class="page">
 
-    <h1 class="page-title">📈 Štatistiky</h1>
 
+    <h1 class="page-title">📈 Štatistiky</h1>
+    <div class="stats-filter-bar">
+      <label for="statsYearSelect">Zobraziť štatistiky za rok:</label>
+      <select id="statsYearSelect">
+        <option value="all">Všetky roky</option>
+        <!-- dynamicky doplnené JS -->
+      </select>
+    </div>
+
+
+
+
+
+
+    <section class="card fade-in">
+      <h2>Najpoužívanejšie linky</h2>
+      <canvas id="chartLines"></canvas>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Typy vozidiel</h2>
+      <canvas id="chartVehicles"></canvas>
+      <button id="toggleVehiclesChart" style="margin-top:10px">Zobraziť všetky typy</button>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Jazdy podľa hodín</h2>
+      <canvas id="chartHours"></canvas>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Počet jázd podľa dní v týždni</h2>
+      <canvas id="chartByWeekday"></canvas>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Počet jázd podľa mesiacov</h2>
+      <canvas id="chartByMonth"></canvas>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Počet jázd podľa typu pohonu</h2>
+      <canvas id="chartByDriveType"></canvas>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Počet jázd počas sviatkov/prázdnin</h2>
+      <canvas id="chartByHoliday"></canvas>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Počet jázd podľa typu vozidla</h2>
+      <canvas id="chartByVehicleType"></canvas>
+    </section>
+
+
+    <section class="card fade-in">
+      <h2>Mesačné štatistiky</h2>
+      <div class="month-switch">
+        <button id="prevMonth">← Predchádzajúci mesiac</button>
+        <span id="monthLabel"></span>
+        <button id="nextMonth">Nasledujúci mesiac →</button>
+      </div>
+      <ul id="monthStats"></ul>
+    </section>
+
+
+
+    <section class="card fade-in">
+      <h2>Najdlhšia séria dní s jazdou</h2>
+      <div id="longestStreak">-</div>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Najdlhšia pauza bez MHD</h2>
+      <div id="longestPause">-</div>
+    </section>
+
+    <!-- Presunuté Wrapped štatistiky na koniec -->
     <section class="card fade-in">
       <h2>Wrapped</h2>
       <div class="wrapped-grid">
@@ -43,34 +121,6 @@
         <div class="wrapped-item"><div class="wrapped-label">Počet jázd v noci (22:00–5:00)</div><div class="wrapped-value" id="wNightRides">-</div></div>
         <div class="wrapped-item"><div class="wrapped-label">Zdieľanie štatistík</div><div class="wrapped-value" id="wShare"><button id="shareStatsBtn">Stiahnuť obrázok</button></div></div>
       </div>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Najčastejšie linky</h2>
-      <canvas id="chartLines"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Typy vozidiel</h2>
-      <canvas id="chartVehicles"></canvas>
-      <button id="toggleVehiclesChart" style="margin-top:10px">Zobraziť všetky typy</button>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Jazdy podľa hodín</h2>
-      <canvas id="chartHours"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Mesačné štatistiky</h2>
-
-      <div class="month-switch">
-        <button id="prevMonth">← Predchádzajúci mesiac</button>
-        <span id="monthLabel"></span>
-        <button id="nextMonth">Nasledujúci mesiac →</button>
-      </div>
-
-      <ul id="monthStats"></ul>
     </section>
 
   </main>
