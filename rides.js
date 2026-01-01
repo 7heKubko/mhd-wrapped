@@ -56,9 +56,15 @@ export const vehicleSeriesBA = [
   { type: "Laminátka", start: 240, end: 240, mode: "Vlak" },
   { type: "Gorila", start: 350, end: 350, mode: "Vlak" },
   { type: "Vectron", start: 383, end: 383, mode: "Vlak" },
+  { type: "Vectron", start: 193, end: 193, mode: "Vlak" },
   { type: "Princezná", start: 263, end: 263, mode: "Vlak" },
   
-  { type: "Brejlovec", start: 757, end: 757, mode: "Vlak" },
+  { type: "Anča", start: 811, end: 811, mode: "Vlak" },
+  { type: "Rakva", start: 843, end: 843, mode: "Vlak" },
+  { type: "Regionova", start: 814, end: 814, mode: "Vlak" },
+  { type: "Taurus", start: 1216, end: 1216, mode: "Vlak" },
+  
+  { type: "Brejlovec", start: 750, end: 757, mode: "Vlak" },
   { type: "Emil Zátopek", start: 380, end: 380, mode: "Vlak" },
   { type: "Banan", start: 150, end: 151, mode: "Vlak" },
   { type: "Pershing", start: 162, end: 163, mode: "Vlak" },
@@ -69,7 +75,8 @@ export const vehicleSeriesBA = [
   { type: "Jánošík", start: 671, end: 671, mode: "Vlak" },
   { type: "Panter", start: 660, end: 661, mode: "Vlak" },
   { type: "RegioPanter", start: 640, end: 650, mode: "Vlak" },
-  { type: "Bastard", start: 371, end: 372, mode: "Vlak" }
+  { type: "Bastard", start: 371, end: 372, mode: "Vlak" },
+  { type: "City Elefant", start: 471, end: 471, mode: "Vlak" }
 ];
 
 export const vehicleSeriesOVA = [
@@ -125,9 +132,15 @@ export const vehicleSeriesOVA = [
   { type: "Laminátka", start: 240, end: 240, mode: "Vlak" },
   { type: "Gorila", start: 350, end: 350, mode: "Vlak" },
   { type: "Vectron", start: 383, end: 383, mode: "Vlak" },
+  { type: "Vectron", start: 193, end: 193, mode: "Vlak" },
   { type: "Princezná", start: 263, end: 263, mode: "Vlak" },
   
-  { type: "Brejlovec", start: 757, end: 757, mode: "Vlak" },
+  { type: "Anča", start: 811, end: 811, mode: "Vlak" },
+  { type: "Rakva", start: 843, end: 843, mode: "Vlak" },
+  { type: "Regionova", start: 814, end: 814, mode: "Vlak" },
+  { type: "Taurus", start: 1216, end: 1216, mode: "Vlak" },
+  
+  { type: "Brejlovec", start: 750, end: 757, mode: "Vlak" },
   { type: "Emil Zátopek", start: 380, end: 380, mode: "Vlak" },
   { type: "Banan", start: 150, end: 151, mode: "Vlak" },
   { type: "Pershing", start: 162, end: 163, mode: "Vlak" },
@@ -138,7 +151,8 @@ export const vehicleSeriesOVA = [
   { type: "Jánošík", start: 671, end: 671, mode: "Vlak" },
   { type: "Panter", start: 660, end: 661, mode: "Vlak" },
   { type: "RegioPanter", start: 640, end: 650, mode: "Vlak" },
-  { type: "Bastard", start: 371, end: 372, mode: "Vlak" }
+  { type: "Bastard", start: 371, end: 372, mode: "Vlak" },
+  { type: "City Elefant", start: 471, end: 471, mode: "Vlak" }
 ];
 
 export function getVehicleSeries() {
