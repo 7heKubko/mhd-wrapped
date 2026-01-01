@@ -77,8 +77,6 @@ if (nextDayBtn) {
   };
 }
 
-
-// Zobraz login popup po načítaní stránky
 window.addEventListener("DOMContentLoaded", async () => {
   const popup = document.getElementById("loginPopup");
   if (!popup) return;

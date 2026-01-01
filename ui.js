@@ -1,7 +1,6 @@
 import { loadRides, saveRides } from "./storage.js";
 import { getVehicleType, getVehicleMode } from "./rides.js";
 
-// Migration function to update old rides missing vehicle or vehicleMode
 export function migrateRidesIfNeeded() {
   let rides = loadRides();
   let needsMigration = false;
@@ -370,7 +369,6 @@ export function applyTheme() {
   }
   const mode = localStorage.getItem("theme");
   document.body.classList.toggle("dark", mode === "dark");
-  // Call migration after theme is applied
   migrateRidesIfNeeded();
 }
 
@@ -433,7 +431,6 @@ export function renderLastRides() {
   filtered.forEach((r) => {
     const li = document.createElement("li");
     li.classList.add("fade-in");
-    // Dynamicky nastav farbu textu podľa mesta a čísla linky
     let badgeClass = 'line-badge';
     const city = localStorage.getItem('city') || 'bratislava';
     const n = parseInt(r.line, 10);
@@ -571,7 +568,6 @@ export function renderRidesList() {
   pageItems.forEach((r) => {
     const li = document.createElement("li");
     li.classList.add("slide-up");
-    // Dynamicky nastav farbu textu podľa mesta a čísla linky
     let badgeClass = 'line-badge';
     const city = localStorage.getItem('city') || 'bratislava';
     const n = parseInt(r.line, 10);

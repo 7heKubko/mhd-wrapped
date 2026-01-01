@@ -1,4 +1,3 @@
-// --- Prispôsobenie poradia sekcií štatistík ---
 const defaultStatsOrder = [
   'chartLines',
   'chartVehicles',
@@ -18,7 +17,6 @@ const defaultStatsOrder = [
 const statsOrderList = document.getElementById('statsOrderList');
 const saveStatsOrderBtn = document.getElementById('saveStatsOrderBtn');
 if (statsOrderList && saveStatsOrderBtn) {
-  // Načítaj uložené poradie alebo default
   let order = JSON.parse(localStorage.getItem('statsOrder') || 'null') || defaultStatsOrder;
   function renderOrderList() {
     statsOrderList.innerHTML = '';
@@ -48,7 +46,6 @@ if (statsOrderList && saveStatsOrderBtn) {
       wrappedGrid: 'Wrapped štatistiky'
     }[id] || id;
   }
-  // Drag & drop
   let dragSrc = null;
   statsOrderList.addEventListener('dragstart', e => {
     dragSrc = e.target;
@@ -76,7 +73,6 @@ import { applyTheme, showToast } from "./ui.js";
 import { loadRides, saveRides, clearAll } from "./storage.js";
 import { getSupabase, signInWithEmail, signUpWithEmail, signOut, getCurrentUser } from "./supabase.js";
 
-// --- Farby typov dopravy ---
 window.addEventListener('DOMContentLoaded', () => {
   const colorInputs = {
     tram: document.getElementById("colorTram"),
@@ -182,8 +178,6 @@ document.getElementById("importBtn").onclick = () => {
   reader.readAsText(file);
 };
 
-
-// LOGIN UI & CLOUD SYNC
 const loginEmail = document.getElementById("loginEmail");
 const loginPassword = document.getElementById("loginPassword");
 const loginBtn = document.getElementById("loginBtn");
@@ -261,8 +255,6 @@ if (loginBtn && registerBtn && logoutBtn) {
   };
 }
 
-// CLOUD SYNC BUTTONS
-
 if (uploadCloudBtn) {
   uploadCloudBtn.onclick = async () => {
     const user = await getCurrentUser();
@@ -275,13 +267,10 @@ if (uploadCloudBtn) {
       }
       return;
     }
-    // Upload local rides to Supabase
     try {
       const rides = loadRides();
       const supabase = getSupabase();
-      // Najprv vymažeme všetky existujúce cloud jazdy pre usera
       await supabase.from('rides').delete().eq('user_id', user.id);
-      // Potom vložíme všetky lokálne jazdy
       if (rides.length > 0) {
         const ridesWithUser = rides.map(r => ({...r, user_id: user.id }));
         const { error } = await supabase.from('rides').insert(ridesWithUser);
@@ -306,13 +295,11 @@ if (downloadCloudBtn) {
       }
       return;
     }
-    // Download cloud rides to localStorage
     try {
       const supabase = getSupabase();
       const { data, error } = await supabase.from('rides').select('*').eq('user_id', user.id);
       if (error) throw error;
       if (Array.isArray(data)) {
-        // Odstránime user_id z objektov pred uložením do localStorage
         const rides = data.map(({user_id, ...rest}) => rest);
         saveRides(rides);
         showToast("Dáta boli stiahnuté z cloudu!");
@@ -323,5 +310,4 @@ if (downloadCloudBtn) {
   };
 }
 
-// Zobraz login stav v popupe na začiatku
 updateLoginUI();

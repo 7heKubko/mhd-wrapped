@@ -6,7 +6,6 @@
   <title>MHD Wrapped - Štatistiky</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- html2canvas for sharing stats as image -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 
@@ -19,7 +18,6 @@
       <label for="statsYearSelect">Zobraziť štatistiky za rok:</label>
       <select id="statsYearSelect">
         <option value="all">Všetky roky</option>
-        <!-- dynamicky doplnené JS -->
       </select>
     </div>
 
@@ -92,7 +90,6 @@
       <div id="longestPause">-</div>
     </section>
 
-    <!-- Presunuté Wrapped štatistiky na koniec -->
     <section class="card fade-in">
       <h2>Wrapped</h2>
       <div class="wrapped-grid">
@@ -148,7 +145,6 @@
 
   <script type="module" src="stats.js"></script>
   <script>
-    // Funkcia na stiahnutie obrázka sekcie Wrapped
     document.addEventListener("DOMContentLoaded", function() {
       const btn = document.getElementById("shareStatsBtn");
       const wrappedSection = document.querySelector(".wrapped-grid");
@@ -156,9 +152,8 @@
         btn.addEventListener("click", async () => {
           btn.disabled = true;
           btn.textContent = "Generujem...";
-          // Pridaj triedu pre krajší screenshot (voliteľné)
           wrappedSection.classList.add("share-screenshot");
-          await new Promise(r => setTimeout(r, 100)); // nech sa stihne prekresliť
+          await new Promise(r => setTimeout(r, 100));
           html2canvas(wrappedSection, {backgroundColor: null, scale: 2}).then(canvas => {
             wrappedSection.classList.remove("share-screenshot");
             const link = document.createElement('a');
