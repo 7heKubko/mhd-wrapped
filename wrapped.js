@@ -15,9 +15,10 @@ export function getFavVehicleMode(rides) {
 export function getFavModelOnLine(rides, line) {
   const map = {};
   rides.forEach((r) => {
-    if ((r.line.split("/")[0] === line) && r.vehicle) {
-      if (!map[r.vehicle]) map[r.vehicle] = 0;
-      map[r.vehicle]++;
+    if (r.line.split("/")[0] === line && r.vehicle) {
+      const key = `${r.vehicle} - ${r.number}`;
+      if (!map[key]) map[key] = 0;
+      map[key]++;
     }
   });
   const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
@@ -46,20 +47,15 @@ export function getTopLine(rides) {
 
 export function getFavBus(rides) {
   const map = {};
-
   rides.forEach((r) => {
-    const name = r.vehicle.trim();
-    if (!map[name]) map[name] = 0;
-    map[name]++;
+    const key = `${r.vehicle} - ${r.number}`;
+    if (!map[key]) map[key] = 0;
+    map[key]++;
   });
-
   const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
-
   if (!sorted.length) return ["-", 0];
-
   return [sorted[0][0], sorted[0][1]];
 }
-
 
 export function getPersona(rides) {
   const total = rides.length;

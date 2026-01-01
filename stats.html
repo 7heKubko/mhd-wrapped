@@ -98,7 +98,7 @@
       <div class="wrapped-grid">
         <div class="wrapped-item"><div class="wrapped-label">Počet jázd</div><div class="wrapped-value" id="wTotal">0</div></div>
         <div class="wrapped-item"><div class="wrapped-label">Top linka</div><div class="wrapped-value" id="wTopLine">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Top model na linke</div><div class="wrapped-value" id="wTopModelOnLine">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Top model na linke <span id="dynamicTopLine"></span></div><div class="wrapped-value" id="wTopModelOnLine">-</div></div>
         <div class="wrapped-item"><div class="wrapped-label">Najčastejší typ vozidla</div><div class="wrapped-value" id="wTopMode">-</div></div>
         <div class="wrapped-item"><div class="wrapped-label">Top vozidlo</div><div class="wrapped-value" id="wTopBus">-</div></div>
         <div class="wrapped-item"><div class="wrapped-label">Persona</div><div class="wrapped-value" id="wPersona">Nováčik</div></div>
@@ -173,6 +173,15 @@
             alert("Nepodarilo sa vygenerovať obrázok.");
           });
         });
+      }
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const topLineElement = document.getElementById("wTopLine");
+      const dynamicTopLineElement = document.getElementById("dynamicTopLine");
+      if (topLineElement && dynamicTopLineElement) {
+        dynamicTopLineElement.textContent = topLineElement.textContent.split(" ")[0] || "-";
       }
     });
   </script>
