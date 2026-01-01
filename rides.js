@@ -48,14 +48,42 @@ export const vehicleSeriesBA = [
   { type: "SOR CN 12.3", start: 8551, end: 8650, mode: "Autobus" },
   { type: "SOR CN 10.5", start: 8521, end: 8530, mode: "Autobus" },
   { type: "Rošero First FCLEI", start: 8501, end: 8503, mode: "Autobus" },
-  { type: "Irisbus Crossway LE Line 12M", start: 8877, end: 8896, mode: "Autobus" }
+  { type: "Irisbus Crossway LE Line 12M", start: 8877, end: 8896, mode: "Autobus" },
+
+  { type: "Turbozmrd", start: 361, end: 361, mode: "Vlak" },
+  { type: "Rýchle Eso", start: 362, end: 362, mode: "Vlak" },
+  { type: "Eso", start: 363, end: 363, mode: "Vlak" },
+  { type: "Laminátka", start: 240, end: 240, mode: "Vlak" },
+  { type: "Gorila", start: 350, end: 350, mode: "Vlak" },
+  { type: "Vectron", start: 383, end: 383, mode: "Vlak" },
+  { type: "Vectron", start: 193, end: 193, mode: "Vlak" },
+  { type: "Princezná", start: 263, end: 263, mode: "Vlak" },
+  
+  { type: "Anča", start: 811, end: 811, mode: "Vlak" },
+  { type: "Rakva", start: 843, end: 843, mode: "Vlak" },
+  { type: "Regionova", start: 814, end: 814, mode: "Vlak" },
+  { type: "Taurus", start: 1216, end: 1216, mode: "Vlak" },
+  
+  { type: "Brejlovec", start: 750, end: 757, mode: "Vlak" },
+  { type: "Emil Zátopek", start: 380, end: 380, mode: "Vlak" },
+  { type: "Banan", start: 150, end: 151, mode: "Vlak" },
+  { type: "Pershing", start: 162, end: 163, mode: "Vlak" },
+  { type: "Plecháč", start: 242, end: 242, mode: "Vlak" },
+  { type: "Pendolino", start: 680, end: 680, mode: "Vlak" },
+  { type: "Bardotka", start: 749, end: 749, mode: "Vlak" },
+  { type: "Regio-Shuttle", start: 840, end: 841, mode: "Vlak" },
+  { type: "Jánošík", start: 671, end: 671, mode: "Vlak" },
+  { type: "Panter", start: 660, end: 661, mode: "Vlak" },
+  { type: "RegioPanter", start: 640, end: 650, mode: "Vlak" },
+  { type: "Bastard", start: 371, end: 372, mode: "Vlak" },
+  { type: "City Elefant", start: 471, end: 471, mode: "Vlak" }
 ];
 
 export const vehicleSeriesOVA = [
   { type: "ČKD Tatra KT8D5", start: 1500, end: 1515, mode: "Električka" },
   { type: "ČKD Tatra T3", start: 701, end: 799, mode: "Električka" },
   { type: "ČKD Tatra T3SU", start: 901, end: 905, mode: "Električka" },
-  { type: "ČKD Tatra T3SUCS", start: 906, end: 1027, mode: "Električka" },
+  { type: "ČKD Tatra T3R.P.", start: 906, end: 1027, mode: "Električka" },
   { type: "Inekon Trio", start: 1251, end: 1259, mode: "Električka" },
   { type: "Pragoimex K2", start: 1402, end: 1403, mode: "Električka" },
   { type: "Pragoimex VarioLF2", start: 1401, end: 1403, mode: "Električka" },
@@ -96,7 +124,35 @@ export const vehicleSeriesOVA = [
   { type: "Iveco Crossway LE City 12M - Z-Group", start: 0, end: 0, mode: "Autobus" },
   { type: "Setra S415 LE", start: 0, end: 0, mode: "Autobus" },
   { type: "Scania Citywide LE 12M CNG", start: 0, end: 0, mode: "Autobus" },
-  { type: "Scania Citywide Suburban LE 15M", start: 0, end: 0, mode: "Autobus" }
+  { type: "Scania Citywide Suburban LE 15M", start: 0, end: 0, mode: "Autobus" },
+
+  { type: "Turbozmrd", start: 361, end: 361, mode: "Vlak" },
+  { type: "Rýchle Eso", start: 362, end: 362, mode: "Vlak" },
+  { type: "Eso", start: 363, end: 363, mode: "Vlak" },
+  { type: "Laminátka", start: 240, end: 240, mode: "Vlak" },
+  { type: "Gorila", start: 350, end: 350, mode: "Vlak" },
+  { type: "Vectron", start: 383, end: 383, mode: "Vlak" },
+  { type: "Vectron", start: 193, end: 193, mode: "Vlak" },
+  { type: "Princezná", start: 263, end: 263, mode: "Vlak" },
+  
+  { type: "Anča", start: 811, end: 811, mode: "Vlak" },
+  { type: "Rakva", start: 843, end: 843, mode: "Vlak" },
+  { type: "Regionova", start: 814, end: 814, mode: "Vlak" },
+  { type: "Taurus", start: 1216, end: 1216, mode: "Vlak" },
+  
+  { type: "Brejlovec", start: 750, end: 757, mode: "Vlak" },
+  { type: "Emil Zátopek", start: 380, end: 380, mode: "Vlak" },
+  { type: "Banan", start: 150, end: 151, mode: "Vlak" },
+  { type: "Pershing", start: 162, end: 163, mode: "Vlak" },
+  { type: "Plecháč", start: 242, end: 242, mode: "Vlak" },
+  { type: "Pendolino", start: 680, end: 680, mode: "Vlak" },
+  { type: "Bardotka", start: 749, end: 749, mode: "Vlak" },
+  { type: "Regio-Shuttle", start: 840, end: 841, mode: "Vlak" },
+  { type: "Jánošík", start: 671, end: 671, mode: "Vlak" },
+  { type: "Panter", start: 660, end: 661, mode: "Vlak" },
+  { type: "RegioPanter", start: 640, end: 650, mode: "Vlak" },
+  { type: "Bastard", start: 371, end: 372, mode: "Vlak" },
+  { type: "City Elefant", start: 471, end: 471, mode: "Vlak" }
 ];
 
 export function getVehicleSeries() {
