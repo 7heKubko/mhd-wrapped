@@ -76,6 +76,37 @@ import { applyTheme, showToast } from "./ui.js";
 import { loadRides, saveRides, clearAll } from "./storage.js";
 import { getSupabase, signInWithEmail, signUpWithEmail, signOut, getCurrentUser } from "./supabase.js";
 
+// --- Farby typov dopravy ---
+const colorInputs = {
+  tram: document.getElementById("colorTram"),
+  trolley: document.getElementById("colorTrolley"),
+  bus: document.getElementById("colorBus"),
+  train: document.getElementById("colorTrain")
+};
+const saveColorsBtn = document.getElementById("saveColorsBtn");
+
+function loadTypeColors() {
+  const saved = JSON.parse(localStorage.getItem("typeColors") || '{}');
+  if (colorInputs.tram && saved.tram) colorInputs.tram.value = saved.tram;
+  if (colorInputs.trolley && saved.trolley) colorInputs.trolley.value = saved.trolley;
+  if (colorInputs.bus && saved.bus) colorInputs.bus.value = saved.bus;
+  if (colorInputs.train && saved.train) colorInputs.train.value = saved.train;
+}
+
+if (saveColorsBtn) {
+  saveColorsBtn.onclick = () => {
+    const colors = {
+      tram: colorInputs.tram?.value || '#ff9500',
+      trolley: colorInputs.trolley?.value || '#34c759',
+      bus: colorInputs.bus?.value || '#007aff',
+      train: colorInputs.train?.value || '#8e44ad'
+    };
+    localStorage.setItem("typeColors", JSON.stringify(colors));
+    showToast("Farby boli uložené");
+  };
+  loadTypeColors();
+}
+
 applyTheme();
 
 const citySelect = document.getElementById("citySelect");

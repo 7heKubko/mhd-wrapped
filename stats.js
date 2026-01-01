@@ -307,9 +307,18 @@ function main() {
       const ctx = document.getElementById('chartByVehicleType');
       if (!ctx) return;
       if (ctx.chart) ctx.chart.destroy();
+      // Načítaj farby z localStorage
+      const typeColors = JSON.parse(localStorage.getItem('typeColors') || '{}');
+      const colorMap = {
+        'Električka': typeColors.tram || '#ff9500',
+        'Trolejbus': typeColors.trolley || '#34c759',
+        'Autobus': typeColors.bus || '#007aff',
+        'Vlak': typeColors.train || '#8e44ad',
+      };
+      const bgColors = Object.keys(map).map(type => colorMap[type] || '#888');
       ctx.chart = new Chart(ctx, {
         type: 'pie',
-        data: { labels: Object.keys(map), datasets: [{ data: Object.values(map), backgroundColor: ['#007aff','#34c759','#ff9500','#ff6384','#36a2eb','#888'] }] },
+        data: { labels: Object.keys(map), datasets: [{ data: Object.values(map), backgroundColor: bgColors }] },
         options: { responsive: true }
       });
     }
