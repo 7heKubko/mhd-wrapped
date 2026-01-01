@@ -10,12 +10,10 @@ import {
 } from "./wrapped.js";
 import { getCurrentUser } from "./supabase.js";
 
-// Apply theme immediately for correct background
 applyTheme();
 
 window.addEventListener("DOMContentLoaded", async () => {
   applyTheme();
-  // Zobraz login popup
   const popup = document.getElementById("loginPopup");
   if (popup) {
     try {
@@ -47,7 +45,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 function main() {
-  // --- Dynamické poradie sekcií podľa localStorage ---
   const defaultStatsOrder = [
     "chartLines",
     "chartVehicles",
@@ -85,17 +82,20 @@ function main() {
   };
   function reorderSections() {
     const main = document.querySelector("main.page");
+    const statsOrder =
+      JSON.parse(localStorage.getItem("statsOrder") || "null") ||
+      defaultStatsOrder;
     statsOrder.forEach((id) => {
-      const sec = sectionMap[id];
-      if (sec) main.appendChild(sec);
+      const section =
+        id === "wrappedGrid"
+          ? document.querySelector("section:has(.wrapped-grid)")
+          : document.querySelector(`section:has(#${id})`);
+      if (section) main.appendChild(section);
     });
   }
-  // Hook na výber roku
   const yearSelect = document.getElementById("statsYearSelect");
   let selectedYear = "all";
   let allRides = loadRides();
-  // Zisti všetky roky v dátach
-  // --- Ročné prepínanie ---
   let allYears = Array.from(
     new Set(allRides.map((r) => r.date.split("-")[0]))
   ).sort((a, b) => b - a);
@@ -148,7 +148,6 @@ function main() {
     return allRides.filter((r) => r.date.startsWith(selectedYear + "-"));
   }
   function renderYearStats() {
-    // Presne rovnaké UI ako mesačné štatistiky, ale pre celý rok
     const rides = allRides.filter((r) =>
       r.date.startsWith(getCurrentYear() + "-")
     );
@@ -159,7 +158,6 @@ function main() {
       map[main]++;
     });
     const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
-    // Render bar chart
     const ctx = document.getElementById("chartByYear");
     if (ctx) {
       if (chartByYearInstance) chartByYearInstance.destroy();
@@ -197,7 +195,6 @@ function main() {
     const lineColors = getLineColors();
     sorted.forEach(([line, count]) => {
       const li = document.createElement("li");
-      // Dynamicky nastav farbu textu podľa mesta a čísla linky
       let badgeClass = "line-badge";
       const city = localStorage.getItem("city") || "bratislava";
       const n = parseInt(line, 10);
@@ -217,7 +214,6 @@ function main() {
       yearStats.appendChild(li);
     });
   }
-  // --- NOVÉ GRAFY A ŠTATISTIKY ---
   function renderByWeekdayChart() {
     const rides = getRides();
     const days = [
@@ -339,9 +335,7 @@ function main() {
   }
 
   function renderByHolidayChart() {
-    // Prázdniny/sviatky: použijeme pole slovenských sviatkov + víkendy
     const rides = getRides();
-    // Základný zoznam slovenských sviatkov (pridaj ďalšie podľa potreby)
     const holidaysSK = [
       "-01-01",
       "-01-06",
@@ -396,7 +390,6 @@ function main() {
     const ctx = document.getElementById("chartByVehicleType");
     if (!ctx) return;
     if (ctx.chart) ctx.chart.destroy();
-    // Načítaj farby z localStorage
     const typeColors = JSON.parse(localStorage.getItem("typeColors") || "{}");
     const colorMap = {
       Električka: typeColors.tram || "#ff9500",
@@ -414,7 +407,41 @@ function main() {
       options: { responsive: true },
     });
   }
-  // Robust element selection
+
+  function renderByECVChart() {
+    const rides = getRides();
+    const map = {};
+
+    rides.forEach((r) => {
+      const ecv = r.number || "neznámy";
+      if (!map[ecv]) map[ecv] = 0;
+      map[ecv]++;
+    });
+
+    const labels = Object.keys(map);
+    const data = Object.values(map);
+
+    const ctx = document.getElementById("chartByECV");
+    if (!ctx) return;
+    if (ctx.chart) ctx.chart.destroy();
+
+    ctx.chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          {
+            data,
+            backgroundColor: "#ffcc00",
+          },
+        ],
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        responsive: true,
+      },
+    });
+  }
   const wTotal = document.getElementById("wTotal");
   const wTopLine = document.getElementById("wTopLine");
   const wTopBus = document.getElementById("wTopBus");
@@ -462,7 +489,6 @@ function main() {
       wTopMode.textContent = `${mode} (${count}×)`;
     }
     if (wPersona) wPersona.textContent = getPersona(rides);
-    // Priemerný počet jázd za deň/týždeň/mesiac
     const days = new Set(rides.map((r) => r.date));
     const weeks = new Set(
       rides.map((r) => {
@@ -484,7 +510,6 @@ function main() {
     if (wAvgPerDay) wAvgPerDay.textContent = avgPerDay;
     if (wAvgPerWeek) wAvgPerWeek.textContent = avgPerWeek;
     if (wAvgPerMonth) wAvgPerMonth.textContent = avgPerMonth;
-    // Podiel typov vozidiel
     const modeMap = {};
     rides.forEach((r) => {
       const mode = r.vehicleMode || "neznámy";
@@ -497,7 +522,6 @@ function main() {
       .join(", ");
     const wModeShare = document.getElementById("wModeShare");
     if (wModeShare) wModeShare.textContent = modeShare || "-";
-    // Počet jázd v noci (22:00–5:00)
     const nightRides = rides.filter((r) => {
       const h = parseInt(r.time.split(":")[0]);
       return h >= 22 || h < 5;
@@ -585,7 +609,6 @@ function main() {
         responsive: true,
       },
     });
-    // Update button text
     if (btn) {
       btn.textContent = showAllVehicles
         ? "Zobraziť menej typov"
@@ -652,7 +675,6 @@ function main() {
     }
     sorted.forEach(([line, count]) => {
       const li = document.createElement("li");
-      // Dynamicky nastav farbu textu podľa mesta a čísla linky
       let badgeClass = "line-badge";
       const city = localStorage.getItem("city") || "bratislava";
       if (city === "bratislava") {
@@ -708,6 +730,7 @@ function main() {
     renderByDriveTypeChart();
     renderByHolidayChart();
     renderByVehicleTypeChart();
+    renderByECVChart(); // Ensure ECV chart is rendered
     renderMonthStats();
     renderYearStats();
     renderLongestStreak();

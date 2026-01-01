@@ -12,21 +12,13 @@
 
 <body>
   <main class="page">
-
-
     <h1 class="page-title">📈 Štatistiky</h1>
     <div class="stats-filter-bar">
       <label for="statsYearSelect">Zobraziť štatistiky za rok:</label>
       <select id="statsYearSelect">
         <option value="all">Všetky roky</option>
-        <!-- dynamicky doplnené JS -->
       </select>
     </div>
-
-
-
-
-
 
     <section class="card fade-in">
       <h2>Najpoužívanejšie linky</h2>
@@ -37,6 +29,11 @@
       <h2>Typy vozidiel</h2>
       <canvas id="chartVehicles"></canvas>
       <button id="toggleVehiclesChart" style="margin-top:10px">Zobraziť všetky typy</button>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Vozidiel podľa EČV</h2>
+      <canvas id="chartByECV"></canvas>
     </section>
 
     <section class="card fade-in">
@@ -69,7 +66,6 @@
       <canvas id="chartByVehicleType"></canvas>
     </section>
 
-
     <section class="card fade-in">
       <h2>Mesačné štatistiky</h2>
       <div class="month-switch">
@@ -91,8 +87,6 @@
       <h2>Najdlhšia pauza bez MHD</h2>
       <div id="longestPause">-</div>
     </section>
-
-    <!-- Presunuté Wrapped štatistiky na koniec -->
     <section class="card fade-in">
       <h2>Wrapped</h2>
       <div class="wrapped-grid">
@@ -148,7 +142,6 @@
 
   <script type="module" src="stats.js"></script>
   <script>
-    // Funkcia na stiahnutie obrázka sekcie Wrapped
     document.addEventListener("DOMContentLoaded", function() {
       const btn = document.getElementById("shareStatsBtn");
       const wrappedSection = document.querySelector(".wrapped-grid");
@@ -156,9 +149,8 @@
         btn.addEventListener("click", async () => {
           btn.disabled = true;
           btn.textContent = "Generujem...";
-          // Pridaj triedu pre krajší screenshot (voliteľné)
           wrappedSection.classList.add("share-screenshot");
-          await new Promise(r => setTimeout(r, 100)); // nech sa stihne prekresliť
+          await new Promise(r => setTimeout(r, 100));
           html2canvas(wrappedSection, {backgroundColor: null, scale: 2}).then(canvas => {
             wrappedSection.classList.remove("share-screenshot");
             const link = document.createElement('a');
