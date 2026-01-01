@@ -1,3 +1,29 @@
+// Returns the most common vehicle mode (bus, tram, tbus, coach, etc.)
+export function getFavVehicleMode(rides) {
+  const map = {};
+  rides.forEach((r) => {
+    const mode = r.vehicleMode || "neznámy";
+    if (!map[mode]) map[mode] = 0;
+    map[mode]++;
+  });
+  const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
+  if (!sorted.length) return ["-", 0];
+  return [sorted[0][0], sorted[0][1]];
+}
+
+// Returns the most common vehicle model for a given line
+export function getFavModelOnLine(rides, line) {
+  const map = {};
+  rides.forEach((r) => {
+    if ((r.line.split("/")[0] === line) && r.vehicle) {
+      if (!map[r.vehicle]) map[r.vehicle] = 0;
+      map[r.vehicle]++;
+    }
+  });
+  const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
+  if (!sorted.length) return ["-", 0];
+  return [sorted[0][0], sorted[0][1]];
+}
 export function getTotal(rides) {
   return rides.length;
 }

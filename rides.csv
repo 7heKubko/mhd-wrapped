@@ -1,0 +1,2 @@
+id,user_id,line,number,vehicle,vehicleMode,date,time
+uuid,uuid,text,text,text,text,text,text

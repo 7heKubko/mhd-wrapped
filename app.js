@@ -1,3 +1,4 @@
+
 import {
   applyTheme,
   renderLastRides,
@@ -8,6 +9,7 @@ import {
   getLineColors
 } from "./ui.js";
 import { addRide } from "./rides.js";
+import { getCurrentUser } from "./supabase.js";
 
 applyTheme();
 
@@ -74,6 +76,34 @@ if (nextDayBtn) {
     renderLastRides();
   };
 }
+
+
+// Zobraz login popup po načítaní stránky
+window.addEventListener("DOMContentLoaded", async () => {
+  const popup = document.getElementById("loginPopup");
+  if (!popup) return;
+  try {
+    const user = await getCurrentUser();
+    if (user && user.email) {
+      popup.textContent = `Ste prihlásený ako ${user.email}`;
+      popup.style.background = "#e6ffe6";
+      popup.style.color = "#1a661a";
+    } else {
+      popup.textContent = "Nie ste prihlásený!";
+      popup.style.background = "#ffe6e6";
+      popup.style.color = "#a11a1a";
+    }
+    popup.style.display = "block";
+    setTimeout(() => { popup.style.display = "none"; }, 3500);
+  } catch {
+    // fallback
+    popup.textContent = "Nie ste prihlásený!";
+    popup.style.background = "#ffe6e6";
+    popup.style.color = "#a11a1a";
+    popup.style.display = "block";
+    setTimeout(() => { popup.style.display = "none"; }, 3500);
+  }
+});
 
 renderLastRides();
 renderQuickStats();

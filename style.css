@@ -261,13 +261,38 @@ input:checked + .slider:before {
   transform: translateX(22px);
 }
 
+
 #ridesList li,
 #lastRides li,
 #monthStats li {
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 4px 0;
+}
+
+.ride-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.ride-actions button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.ride-actions button:hover {
+  background: #f0f0f0;
 }
 
 #ridesList li.slide-up {

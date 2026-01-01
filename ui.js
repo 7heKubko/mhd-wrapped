@@ -1,3 +1,27 @@
+import { loadRides, saveRides } from "./storage.js";
+import { getVehicleType, getVehicleMode } from "./rides.js";
+
+// Migration function to update old rides missing vehicle or vehicleMode
+export function migrateRidesIfNeeded() {
+  let rides = loadRides();
+  let needsMigration = false;
+  for (const ride of rides) {
+    if (!ride.vehicle || !ride.vehicleMode) {
+      needsMigration = true;
+      break;
+    }
+  }
+  if (needsMigration) {
+    if (confirm("Boli nájdené staré záznamy jázd s chýbajúcimi údajmi. Chcete ich aktualizovať?")) {
+      for (const ride of rides) {
+        if (!ride.vehicle) ride.vehicle = getVehicleType(ride.number);
+        if (!ride.vehicleMode) ride.vehicleMode = getVehicleMode(ride.number);
+      }
+      saveRides(rides);
+      alert("Dáta boli úspešne migrované.");
+    }
+  }
+}
 export const lineColorsBA = {
   1: "#f56200",
   3: "#e31e24",
@@ -346,9 +370,9 @@ export function applyTheme() {
   }
   const mode = localStorage.getItem("theme");
   document.body.classList.toggle("dark", mode === "dark");
+  // Call migration after theme is applied
+  migrateRidesIfNeeded();
 }
-
-import { loadRides, saveRides } from "./storage.js";
 
 export function showToast(text) {
   const toast = document.getElementById("toast");
@@ -538,15 +562,16 @@ export function renderRidesList() {
     const li = document.createElement("li");
     li.classList.add("slide-up");
 
+
     li.innerHTML = `
-      <span>
-        ${formatDate(r.date, r.time)} -
+      <span style="display: flex; align-items: center; gap: 8px;">
+        <span>${formatDate(r.date, r.time)}</span>
         <span class="line-badge" style="--badge-color:${lineColors[r.line] || "#888"}">${r.line}</span>
-        ${r.number}
+        <span>${r.number}</span>
       </span>
-      <div>
-        <button class="edit-btn" data-id="${r.id}">✏️</button>
-        <button class="delete-btn" data-id="${r.id}">🗑️</button>
+      <div class="ride-actions">
+        <button class="edit-btn" data-id="${r.id}" title="Upraviť jazdu"><img src="icons/edit_icon.png" alt="Upraviť" style="width:20px;height:20px;vertical-align:middle;opacity:0.7;filter: grayscale(1);"></button>
+        <button class="delete-btn" data-id="${r.id}" title="Vymazať jazdu"><img src="icons/remove_icon.png" alt="Vymazať" style="width:20px;height:20px;vertical-align:middle;opacity:0.7;filter: grayscale(1);"></button>
       </div>
     `;
 
@@ -578,8 +603,16 @@ export function startEditRide(id) {
   const newNumber = prompt("Nové EVČ:", ride.number);
   if (!newNumber) return;
 
+  const newDate = prompt("Nový dátum (RRRR-MM-DD):", ride.date);
+  if (!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) return;
+
+  const newTime = prompt("Nový čas (HH:MM):", ride.time);
+  if (!newTime || !/^\d{2}:\d{2}$/.test(newTime)) return;
+
   ride.line = newLine;
   ride.number = newNumber;
+  ride.date = newDate;
+  ride.time = newTime;
 
   saveRides(rides);
   showToast("Jazda upravená");

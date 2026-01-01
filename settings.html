@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MHD Wrapped - Nastavenia</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 </head>
 
 <body>
@@ -57,6 +58,25 @@
       <button id="resetBtn" class="danger">Vymazať všetko</button>
     </section>
 
+    <section class="card fade-in">
+      <h2>Prihlásenie (beta)</h2>
+      <div id="loginSection">
+        <input id="loginEmail" type="email" placeholder="Email">
+        <input id="loginPassword" type="password" placeholder="Heslo">
+        <button id="loginBtn">Prihlásiť sa</button>
+        <button id="registerBtn">Registrovať</button>
+        <button id="logoutBtn" style="display:none">Odhlásiť sa</button>
+        <div id="loginStatus" style="margin-top:8px;color:var(--accent)"></div>
+      </div>
+    </section>
+      <section class="card fade-in">
+        <h2>Cloud synchronizácia</h2>
+        <div id="loginPopup" style="margin-bottom:12px;display:none;font-weight:600;"></div>
+        <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap">
+          <button id="uploadCloudBtn">Synchronizovať (upload)</button>
+          <button id="downloadCloudBtn">Stiahnuť z cloudu</button>
+        </div>
+      </section>
     <section class="card fade-in">
       <h2>O aplikácii</h2>
       <p><strong>MHD Wrapped</strong></p>

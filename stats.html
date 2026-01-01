@@ -6,6 +6,8 @@
   <title>MHD Wrapped - Štatistiky</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- html2canvas for sharing stats as image -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 
 <body>
@@ -16,22 +18,30 @@
     <section class="card fade-in">
       <h2>Wrapped</h2>
       <div class="wrapped-grid">
-        <div class="wrapped-item">
-          <div class="wrapped-label">Počet jázd</div>
-          <div class="wrapped-value" id="wTotal">0</div>
-        </div>
-        <div class="wrapped-item">
-          <div class="wrapped-label">Top linka</div>
-          <div class="wrapped-value" id="wTopLine">-</div>
-        </div>
-        <div class="wrapped-item">
-          <div class="wrapped-label">Top vozidlo</div>
-          <div class="wrapped-value" id="wTopBus">-</div>
-        </div>
-        <div class="wrapped-item">
-          <div class="wrapped-label">Persona</div>
-          <div class="wrapped-value" id="wPersona">Nováčik</div>
-        </div>
+        <div class="wrapped-item"><div class="wrapped-label">Počet jázd</div><div class="wrapped-value" id="wTotal">0</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Top linka</div><div class="wrapped-value" id="wTopLine">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Top model na linke</div><div class="wrapped-value" id="wTopModelOnLine">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Najčastejší typ vozidla</div><div class="wrapped-value" id="wTopMode">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Top vozidlo</div><div class="wrapped-value" id="wTopBus">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Persona</div><div class="wrapped-value" id="wPersona">Nováčik</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Dní bez MHD</div><div class="wrapped-value" id="wDaysWithout">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Najaktívnejší deň v týždni</div><div class="wrapped-value" id="wTopWeekday">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Porovnanie s priemerom</div><div class="wrapped-value" id="wCompareAvg">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Eko štatistika (CO₂)</div><div class="wrapped-value" id="wEco">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Najčastejšie kombinácie liniek</div><div class="wrapped-value" id="wCombo">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Prvý spoj dňa</div><div class="wrapped-value" id="wFirstRide">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Posledný spoj dňa</div><div class="wrapped-value" id="wLastRide">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Počet rôznych liniek</div><div class="wrapped-value" id="wUniqueLines">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Počet rôznych vozidiel</div><div class="wrapped-value" id="wUniqueVehicles">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Rekordný deň (najviac jázd)</div><div class="wrapped-value" id="wRecordDay">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Týždenné trendy</div><div class="wrapped-value" id="wTrends">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Odmeny/odznaky</div><div class="wrapped-value" id="wBadges">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Priemerný počet jázd za deň</div><div class="wrapped-value" id="wAvgPerDay">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Priemerný počet jázd za týždeň</div><div class="wrapped-value" id="wAvgPerWeek">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Priemerný počet jázd za mesiac</div><div class="wrapped-value" id="wAvgPerMonth">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Podiel typov vozidiel</div><div class="wrapped-value" id="wModeShare">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Počet jázd v noci (22:00–5:00)</div><div class="wrapped-value" id="wNightRides">-</div></div>
+        <div class="wrapped-item"><div class="wrapped-label">Zdieľanie štatistík</div><div class="wrapped-value" id="wShare"><button id="shareStatsBtn">Stiahnuť obrázok</button></div></div>
       </div>
     </section>
 
@@ -43,6 +53,7 @@
     <section class="card fade-in">
       <h2>Typy vozidiel</h2>
       <canvas id="chartVehicles"></canvas>
+      <button id="toggleVehiclesChart" style="margin-top:10px">Zobraziť všetky typy</button>
     </section>
 
     <section class="card fade-in">
@@ -86,5 +97,34 @@
   <div id="toast"></div>
 
   <script type="module" src="stats.js"></script>
+  <script>
+    // Funkcia na stiahnutie obrázka sekcie Wrapped
+    document.addEventListener("DOMContentLoaded", function() {
+      const btn = document.getElementById("shareStatsBtn");
+      const wrappedSection = document.querySelector(".wrapped-grid");
+      if (btn && wrappedSection) {
+        btn.addEventListener("click", async () => {
+          btn.disabled = true;
+          btn.textContent = "Generujem...";
+          // Pridaj triedu pre krajší screenshot (voliteľné)
+          wrappedSection.classList.add("share-screenshot");
+          await new Promise(r => setTimeout(r, 100)); // nech sa stihne prekresliť
+          html2canvas(wrappedSection, {backgroundColor: null, scale: 2}).then(canvas => {
+            wrappedSection.classList.remove("share-screenshot");
+            const link = document.createElement('a');
+            link.download = 'mhd-wrapped-statistiky.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            btn.textContent = "Stiahnuť obrázok";
+            btn.disabled = false;
+          }).catch(() => {
+            btn.textContent = "Stiahnuť obrázok";
+            btn.disabled = false;
+            alert("Nepodarilo sa vygenerovať obrázok.");
+          });
+        });
+      }
+    });
+  </script>
 </body>
 </html>
