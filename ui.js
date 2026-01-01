@@ -610,24 +610,49 @@ export function startEditRide(id) {
 
   if (!ride) return;
 
-  const newLine = prompt("Nová linka:", ride.line);
-  if (!newLine) return;
+  const modal = document.createElement("div");
+  modal.classList.add("modal");
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>Upraviť jazdu</h2>
+      <label>Nová linka:</label>
+      <input id="editLine" value="${ride.line}" />
+      <label>Nové EVČ:</label>
+      <input id="editNumber" value="${ride.number}" />
+      <label>Nový dátum (RRRR-MM-DD):</label>
+      <input id="editDate" type="date" value="${ride.date}" />
+      <label>Nový čas (HH:MM):</label>
+      <input id="editTime" type="time" value="${ride.time}" />
+      <button id="saveEdit">Uložiť</button>
+      <button id="cancelEdit">Zrušiť</button>
+    </div>
+  `;
 
-  const newNumber = prompt("Nové EVČ:", ride.number);
-  if (!newNumber) return;
+  document.body.appendChild(modal);
 
-  const newDate = prompt("Nový dátum (RRRR-MM-DD):", ride.date);
-  if (!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) return;
+  modal.querySelector("#saveEdit").onclick = () => {
+    const newLine = modal.querySelector("#editLine").value;
+    const newNumber = modal.querySelector("#editNumber").value;
+    const newDate = modal.querySelector("#editDate").value;
+    const newTime = modal.querySelector("#editTime").value;
 
-  const newTime = prompt("Nový čas (HH:MM):", ride.time);
-  if (!newTime || !/^\d{2}:\d{2}$/.test(newTime)) return;
+    if (!newLine || !newNumber || !newDate || !newTime) {
+      alert("Všetky polia sú povinné.");
+      return;
+    }
 
-  ride.line = newLine;
-  ride.number = newNumber;
-  ride.date = newDate;
-  ride.time = newTime;
+    ride.line = newLine;
+    ride.number = newNumber;
+    ride.date = newDate;
+    ride.time = newTime;
 
-  saveRides(rides);
-  showToast("Jazda upravená");
-  renderRidesList();
+    saveRides(rides);
+    showToast("Jazda upravená");
+    renderRidesList();
+    document.body.removeChild(modal);
+  };
+
+  modal.querySelector("#cancelEdit").onclick = () => {
+    document.body.removeChild(modal);
+  };
 }
