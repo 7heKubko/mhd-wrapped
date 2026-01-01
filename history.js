@@ -1,13 +1,7 @@
+
 import { getCurrentUser } from "./supabase.js";
 
-import {
-  applyTheme,
-  renderRidesList,
-  renderFilterSuggestions,
-  setFilters,
-  changePage,
-  startEditRide,
-} from "./ui.js";
+import { applyTheme, renderRidesList, renderFilterSuggestions, setFilters, changePage, startEditRide } from "./ui.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   const popup = document.getElementById("loginPopup");
@@ -24,17 +18,13 @@ window.addEventListener("DOMContentLoaded", async () => {
       popup.style.color = "#a11a1a";
     }
     popup.style.display = "block";
-    setTimeout(() => {
-      popup.style.display = "none";
-    }, 3500);
+    setTimeout(() => { popup.style.display = "none"; }, 3500);
   } catch {
     popup.textContent = "Nie ste prihlásený!";
     popup.style.background = "#ffe6e6";
     popup.style.color = "#a11a1a";
     popup.style.display = "block";
-    setTimeout(() => {
-      popup.style.display = "none";
-    }, 3500);
+    setTimeout(() => { popup.style.display = "none"; }, 3500);
   }
 });
 
@@ -59,7 +49,7 @@ function main() {
       number: filterNumber.value.trim(),
       vehicle: filterVehicle.value.trim(),
       dateFrom: filterDateFrom.value || "",
-      dateTo: filterDateTo.value || "",
+      dateTo: filterDateTo.value || ""
     });
   }
 
@@ -88,14 +78,9 @@ function main() {
     }
   });
 
-  document.addEventListener("touchstart", (e) => {
-    if (e.target.classList.contains("edit-btn")) {
-      const id = e.target.dataset.id;
-      startEditRide(id);
-    }
-  });
-
   renderRidesList();
   renderFilterSuggestions();
   updateFilters();
 }
+
+
