@@ -602,6 +602,19 @@ export function renderRidesList() {
       renderRidesList();
     };
   });
+
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.onclick = () => {
+      const id = btn.dataset.id;
+      startEditRide(id);
+    };
+
+    btn.ontouchstart = (e) => {
+      e.preventDefault(); // Prevent duplicate events
+      const id = btn.dataset.id;
+      startEditRide(id);
+    };
+  });
 }
 
 export function startEditRide(id) {
