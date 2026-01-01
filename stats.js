@@ -272,7 +272,9 @@ function main() {
     }
 
     function renderByHolidayChart() {
+      // Prázdniny/sviatky: použijeme pole slovenských sviatkov + víkendy
       const rides = getRides();
+      // Základný zoznam slovenských sviatkov (pridaj ďalšie podľa potreby)
       const holidaysSK = [
         '-01-01','-01-06','-05-01','-05-08','-07-05','-08-29','-09-01','-09-15','-11-01','-11-17','-12-24','-12-25','-12-26'
       ];
@@ -305,6 +307,7 @@ function main() {
       const ctx = document.getElementById('chartByVehicleType');
       if (!ctx) return;
       if (ctx.chart) ctx.chart.destroy();
+      // Načítaj farby z localStorage
       const typeColors = JSON.parse(localStorage.getItem('typeColors') || '{}');
       const colorMap = {
         'Električka': typeColors.tram || '#ff9500',
@@ -319,7 +322,7 @@ function main() {
         options: { responsive: true }
       });
     }
-
+  // Robust element selection
   const wTotal = document.getElementById("wTotal");
   const wTopLine = document.getElementById("wTopLine");
   const wTopBus = document.getElementById("wTopBus");
@@ -364,6 +367,7 @@ function main() {
       wTopMode.textContent = `${mode} (${count}×)`;
     }
     if (wPersona) wPersona.textContent = getPersona(rides);
+    // Priemerný počet jázd za deň/týždeň/mesiac
     const days = new Set(rides.map(r => r.date));
     const weeks = new Set(rides.map(r => {
       const d = new Date(r.date);
@@ -379,6 +383,7 @@ function main() {
     if (wAvgPerDay) wAvgPerDay.textContent = avgPerDay;
     if (wAvgPerWeek) wAvgPerWeek.textContent = avgPerWeek;
     if (wAvgPerMonth) wAvgPerMonth.textContent = avgPerMonth;
+    // Podiel typov vozidiel
     const modeMap = {};
     rides.forEach(r => {
       const mode = r.vehicleMode || 'neznámy';
@@ -391,6 +396,7 @@ function main() {
       .join(', ');
     const wModeShare = document.getElementById('wModeShare');
     if (wModeShare) wModeShare.textContent = modeShare || '-';
+    // Počet jázd v noci (22:00–5:00)
     const nightRides = rides.filter(r => {
       const h = parseInt(r.time.split(':')[0]);
       return (h >= 22 || h < 5);
@@ -476,6 +482,7 @@ function main() {
         responsive: true
       }
     });
+    // Update button text
     if (btn) {
       btn.textContent = showAllVehicles ? "Zobraziť menej typov" : "Zobraziť všetky typy";
     }
@@ -539,6 +546,7 @@ function main() {
     }
     sorted.forEach(([line, count]) => {
       const li = document.createElement('li');
+      // Dynamicky nastav farbu textu podľa mesta a čísla linky
       let badgeClass = 'line-badge';
       const city = localStorage.getItem('city') || 'bratislava';
       if (city === 'bratislava') {

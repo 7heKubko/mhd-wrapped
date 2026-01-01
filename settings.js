@@ -1,3 +1,4 @@
+// --- Prispôsobenie poradia sekcií štatistík ---
 const defaultStatsOrder = [
   'chartLines',
   'chartVehicles',
@@ -17,6 +18,7 @@ const defaultStatsOrder = [
 const statsOrderList = document.getElementById('statsOrderList');
 const saveStatsOrderBtn = document.getElementById('saveStatsOrderBtn');
 if (statsOrderList && saveStatsOrderBtn) {
+  // Načítaj uložené poradie alebo default
   let order = JSON.parse(localStorage.getItem('statsOrder') || 'null') || defaultStatsOrder;
   function renderOrderList() {
     statsOrderList.innerHTML = '';
@@ -46,6 +48,7 @@ if (statsOrderList && saveStatsOrderBtn) {
       wrappedGrid: 'Wrapped štatistiky'
     }[id] || id;
   }
+  // Drag & drop
   let dragSrc = null;
   statsOrderList.addEventListener('dragstart', e => {
     dragSrc = e.target;
@@ -73,6 +76,7 @@ import { applyTheme, showToast } from "./ui.js";
 import { loadRides, saveRides, clearAll } from "./storage.js";
 import { getSupabase, signInWithEmail, signUpWithEmail, signOut, getCurrentUser } from "./supabase.js";
 
+// --- Farby typov dopravy ---
 window.addEventListener('DOMContentLoaded', () => {
   const colorInputs = {
     tram: document.getElementById("colorTram"),

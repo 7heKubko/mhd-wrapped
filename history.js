@@ -3,6 +3,7 @@ import { getCurrentUser } from "./supabase.js";
 
 import { applyTheme, renderRidesList, renderFilterSuggestions, setFilters, changePage, startEditRide } from "./ui.js";
 
+// Zobraz login popup po načítaní stránky
 window.addEventListener("DOMContentLoaded", async () => {
   const popup = document.getElementById("loginPopup");
   if (!popup) return;

@@ -1,7 +1,9 @@
+/* Spodný padding pod filter bar pre konzistentný odstup */
 .stats-filter-bar {
   margin-bottom: 28px !important;
 }
-
+/* Drag & drop sortable list for settings */
+/* Sortable list for settings - modern card look */
 .sortable-list {
   list-style: none;
   padding: 0;
@@ -47,6 +49,7 @@
   letter-spacing: 2px;
 }
 
+/* Mesačné a ročné prepínače a zoznamy - zjednotené */
 .month-switch, .year-switch {
   display: flex;
   align-items: center;
@@ -93,7 +96,7 @@
   padding: 2px 8px;
   font-weight: 600;
   margin-right: 6px;
-  color: #111;
+  color: #111; /* default fallback */
 }
 .line-badge--black {
   color: #111 !important;
@@ -403,9 +406,12 @@ input:checked + .slider:before {
   padding-right: 6px;
   position: relative;
 
+  /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: var(--text) transparent;
 }
+
+
 
 .day-switch,
 .month-switch {
@@ -415,6 +421,8 @@ input:checked + .slider:before {
   gap: 12px;
   margin-top: 12px;
 }
+
+
 
 .line-badge:hover {
   transform: scale(1.08);
