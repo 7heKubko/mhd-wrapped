@@ -1,7 +1,6 @@
 import { loadRides, saveRides } from "./storage.js";
 import { getVehicleType, getVehicleMode } from "./rides.js";
 
-// Migration function to update old rides missing vehicle or vehicleMode
 export function migrateRidesIfNeeded() {
   let rides = loadRides();
   let needsMigration = false;
@@ -370,7 +369,6 @@ export function applyTheme() {
   }
   const mode = localStorage.getItem("theme");
   document.body.classList.toggle("dark", mode === "dark");
-  // Call migration after theme is applied
   migrateRidesIfNeeded();
 }
 
@@ -433,7 +431,6 @@ export function renderLastRides() {
   filtered.forEach((r) => {
     const li = document.createElement("li");
     li.classList.add("fade-in");
-    // Dynamicky nastav farbu textu podľa mesta a čísla linky
     let badgeClass = 'line-badge';
     const city = localStorage.getItem('city') || 'bratislava';
     const n = parseInt(r.line, 10);
@@ -571,7 +568,6 @@ export function renderRidesList() {
   pageItems.forEach((r) => {
     const li = document.createElement("li");
     li.classList.add("slide-up");
-    // Dynamicky nastav farbu textu podľa mesta a čísla linky
     let badgeClass = 'line-badge';
     const city = localStorage.getItem('city') || 'bratislava';
     const n = parseInt(r.line, 10);
@@ -606,19 +602,6 @@ export function renderRidesList() {
       renderRidesList();
     };
   });
-
-  document.querySelectorAll(".edit-btn").forEach((btn) => {
-    btn.onclick = () => {
-      const id = btn.dataset.id;
-      startEditRide(id);
-    };
-
-    btn.ontouchstart = (e) => {
-      e.preventDefault(); // Prevent duplicate events
-      const id = btn.dataset.id;
-      startEditRide(id);
-    };
-  });
 }
 
 export function startEditRide(id) {
@@ -627,49 +610,24 @@ export function startEditRide(id) {
 
   if (!ride) return;
 
-  const modal = document.createElement("div");
-  modal.classList.add("modal");
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h2>Upraviť jazdu</h2>
-      <label>Nová linka:</label>
-      <input id="editLine" value="${ride.line}" />
-      <label>Nové EVČ:</label>
-      <input id="editNumber" value="${ride.number}" />
-      <label>Nový dátum (RRRR-MM-DD):</label>
-      <input id="editDate" type="date" value="${ride.date}" />
-      <label>Nový čas (HH:MM):</label>
-      <input id="editTime" type="time" value="${ride.time}" />
-      <button id="saveEdit">Uložiť</button>
-      <button id="cancelEdit">Zrušiť</button>
-    </div>
-  `;
+  const newLine = prompt("Nová linka:", ride.line);
+  if (!newLine) return;
 
-  document.body.appendChild(modal);
+  const newNumber = prompt("Nové EVČ:", ride.number);
+  if (!newNumber) return;
 
-  modal.querySelector("#saveEdit").onclick = () => {
-    const newLine = modal.querySelector("#editLine").value;
-    const newNumber = modal.querySelector("#editNumber").value;
-    const newDate = modal.querySelector("#editDate").value;
-    const newTime = modal.querySelector("#editTime").value;
+  const newDate = prompt("Nový dátum (RRRR-MM-DD):", ride.date);
+  if (!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) return;
 
-    if (!newLine || !newNumber || !newDate || !newTime) {
-      alert("Všetky polia sú povinné.");
-      return;
-    }
+  const newTime = prompt("Nový čas (HH:MM):", ride.time);
+  if (!newTime || !/^\d{2}:\d{2}$/.test(newTime)) return;
 
-    ride.line = newLine;
-    ride.number = newNumber;
-    ride.date = newDate;
-    ride.time = newTime;
+  ride.line = newLine;
+  ride.number = newNumber;
+  ride.date = newDate;
+  ride.time = newTime;
 
-    saveRides(rides);
-    showToast("Jazda upravená");
-    renderRidesList();
-    document.body.removeChild(modal);
-  };
-
-  modal.querySelector("#cancelEdit").onclick = () => {
-    document.body.removeChild(modal);
-  };
+  saveRides(rides);
+  showToast("Jazda upravená");
+  renderRidesList();
 }
