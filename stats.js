@@ -1,5 +1,5 @@
 import { applyTheme, showToast, getLineColors } from "./ui.js";
-import { loadRides } from "./storage.js";
+import { loadRides, saveRides } from "./storage.js";
 import {
   getTotal,
   getTopLine,
@@ -8,6 +8,7 @@ import {
   getFavVehicleMode,
   getFavModelOnLine,
 } from "./wrapped.js";
+import { getVehicleEngineType } from "./rides.js";
 import { getCurrentUser } from "./supabase.js";
 
 applyTheme();
@@ -49,6 +50,25 @@ let selectedYear = "all";
 
 // Ensure allRides is defined at the top of the file
 let allRides = loadRides();
+
+// Migrate older rides missing engineType based on vehicle number
+function migrateEngineType() {
+  if (!Array.isArray(allRides) || !allRides.length) return;
+  let changed = false;
+  allRides = allRides.map((r) => {
+    const eng = r.number ? getVehicleEngineType(r.number) : null;
+    if (eng && eng !== "unknown") {
+      // Update if missing, unknown, or mismatched with current mapping
+      if (!r.engineType || r.engineType === "unknown" || r.engineType !== eng) {
+        changed = true;
+        return { ...r, engineType: eng };
+      }
+    }
+    return r;
+  });
+  if (changed) saveRides(allRides);
+}
+migrateEngineType();
 
 // Ensure showAllECVs is defined at the top of the file
 let showAllECVs = false;
@@ -348,38 +368,27 @@ function main() {
     const rides = getRides();
     const map = {};
     rides.forEach((r) => {
-      let drive = r.driveType || r.vehicleMode || "neznámy";
-      if (
-        r.vehicleMode === "Trolejbus" ||
-        r.vehicleMode === "Električka" ||
-        r.vehicleMode === "Train"
-      ) {
-        drive = "Elektrický";
-      } else if (r.vehicleMode === "Autobus") {
-        drive = "Diesel";
-      }
-      if (!map[drive]) map[drive] = 0;
-      map[drive]++;
+      const engine = r.engineType || "neznámy";
+      map[engine] = (map[engine] || 0) + 1;
     });
     const ctx = document.getElementById("chartByDriveType");
     if (!ctx) return;
     if (ctx.chart) ctx.chart.destroy();
 
     const savedColors = JSON.parse(localStorage.getItem("typeColors") || "{}");
-    const driveColors = {
+    const engineColors = {
       Diesel: savedColors.diesel || "#ff5733",
-      Elektrický: savedColors.electric || "#33c9ff",
+      Electro: savedColors.electric || "#33c9ff",
+      CNG: savedColors.gas || "#3498db",
+      H2O: savedColors.hydrogen || "#8e44ad",
       Hybrid: savedColors.hybrid || "#4caf50",
-      Benzín: savedColors.petrol || "#ffc107",
-      Vodík: savedColors.hydrogen || "#8e44ad",
-      Plyn: savedColors.gas || "#3498db",
-      Solárny: savedColors.solar || "#f1c40f",
-      Neznámy: "#888",
+      APU: savedColors.hybrid || "#4caf50",
+      neznámy: "#888",
     };
 
     const labels = Object.keys(map);
     const data = Object.values(map);
-    const bgColors = labels.map((drive) => driveColors[drive] || "#888");
+    const bgColors = labels.map((eng) => engineColors[eng] || "#888");
 
     ctx.chart = new Chart(ctx, {
       type: "bar",

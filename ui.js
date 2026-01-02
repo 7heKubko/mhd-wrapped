@@ -1,20 +1,30 @@
 import { loadRides, saveRides } from "./storage.js";
-import { getVehicleType, getVehicleMode } from "./rides.js";
+import {
+  getVehicleType,
+  getVehicleMode,
+  getVehicleEngineType,
+} from "./rides.js";
 
 export function migrateRidesIfNeeded() {
   let rides = loadRides();
   let needsMigration = false;
   for (const ride of rides) {
-    if (!ride.vehicle || !ride.vehicleMode) {
+    if (!ride.vehicle || !ride.vehicleMode || !ride.engineType) {
       needsMigration = true;
       break;
     }
   }
   if (needsMigration) {
-    if (confirm("Boli nájdené staré záznamy jázd s chýbajúcimi údajmi. Chcete ich aktualizovať?")) {
+    if (
+      confirm(
+        "Boli nájdené staré záznamy jázd s chýbajúcimi údajmi. Chcete ich aktualizovať?"
+      )
+    ) {
       for (const ride of rides) {
         if (!ride.vehicle) ride.vehicle = getVehicleType(ride.number);
         if (!ride.vehicleMode) ride.vehicleMode = getVehicleMode(ride.number);
+        if (!ride.engineType)
+          ride.engineType = getVehicleEngineType(ride.number);
       }
       saveRides(rides);
       alert("Dáta boli úspešne migrované.");
