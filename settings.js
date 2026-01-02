@@ -88,6 +88,11 @@ if (statsOrderList && saveStatsOrderBtn) {
 import { applyTheme, showToast } from "./ui.js";
 import { loadRides, saveRides, clearAll } from "./storage.js";
 import {
+  getVehicleType,
+  getVehicleMode,
+  getVehicleEngineType,
+} from "./rides.js";
+import {
   getSupabase,
   signInWithEmail,
   signUpWithEmail,
@@ -356,7 +361,27 @@ if (downloadCloudBtn) {
       }
 
       if (data) {
-        saveRides(data);
+        // Normalize rows to local app schema to ensure edit/delete work
+        const normalized = data.map((row) => {
+          const num = row.number ?? "";
+          const idStr =
+            typeof row.id === "string"
+              ? row.id
+              : row.id != null
+              ? `row-${String(row.id)}`
+              : Math.random().toString(36).substring(2, 10);
+          return {
+            id: idStr,
+            line: row.line ?? "",
+            number: typeof num === "string" ? num : String(num),
+            vehicle: row.vehicle ?? getVehicleType(num),
+            vehicleMode: row.vehicleMode ?? getVehicleMode(num),
+            engineType: row.engineType ?? getVehicleEngineType(num),
+            date: row.date ?? "",
+            time: row.time ?? "",
+          };
+        });
+        saveRides(normalized);
         if (loginPopup) {
           loginPopup.textContent = "Dáta úspešne stiahnuté zo servera!";
           loginPopup.style.background = "#e6ffe6";
