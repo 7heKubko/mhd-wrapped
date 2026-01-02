@@ -6,28 +6,28 @@ import {
 } from "./rides.js";
 
 export function migrateRidesIfNeeded() {
-  let rides = loadRides();
-  let needsMigration = false;
+  const rides = loadRides();
+  if (!Array.isArray(rides) || !rides.length) return;
+  let changed = false;
   for (const ride of rides) {
-    if (!ride.vehicle || !ride.vehicleMode || !ride.engineType) {
-      needsMigration = true;
-      break;
+    if (!ride.vehicle) {
+      ride.vehicle = getVehicleType(ride.number);
+      changed = true;
+    }
+    if (!ride.vehicleMode) {
+      ride.vehicleMode = getVehicleMode(ride.number);
+      changed = true;
+    }
+    if (!ride.engineType) {
+      ride.engineType = getVehicleEngineType(ride.number);
+      changed = true;
     }
   }
-  if (needsMigration) {
-    if (
-      confirm(
-        "Boli nájdené staré záznamy jázd s chýbajúcimi údajmi. Chcete ich aktualizovať?"
-      )
-    ) {
-      for (const ride of rides) {
-        if (!ride.vehicle) ride.vehicle = getVehicleType(ride.number);
-        if (!ride.vehicleMode) ride.vehicleMode = getVehicleMode(ride.number);
-        if (!ride.engineType)
-          ride.engineType = getVehicleEngineType(ride.number);
-      }
+  if (changed) {
+    try {
       saveRides(rides);
-      alert("Dáta boli úspešne migrované.");
+    } catch (e) {
+      // ignore persistence errors in rare mobile private modes
     }
   }
 }
