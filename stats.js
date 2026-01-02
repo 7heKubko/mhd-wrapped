@@ -355,11 +355,28 @@ function main() {
     const ctx = document.getElementById("chartByDriveType");
     if (!ctx) return;
     if (ctx.chart) ctx.chart.destroy();
+
+    const savedColors = JSON.parse(localStorage.getItem("typeColors") || "{}");
+    const driveColors = {
+      Diesel: savedColors.diesel || "#ff5733",
+      Elektrický: savedColors.electric || "#33c9ff",
+      Hybrid: savedColors.hybrid || "#4caf50",
+      Benzín: savedColors.petrol || "#ffc107",
+      Vodík: savedColors.hydrogen || "#8e44ad",
+      Plyn: savedColors.gas || "#3498db",
+      Solárny: savedColors.solar || "#f1c40f",
+      Neznámy: "#888",
+    };
+
+    const labels = Object.keys(map);
+    const data = Object.values(map);
+    const bgColors = labels.map((drive) => driveColors[drive] || "#888");
+
     ctx.chart = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: Object.keys(map),
-        datasets: [{ data: Object.values(map), backgroundColor: "#ffcc00" }],
+        labels,
+        datasets: [{ data, backgroundColor: bgColors }],
       },
       options: { plugins: { legend: { display: false } }, responsive: true },
     });
