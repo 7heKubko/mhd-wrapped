@@ -1,13 +1,5 @@
-import { applyTheme, showToast, getLineColors } from "./ui.js";
+import { applyTheme } from "./ui.js";
 import { loadRides } from "./storage.js";
-import {
-  getTotal,
-  getTopLine,
-  getFavBus,
-  getPersona,
-  getFavVehicleMode,
-  getFavModelOnLine,
-} from "./wrapped.js";
 import { getCurrentUser } from "./supabase.js";
 
 applyTheme();
@@ -712,6 +704,31 @@ function main() {
     };
   }
 
+  async function updateRecordDayAndUniqueVehicles() {
+    try {
+      // Fetch or calculate the data for Rekordný deň (Record Day)
+      const recordDay = await getRecordDay(); // Replace with actual logic or API call
+      const uniqueVehicles = await getUniqueVehicles(); // Replace with actual logic or API call
+
+      // Update the DOM elements
+      const recordDayElement = document.getElementById("wRecordDay");
+      const uniqueVehiclesElement = document.getElementById("wUniqueVehicles");
+
+      if (recordDayElement) {
+        recordDayElement.textContent = recordDay || "-";
+      }
+
+      if (uniqueVehiclesElement) {
+        uniqueVehiclesElement.textContent = uniqueVehicles || "-";
+      }
+    } catch (error) {
+      console.error(
+        "Error updating Rekordný deň and Počet rôznych vozidiel:",
+        error
+      );
+    }
+  }
+
   function updateDynamicTopLine() {
     const topLineElement = document.getElementById("wTopLine");
     const dynamicTopLineElement = document.getElementById("dynamicTopLine");
@@ -740,4 +757,5 @@ function main() {
   }
   reorderSections();
   rerenderAll();
+  updateRecordDayAndUniqueVehicles();
 }

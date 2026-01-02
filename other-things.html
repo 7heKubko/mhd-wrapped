@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Other Things</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="other-things.js" type="module"></script>
+</head>
+<body>
+    <header>
+        <h1>Other Things</h1>
+        <nav>
+            <a href="stats.html">Stats</a>
+            <a href="wrapped.html">Wrapped</a>
+            <a href="all-charts.html">All Charts</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Other Things in Stats</h2>
+        <p>Content for Other Things goes here...</p>
+        <section class="card fade-in">
+            <h2>Mesačné štatistiky</h2>
+            <div class="month-switch">
+                <button id="prevMonth">← Predchádzajúci mesiac</button>
+                <span id="monthLabel"></span>
+                <button id="nextMonth">Nasledujúci mesiac →</button>
+            </div>
+            <ul id="monthStats"></ul>
+        </section>
+        <section class="card fade-in">
+            <h2>Najdlhšia séria dní s jazdou</h2>
+            <div id="longestStreak">-</div>
+        </section>
+        <section class="card fade-in">
+            <h2>Najdlhšia pauza bez MHD</h2>
+            <div id="longestPause">-</div>
+        </section>
+    </main>
+</body>
+</html>

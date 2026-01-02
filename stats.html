@@ -3,179 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MHD Wrapped - Štatistiky</title>
+  <title>Stats Hub</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- html2canvas for sharing stats as image -->
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-</head>
-
-<body>
-  <main class="page">
-    <h1 class="page-title">📈 Štatistiky</h1>
-    <div class="stats-filter-bar">
-      <label for="statsYearSelect">Zobraziť štatistiky za rok:</label>
-      <select id="statsYearSelect">
-        <option value="all">Všetky roky</option>
-      </select>
-    </div>
-
-    <section class="card fade-in">
-      <h2>Najpoužívanejšie linky</h2>
-      <canvas id="chartLines"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Typy vozidiel</h2>
-      <canvas id="chartVehicles"></canvas>
-      <button id="toggleVehiclesChart" style="margin-top:10px">Zobraziť všetky typy</button>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Vozidla podľa EČV</h2>
-      <canvas id="chartByECV"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Jazdy podľa hodín</h2>
-      <canvas id="chartHours"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Počet jázd podľa dní v týždni</h2>
-      <canvas id="chartByWeekday"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Počet jázd podľa mesiacov</h2>
-      <canvas id="chartByMonth"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Počet jázd podľa typu pohonu</h2>
-      <canvas id="chartByDriveType"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Počet jázd počas sviatkov/prázdnin</h2>
-      <canvas id="chartByHoliday"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Počet jázd podľa typu vozidla</h2>
-      <canvas id="chartByVehicleType"></canvas>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Mesačné štatistiky</h2>
-      <div class="month-switch">
-        <button id="prevMonth">← Predchádzajúci mesiac</button>
-        <span id="monthLabel"></span>
-        <button id="nextMonth">Nasledujúci mesiac →</button>
-      </div>
-      <ul id="monthStats"></ul>
-    </section>
-
-
-
-    <section class="card fade-in">
-      <h2>Najdlhšia séria dní s jazdou</h2>
-      <div id="longestStreak">-</div>
-    </section>
-
-    <section class="card fade-in">
-      <h2>Najdlhšia pauza bez MHD</h2>
-      <div id="longestPause">-</div>
-    </section>
-    <section class="card fade-in">
-      <h2>Wrapped</h2>
-      <div class="wrapped-grid">
-        <div class="wrapped-item"><div class="wrapped-label">Počet jázd</div><div class="wrapped-value" id="wTotal">0</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Top linka</div><div class="wrapped-value" id="wTopLine">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Top model na linke <span id="dynamicTopLine"></span></div><div class="wrapped-value" id="wTopModelOnLine">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Najčastejší typ vozidla</div><div class="wrapped-value" id="wTopMode">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Top vozidlo</div><div class="wrapped-value" id="wTopBus">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Persona</div><div class="wrapped-value" id="wPersona">Nováčik</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Dní bez MHD</div><div class="wrapped-value" id="wDaysWithout">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Najaktívnejší deň v týždni</div><div class="wrapped-value" id="wTopWeekday">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Porovnanie s priemerom</div><div class="wrapped-value" id="wCompareAvg">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Eko štatistika (CO₂)</div><div class="wrapped-value" id="wEco">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Najčastejšie kombinácie liniek</div><div class="wrapped-value" id="wCombo">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Prvý spoj dňa</div><div class="wrapped-value" id="wFirstRide">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Posledný spoj dňa</div><div class="wrapped-value" id="wLastRide">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Počet rôznych liniek</div><div class="wrapped-value" id="wUniqueLines">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Počet rôznych vozidiel</div><div class="wrapped-value" id="wUniqueVehicles">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Rekordný deň (najviac jázd)</div><div class="wrapped-value" id="wRecordDay">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Týždenné trendy</div><div class="wrapped-value" id="wTrends">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Odmeny/odznaky</div><div class="wrapped-value" id="wBadges">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Priemerný počet jázd za deň</div><div class="wrapped-value" id="wAvgPerDay">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Priemerný počet jázd za týždeň</div><div class="wrapped-value" id="wAvgPerWeek">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Priemerný počet jázd za mesiac</div><div class="wrapped-value" id="wAvgPerMonth">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Podiel typov vozidiel</div><div class="wrapped-value" id="wModeShare">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Počet jázd v noci (22:00–5:00)</div><div class="wrapped-value" id="wNightRides">-</div></div>
-        <div class="wrapped-item"><div class="wrapped-label">Zdieľanie štatistík</div><div class="wrapped-value" id="wShare"><button id="shareStatsBtn">Stiahnuť obrázok</button></div></div>
-      </div>
-    </section>
-
-  </main>
-
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-item">
-      <div class="nav-icon">🏠</div>
-      <div class="nav-text">Domov</div>
-    </a>
-    <a href="history.html" class="nav-item">
-      <div class="nav-icon">📚</div>
-      <div class="nav-text">História</div>
-    </a>
-    <a href="stats.html" class="nav-item active">
-      <div class="nav-icon">📈</div>
-      <div class="nav-text">Štatistiky</div>
-    </a>
-    <a href="settings.html" class="nav-item">
-      <div class="nav-icon">⚙️</div>
-      <div class="nav-text">Nastavenia</div>
-    </a>
-  </nav>
-
-  <div id="toast"></div>
-
-  <script type="module" src="stats.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const btn = document.getElementById("shareStatsBtn");
-      const wrappedSection = document.querySelector(".wrapped-grid");
-      if (btn && wrappedSection) {
-        btn.addEventListener("click", async () => {
-          btn.disabled = true;
-          btn.textContent = "Generujem...";
-          wrappedSection.classList.add("share-screenshot");
-          await new Promise(r => setTimeout(r, 100));
-          html2canvas(wrappedSection, {backgroundColor: null, scale: 2}).then(canvas => {
-            wrappedSection.classList.remove("share-screenshot");
-            const link = document.createElement('a');
-            link.download = 'mhd-wrapped-statistiky.png';
-            link.href = canvas.toDataURL();
-            link.click();
-            btn.textContent = "Stiahnuť obrázok";
-            btn.disabled = false;
-          }).catch(() => {
-            btn.textContent = "Stiahnuť obrázok";
-            btn.disabled = false;
-            alert("Nepodarilo sa vygenerovať obrázok.");
-          });
-        });
-      }
-    });
-  </script>
+  <script type="module" src="ui.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const topLineElement = document.getElementById("wTopLine");
-      const dynamicTopLineElement = document.getElementById("dynamicTopLine");
-      if (topLineElement && dynamicTopLineElement) {
-        dynamicTopLineElement.textContent = topLineElement.textContent.split(" ")[0] || "-";
+      if (!localStorage.getItem("theme")) {
+        localStorage.setItem("theme", "dark");
       }
+      applyTheme();
     });
   </script>
+</head>
+<body>
+  <main class="page">
+    <h1 class="page-title">📊 Stats Hub</h1>
+    <nav class="hub-nav">
+      <button class="hub-button" onclick="location.href='wrapped.html'">Wrapped</button>
+      <button class="hub-button" onclick="location.href='all-charts.html'">All Charts</button>
+      <button class="hub-button" onclick="location.href='other-things.html'">Other Things</button>
+    </nav>
+  </main>
 </body>
 </html>

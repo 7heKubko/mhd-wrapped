@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Charts</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="all-charts.js" type="module"></script>
+</head>
+<body>
+    <header>
+        <h1>All Charts</h1>
+        <nav>
+            <a href="stats.html">Stats</a>
+            <a href="wrapped.html">Wrapped</a>
+            <a href="other-things.html">Other Things</a>
+        </nav>
+    </header>
+    <main>
+        <h2>All Charts</h2>
+        <p>Content for All Charts goes here...</p>
+        
+        <section class="card fade-in">
+          <h2>Najpoužívanejšie linky</h2>
+          <canvas id="chartLines"></canvas>
+        </section>
+        <section class="card fade-in">
+          <h2>Typy vozidiel</h2>
+          <canvas id="chartVehicles"></canvas>
+          <button id="toggleVehiclesChart" style="margin-top:10px">Zobraziť všetky typy</button>
+        </section>
+        <section class="card fade-in">
+          <h2>Vozidla podľa EČV</h2>
+          <canvas id="chartByECV"></canvas>
+        </section>
+        <section class="card fade-in">
+          <h2>Jazdy podľa hodín</h2>
+          <canvas id="chartHours"></canvas>
+        </section>
+        <section class="card fade-in">
+          <h2>Počet jázd podľa dní v týždni</h2>
+          <canvas id="chartByWeekday"></canvas>
+        </section>
+        <section class="card fade-in">
+          <h2>Počet jázd podľa mesiacov</h2>
+          <canvas id="chartByMonth"></canvas>
+        </section>
+        <section class="card fade-in">
+          <h2>Počet jázd podľa typu pohonu</h2>
+          <canvas id="chartByDriveType"></canvas>
+        </section>
+        <section class="card fade-in">
+          <h2>Počet jázd počas sviatkov/prázdnin</h2>
+          <canvas id="chartByHoliday"></canvas>
+        </section>
+        <section class="card fade-in">
+          <h2>Počet jázd podľa typu vozidla</h2>
+          <canvas id="chartByVehicleType"></canvas>
+        </section>
+    </main>
+</body>
+</html>
