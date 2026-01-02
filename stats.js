@@ -413,9 +413,9 @@ function main() {
     const map = {};
 
     rides.forEach((r) => {
-      const ecv = r.number || "neznámy";
-      if (!map[ecv]) map[ecv] = 0;
-      map[ecv]++;
+      const label = `${r.vehicle || "neznámy"} - ${r.number || "neznámy"}`;
+      if (!map[label]) map[label] = 0;
+      map[label]++;
     });
 
     const labels = Object.keys(map);
@@ -528,6 +528,21 @@ function main() {
     }).length;
     const wNightRides = document.getElementById("wNightRides");
     if (wNightRides) wNightRides.textContent = nightRides;
+
+    // New statistics
+    const uniqueLines = new Set(rides.map((ride) => ride.line)).size;
+    const uniqueVehicles = new Set(rides.map((ride) => ride.number)).size;
+    document.getElementById("wUniqueLines").textContent = uniqueLines;
+    document.getElementById("wUniqueVehicles").textContent = uniqueVehicles;
+    const ridesPerDay = rides.reduce((acc, ride) => {
+      acc[ride.date] = (acc[ride.date] || 0) + 1;
+      return acc;
+    }, {});
+    const recordDay = Object.keys(ridesPerDay).reduce((a, b) =>
+      ridesPerDay[a] > ridesPerDay[b] ? a : b
+    );
+
+    document.getElementById("wRecordDay").textContent = recordDay;
   }
 
   function getWeekNumber(d) {
