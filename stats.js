@@ -44,6 +44,38 @@ window.addEventListener("DOMContentLoaded", async () => {
   main();
 });
 
+// Ensure selectedYear is defined at the top of the file
+let selectedYear = "all";
+
+// Ensure allRides is defined at the top of the file
+let allRides = loadRides();
+
+// Ensure showAllECVs is defined at the top of the file
+let showAllECVs = false;
+
+// Ensure ECV_TOP_N is defined at the top of the file
+const ECV_TOP_N = 5;
+
+// Ensure VEHICLE_TYPE_TOP_N is defined at the top of the file
+const VEHICLE_TOP_N = 5;
+
+// Ensure LINES_TOP_N is defined at the top of the file
+const LINES_TOP_N = 5;
+
+// Ensure showAllVehicles is defined at the top of the file
+let showAllVehicles = false;
+
+// Ensure showAllLines is defined at the top of the file
+let showAllLines = false;
+
+// Ensure showAllVehicleTypes is defined at the top of the file
+let showAllVehicleTypes = false;
+
+function getRides() {
+  if (selectedYear === "all") return allRides;
+  return allRides.filter((r) => r.date.startsWith(selectedYear + "-"));
+}
+
 function main() {
   const defaultStatsOrder = [
     "chartLines",
@@ -94,8 +126,6 @@ function main() {
     });
   }
   const yearSelect = document.getElementById("statsYearSelect");
-  let selectedYear = "all";
-  let allRides = loadRides();
   let allYears = Array.from(
     new Set(allRides.map((r) => r.date.split("-")[0]))
   ).sort((a, b) => b - a);
@@ -143,6 +173,7 @@ function main() {
         renderYearStats();
       }
     };
+  // Move the getRides function definition here to ensure it is available
   function getRides() {
     if (selectedYear === "all") return allRides;
     return allRides.filter((r) => r.date.startsWith(selectedYear + "-"));
@@ -387,9 +418,19 @@ function main() {
       if (!map[type]) map[type] = 0;
       map[type]++;
     });
+
+    const sortedEntries = Object.entries(map).sort(([, a], [, b]) => b - a);
+    const entriesToShow = showAllVehicleTypes
+      ? sortedEntries
+      : sortedEntries.slice(0, VEHICLE_TOP_N);
+
+    const labels = entriesToShow.map(([type]) => type);
+    const data = entriesToShow.map(([, count]) => count);
+
     const ctx = document.getElementById("chartByVehicleType");
     if (!ctx) return;
     if (ctx.chart) ctx.chart.destroy();
+
     const typeColors = JSON.parse(localStorage.getItem("typeColors") || "{}");
     const colorMap = {
       Električka: typeColors.tram || "#ff9500",
@@ -397,51 +438,18 @@ function main() {
       Autobus: typeColors.bus || "#007aff",
       Vlak: typeColors.train || "#8e44ad",
     };
-    const bgColors = Object.keys(map).map((type) => colorMap[type] || "#888");
+    const bgColors = labels.map((type) => colorMap[type] || "#888");
+
     ctx.chart = new Chart(ctx, {
       type: "pie",
       data: {
-        labels: Object.keys(map),
-        datasets: [{ data: Object.values(map), backgroundColor: bgColors }],
+        labels,
+        datasets: [{ data, backgroundColor: bgColors }],
       },
       options: { responsive: true },
     });
   }
 
-  function renderByECVChart() {
-    const rides = getRides();
-    const map = {};
-
-    rides.forEach((r) => {
-      const label = `${r.vehicle || "neznámy"} - ${r.number || "neznámy"}`;
-      if (!map[label]) map[label] = 0;
-      map[label]++;
-    });
-
-    const labels = Object.keys(map);
-    const data = Object.values(map);
-
-    const ctx = document.getElementById("chartByECV");
-    if (!ctx) return;
-    if (ctx.chart) ctx.chart.destroy();
-
-    ctx.chart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          {
-            data,
-            backgroundColor: "#ffcc00",
-          },
-        ],
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        responsive: true,
-      },
-    });
-  }
   const wTotal = document.getElementById("wTotal");
   const wTopLine = document.getElementById("wTopLine");
   const wTopBus = document.getElementById("wTopBus");
@@ -453,12 +461,15 @@ function main() {
   const prevMonthBtn = document.getElementById("prevMonth");
   const nextMonthBtn = document.getElementById("nextMonth");
   const btn = document.getElementById("toggleVehiclesChart");
+  const toggleVehicleTypesBtn = document.getElementById(
+    "toggleVehicleTypesChart"
+  );
+  const toggleECVChartBtn = document.getElementById("toggleECVChart");
+  const toggleLinesChartBtn = document.getElementById("toggleLinesChart");
 
   let chartLinesInstance = null;
   let chartVehiclesInstance = null;
   let chartHoursInstance = null;
-  let showAllVehicles = false;
-  const VEHICLE_TOP_N = 5;
   let currentMonthOffset = 0;
 
   function renderWrappedStats() {
@@ -554,68 +565,38 @@ function main() {
   }
 
   function renderLinesChart() {
-    const rides = loadRides();
+    const rides = getRides();
     const map = {};
+
     rides.forEach((r) => {
-      const main = r.line.split("/")[0];
-      if (!map[main]) map[main] = 0;
-      map[main]++;
+      const line = r.line || "neznáma linka";
+      if (!map[line]) map[line] = 0;
+      map[line]++;
     });
-    const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
+
+    const sortedEntries = Object.entries(map).sort(([, a], [, b]) => b - a);
+    const entriesToShow = showAllLines
+      ? sortedEntries
+      : sortedEntries.slice(0, LINES_TOP_N);
+
+    const labels = entriesToShow.map(([line]) => line);
+    const data = entriesToShow.map(([, count]) => count);
+
     const ctx = document.getElementById("chartLines");
     if (!ctx) return;
-    const lineColors = getLineColors();
-    if (chartLinesInstance) chartLinesInstance.destroy();
-    chartLinesInstance = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: sorted.map((x) => x[0]),
-        datasets: [
-          {
-            data: sorted.map((x) => x[1]),
-            backgroundColor: sorted.map(
-              ([line]) => lineColors[line] || "#007aff"
-            ),
-          },
-        ],
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        responsive: true,
-      },
-    });
-  }
+    if (ctx.chart) ctx.chart.destroy();
 
-  function renderVehiclesChart() {
-    const rides = loadRides();
-    const map = {};
-    rides.forEach((r) => {
-      if (!map[r.vehicle]) map[r.vehicle] = 0;
-      map[r.vehicle]++;
-    });
-    let sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
-    let labels, data;
-    if (!showAllVehicles && sorted.length > VEHICLE_TOP_N) {
-      const top = sorted.slice(0, VEHICLE_TOP_N);
-      const rest = sorted.slice(VEHICLE_TOP_N);
-      const restSum = rest.reduce((sum, [, count]) => sum + count, 0);
-      labels = top.map(([name]) => name).concat("Ostatné");
-      data = top.map(([, count]) => count).concat(restSum);
-    } else {
-      labels = sorted.map(([name]) => name);
-      data = sorted.map(([, count]) => count);
-    }
-    const ctx = document.getElementById("chartVehicles");
-    if (!ctx) return;
-    if (chartVehiclesInstance) chartVehiclesInstance.destroy();
-    chartVehiclesInstance = new Chart(ctx, {
+    const lineColors = getLineColors();
+    const bgColors = labels.map((line) => lineColors[line] || "#888");
+
+    ctx.chart = new Chart(ctx, {
       type: "bar",
       data: {
         labels,
         datasets: [
           {
             data,
-            backgroundColor: "#34c759",
+            backgroundColor: bgColors,
           },
         ],
       },
@@ -623,90 +604,6 @@ function main() {
         plugins: { legend: { display: false } },
         responsive: true,
       },
-    });
-    if (btn) {
-      btn.textContent = showAllVehicles
-        ? "Zobraziť menej typov"
-        : "Zobraziť všetky typy";
-    }
-  }
-
-  function renderHoursChart() {
-    const rides = loadRides();
-    const hours = Array(24).fill(0);
-    rides.forEach((r) => {
-      const h = parseInt(r.time.split(":")[0]);
-      hours[h]++;
-    });
-    const ctx = document.getElementById("chartHours");
-    if (!ctx) return;
-    if (chartHoursInstance) chartHoursInstance.destroy();
-    chartHoursInstance = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: hours.map((_, i) => `${i}:00`),
-        datasets: [
-          {
-            data: hours,
-            backgroundColor: "#ff9500",
-          },
-        ],
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        responsive: true,
-      },
-    });
-  }
-
-  function getMonthName(date) {
-    return date.toLocaleString("sk-SK", { month: "long", year: "numeric" });
-  }
-
-  function renderMonthStats() {
-    const rides = loadRides();
-    const now = new Date();
-    now.setMonth(now.getMonth() + currentMonthOffset);
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    if (monthLabel) monthLabel.textContent = getMonthName(now);
-    const filtered = rides.filter((r) => {
-      const [y, m] = r.date.split("-").map(Number);
-      return y === year && m === month;
-    });
-    const map = {};
-    filtered.forEach((r) => {
-      const main = r.line.split("/")[0];
-      if (!map[main]) map[main] = 0;
-      map[main]++;
-    });
-    const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
-    const lineColors = getLineColors();
-    if (monthStats) monthStats.innerHTML = "";
-    if (!sorted.length) {
-      if (monthStats)
-        monthStats.innerHTML = "<li>Žiadne jazdy v tomto mesiaci</li>";
-      return;
-    }
-    sorted.forEach(([line, count]) => {
-      const li = document.createElement("li");
-      let badgeClass = "line-badge";
-      const city = localStorage.getItem("city") || "bratislava";
-      if (city === "bratislava") {
-        const n = parseInt(line, 10);
-        if (!isNaN(n) && n >= 205 && n <= 999)
-          badgeClass += " line-badge--black";
-        else badgeClass += " line-badge--white";
-      } else if (city === "ostrava") {
-        badgeClass += " line-badge--black";
-      }
-      li.innerHTML = `
-        <span class="${badgeClass}" style="--badge-color:${
-        lineColors[line] || "#888"
-      }">${line}</span>
-        ${count}×
-      `;
-      monthStats.appendChild(li);
     });
   }
 
@@ -725,6 +622,33 @@ function main() {
       showAllVehicles = !showAllVehicles;
       renderVehiclesChart();
     };
+  }
+  if (toggleVehicleTypesBtn) {
+    toggleVehicleTypesBtn.addEventListener("click", () => {
+      showAllVehicleTypes = !showAllVehicleTypes;
+      toggleVehicleTypesBtn.textContent = showAllVehicleTypes
+        ? "Zobraziť top 5 typov"
+        : "Zobraziť všetky typy";
+      renderByVehicleTypeChart();
+    });
+  }
+  if (toggleECVChartBtn) {
+    toggleECVChartBtn.addEventListener("click", () => {
+      showAllECVs = !showAllECVs;
+      toggleECVChartBtn.textContent = showAllECVs
+        ? "Zobraziť top 5 vozidiel"
+        : "Zobraziť všetky vozidlá";
+      renderByECVChart();
+    });
+  }
+  if (toggleLinesChartBtn) {
+    toggleLinesChartBtn.addEventListener("click", () => {
+      showAllLines = !showAllLines;
+      toggleLinesChartBtn.textContent = showAllLines
+        ? "Zobraziť top 5 liniek"
+        : "Zobraziť všetky linky";
+      renderLinesChart();
+    });
   }
 
   function updateDynamicTopLine() {
@@ -755,4 +679,159 @@ function main() {
   }
   reorderSections();
   rerenderAll();
+}
+
+function renderByECVChart() {
+  const rides = getRides();
+  const map = {};
+
+  rides.forEach((r) => {
+    const label = `${r.vehicle || "neznámy"} - ${r.number || "neznámy"}`;
+    if (!map[label]) map[label] = 0;
+    map[label]++;
+  });
+
+  const sortedEntries = Object.entries(map).sort(([, a], [, b]) => b - a);
+  const entriesToShow = showAllECVs
+    ? sortedEntries
+    : sortedEntries.slice(0, ECV_TOP_N);
+
+  const labels = entriesToShow.map(([label]) => label);
+  const data = entriesToShow.map(([, count]) => count);
+
+  const ctx = document.getElementById("chartByECV");
+  if (!ctx) return;
+  if (ctx.chart) ctx.chart.destroy();
+
+  ctx.chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor: "#ffcc00",
+        },
+      ],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      responsive: true,
+    },
+  });
+}
+
+function renderVehiclesChart() {
+  const rides = getRides();
+  const map = {};
+
+  rides.forEach((r) => {
+    const vehicle = r.vehicle || "neznáme vozidlo";
+    if (!map[vehicle]) map[vehicle] = 0;
+    map[vehicle]++;
+  });
+
+  const sortedEntries = Object.entries(map).sort(([, a], [, b]) => b - a);
+  const entriesToShow = showAllVehicles
+    ? sortedEntries
+    : sortedEntries.slice(0, VEHICLE_TOP_N);
+
+  const labels = entriesToShow.map(([vehicle]) => vehicle);
+  const data = entriesToShow.map(([, count]) => count);
+
+  const ctx = document.getElementById("chartVehicles");
+  if (!ctx) return;
+  if (ctx.chart) ctx.chart.destroy();
+
+  ctx.chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor: "#34c759",
+        },
+      ],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      responsive: true,
+    },
+  });
+}
+
+function renderHoursChart() {
+  const rides = getRides();
+  const hours = Array(24).fill(0);
+
+  rides.forEach((r) => {
+    const hour = new Date(r.date).getHours();
+    hours[hour]++;
+  });
+
+  const ctx = document.getElementById("chartHours");
+  if (!ctx) return;
+  if (ctx.chart) ctx.chart.destroy();
+
+  ctx.chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+      datasets: [
+        {
+          data: hours,
+          backgroundColor: "#ff5733",
+        },
+      ],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      responsive: true,
+    },
+  });
+}
+
+function renderMonthStats() {
+  const rides = getRides();
+  const months = Array(12).fill(0);
+
+  rides.forEach((r) => {
+    const month = new Date(r.date).getMonth();
+    months[month]++;
+  });
+
+  const ctx = document.getElementById("chartByMonth");
+  if (!ctx) return;
+  if (ctx.chart) ctx.chart.destroy();
+
+  ctx.chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Máj",
+        "Jún",
+        "Júl",
+        "Aug",
+        "Sep",
+        "Okt",
+        "Nov",
+        "Dec",
+      ],
+      datasets: [
+        {
+          data: months,
+          backgroundColor: "#4caf50",
+        },
+      ],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      responsive: true,
+    },
+  });
 }
