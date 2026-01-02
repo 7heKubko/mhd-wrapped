@@ -29,6 +29,10 @@ export function migrateRidesIfNeeded() {
     } catch (e) {
       // ignore persistence errors in rare mobile private modes
     }
+    // Notify user on mobile without blocking
+    try {
+      showToast("Dáta boli aktualizované");
+    } catch {}
   }
 }
 export const lineColorsBA = {
