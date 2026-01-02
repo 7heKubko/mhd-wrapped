@@ -132,6 +132,8 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 applyTheme();
+// Ensure login UI reflects persisted session on initial load
+updateLoginUI();
 
 const citySelect = document.getElementById("citySelect");
 const saveCityBtn = document.getElementById("saveCity");

@@ -7,7 +7,13 @@ let _supabase = null;
 export function getSupabase() {
   if (!_supabase) {
     if (window.supabase) {
-      _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          storage: window.localStorage,
+        },
+      });
     } else {
       throw new Error("Supabase client not loaded");
     }
@@ -17,7 +23,14 @@ export function getSupabase() {
 
 export function getCurrentUser() {
   const supabase = getSupabase();
-  return supabase.auth.getUser().then(({ data }) => data.user);
+  // Prefer local session to avoid unnecessary network calls and ensure persistence
+  return supabase.auth
+    .getSession()
+    .then(({ data }) => data.session?.user || null)
+    .catch(async () => {
+      const { data } = await supabase.auth.getUser();
+      return data.user || null;
+    });
 }
 
 export function signInWithEmail(email, password) {
