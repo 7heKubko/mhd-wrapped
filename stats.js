@@ -752,6 +752,21 @@ function renderByECVChart() {
     options: {
       plugins: { legend: { display: false } },
       responsive: true,
+      scales: {
+        x: {
+          ticks: {
+            autoSkip: false,
+            maxRotation: 60,
+            minRotation: 0,
+          },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0,
+          },
+        },
+      },
     },
   });
 }
