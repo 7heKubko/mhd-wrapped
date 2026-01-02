@@ -348,7 +348,16 @@ function main() {
     const rides = getRides();
     const map = {};
     rides.forEach((r) => {
-      const drive = r.driveType || r.vehicleMode || "neznámy";
+      let drive = r.driveType || r.vehicleMode || "neznámy";
+      if (
+        r.vehicleMode === "Trolejbus" ||
+        r.vehicleMode === "Električka" ||
+        r.vehicleMode === "Train"
+      ) {
+        drive = "Elektrický";
+      } else if (r.vehicleMode === "Autobus") {
+        drive = "Diesel";
+      }
       if (!map[drive]) map[drive] = 0;
       map[drive]++;
     });
