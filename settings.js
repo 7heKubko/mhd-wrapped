@@ -303,8 +303,21 @@ if (uploadCloudBtn) {
       await supabase.from("rides").delete().eq("user_id", user.id);
       if (rides.length > 0) {
         const ridesWithUser = rides.map((r) => ({ ...r, user_id: user.id }));
-        const { error } = await supabase.from("rides").insert(ridesWithUser);
-        if (error) throw error;
+        let { error } = await supabase.from("rides").insert(ridesWithUser);
+        if (error) {
+          const msg = String(error.message || "");
+          // Fallback: strip engineType if backend schema doesn't have the column
+          if (msg.includes("engineType") || msg.includes("column")) {
+            const sanitized = ridesWithUser.map(
+              ({ engineType, ...rest }) => rest
+            );
+            const retry = await supabase.from("rides").insert(sanitized);
+            if (retry.error) throw retry.error;
+            showToast("Nahrané bez engineType (server bez stĺpca)");
+          } else {
+            throw error;
+          }
+        }
       }
       showToast("Dáta boli nahrané do cloudu!");
     } catch (e) {
@@ -343,7 +356,7 @@ if (downloadCloudBtn) {
       }
 
       if (data) {
-        localStorage.setItem("rides", JSON.stringify(data));
+        saveRides(data);
         if (loginPopup) {
           loginPopup.textContent = "Dáta úspešne stiahnuté zo servera!";
           loginPopup.style.background = "#e6ffe6";
