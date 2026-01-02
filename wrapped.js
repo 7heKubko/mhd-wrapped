@@ -65,3 +65,42 @@ export function getPersona(rides) {
   if (total < 100) return "MHD nadšenec";
   return "MHD legenda";
 }
+
+// Calculate the number of days without rides
+export function getDaysWithoutRides(rides, startDate, endDate) {
+  const daysWithRides = new Set(rides.map((r) => r.date));
+  const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+  return totalDays - daysWithRides.size;
+}
+
+// Determine the most active day of the week
+export function getMostActiveDay(rides) {
+  const dayMap = {};
+  rides.forEach((r) => {
+    const day = new Date(r.date).getDay();
+    if (!dayMap[day]) dayMap[day] = 0;
+    dayMap[day]++;
+  });
+  const sorted = Object.entries(dayMap).sort((a, b) => b[1] - a[1]);
+  return sorted.length ? parseInt(sorted[0][0]) : null; // Returns day index (0 = Sunday, 6 = Saturday)
+}
+
+// Compare user stats with the average
+export function compareWithAverage(userRides, averageRides) {
+  const userTotal = userRides.length;
+  return {
+    user: userTotal,
+    average: averageRides,
+    difference: userTotal - averageRides,
+  };
+}
+
+// Estimate CO₂ savings based on rides
+export function getEcoStats(rides, co2PerRide = 0.2) {
+  const totalRides = rides.length;
+  const totalSavings = totalRides * co2PerRide; // Assuming 0.2 kg CO₂ saved per ride
+  return {
+    totalRides,
+    totalSavings,
+  };
+}

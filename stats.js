@@ -730,7 +730,7 @@ function main() {
     renderByDriveTypeChart();
     renderByHolidayChart();
     renderByVehicleTypeChart();
-    renderByECVChart(); // Ensure ECV chart is rendered
+    renderByECVChart();
     renderMonthStats();
     renderYearStats();
     renderLongestStreak();

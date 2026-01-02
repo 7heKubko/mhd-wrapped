@@ -76,9 +76,14 @@ if (statsOrderList && saveStatsOrderBtn) {
   };
   function reorderSections() {
     const main = document.querySelector("main.page");
+    const sections = Array.from(main.children);
+
+    // Clear and reorder sections based on the order array
     order.forEach((id) => {
-      const section = document.querySelector(`section:has(#${id})`);
-      if (section) main.appendChild(section);
+      const section = sections.find((sec) => sec.querySelector(`#${id}`));
+      if (section) {
+        main.appendChild(section);
+      }
     });
   }
 
@@ -361,3 +366,114 @@ if (downloadCloudBtn) {
     }
   };
 }
+
+function enableTouchDragAndDrop() {
+  let draggedItem = null;
+
+  statsOrderList.addEventListener("touchstart", (e) => {
+    if (e.target.tagName === "LI") {
+      draggedItem = e.target;
+      e.target.classList.add("dragging");
+    }
+  });
+
+  statsOrderList.addEventListener("touchmove", (e) => {
+    if (draggedItem) {
+      const touch = e.touches[0];
+      const elementBelow = document.elementFromPoint(
+        touch.clientX,
+        touch.clientY
+      );
+      const closestLi = elementBelow?.closest("li");
+
+      if (closestLi && closestLi !== draggedItem) {
+        const rect = closestLi.getBoundingClientRect();
+        const next = touch.clientY - rect.top > rect.height / 2;
+        statsOrderList.insertBefore(
+          draggedItem,
+          next ? closestLi.nextSibling : closestLi
+        );
+      }
+    }
+  });
+
+  statsOrderList.addEventListener("touchend", () => {
+    if (draggedItem) {
+      draggedItem.classList.remove("dragging");
+      draggedItem = null;
+    }
+  });
+}
+
+// Initialize touch drag-and-drop support
+enableTouchDragAndDrop();
+
+const vehicleTypeColors = {
+  Električka: "#ff9500",
+  Trolejbus: "#34c759",
+  Autobus: "#007aff",
+  Vlak: "#8e44ad",
+};
+
+function renderVehicleTypeColors() {
+  const container = document.getElementById("vehicleTypeColors");
+  if (!container) return;
+  container.innerHTML = "";
+
+  Object.keys(vehicleTypeColors).forEach((type) => {
+    const colorInput = document.createElement("input");
+    colorInput.type = "color";
+    colorInput.value =
+      JSON.parse(localStorage.getItem("typeColors") || "{}")[type] ||
+      vehicleTypeColors[type];
+    colorInput.addEventListener("input", () => {
+      const currentColors = JSON.parse(
+        localStorage.getItem("typeColors") || "{}"
+      );
+      currentColors[type] = colorInput.value;
+      localStorage.setItem("typeColors", JSON.stringify(currentColors));
+    });
+
+    const label = document.createElement("label");
+    label.textContent = type;
+    label.appendChild(colorInput);
+
+    const wrapper = document.createElement("div");
+    wrapper.appendChild(label);
+    container.appendChild(wrapper);
+  });
+}
+
+renderVehicleTypeColors();
+
+let touchStartY = 0;
+let draggedElement = null;
+
+statsOrderList.addEventListener("touchstart", (e) => {
+  const touch = e.touches[0];
+  const target = e.target.closest("li");
+  if (target) {
+    draggedElement = target;
+    touchStartY = touch.clientY;
+    target.classList.add("dragging");
+  }
+});
+
+statsOrderList.addEventListener("touchmove", (e) => {
+  if (!draggedElement) return;
+  const touch = e.touches[0];
+  const over = document
+    .elementFromPoint(touch.clientX, touch.clientY)
+    ?.closest("li");
+  if (over && over !== draggedElement) {
+    statsOrderList.insertBefore(draggedElement, over.nextSibling);
+  }
+});
+
+statsOrderList.addEventListener("touchend", () => {
+  if (draggedElement) {
+    draggedElement.classList.remove("dragging");
+    order = Array.from(statsOrderList.children).map((li) => li.dataset.id);
+    draggedElement = null;
+  }
+});
