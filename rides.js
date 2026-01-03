@@ -121,7 +121,7 @@ export const vehicleSeriesOVA = [
   { type: "Scania UNVI Urbis Doubledecker", start: 7991, end: 7992, mode: "Autobus", engineType: "Diesel" },
 
   { type: "Iveco Crossway LE Line 12M - Transdev", start: 0, end: 0, mode: "Autobus", engineType: "Diesel" },
-  { type: "Iveco Crossway LE City 12M - Z-Group", start: 0, end: 0, mode: "Autobus", engineType: "Diesel" },
+  { type: "Iveco Crossway LE City 12M - Z-Group", start: 1001, end: 1011, mode: "Autobus", engineType: "Diesel" },
   { type: "Setra S415 LE", start: 0, end: 0, mode: "Autobus", engineType: "Diesel" },
   { type: "Scania Citywide LE 12M CNG", start: 0, end: 0, mode: "Autobus", engineType: "CNG" },
   { type: "Scania Citywide Suburban LE 15M", start: 0, end: 0, mode: "Autobus", engineType: "Diesel" },
