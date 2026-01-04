@@ -401,3 +401,37 @@ if (downloadCloudBtn) {
     }
   };
 }
+
+// --- Oprava dát (fixDataBtn) ---
+const fixDataBtn = document.getElementById("fixDataBtn");
+if (fixDataBtn) {
+  fixDataBtn.onclick = () => {
+    const rides = loadRides();
+    let changed = false;
+    const updated = rides.map((ride) => {
+      const newVehicle = getVehicleType(ride.number);
+      const newMode = getVehicleMode(ride.number);
+      const newEngine = getVehicleEngineType(ride.number);
+      if (
+        ride.vehicle !== newVehicle ||
+        ride.vehicleMode !== newMode ||
+        ride.engineType !== newEngine
+      ) {
+        changed = true;
+        return {
+          ...ride,
+          vehicle: newVehicle,
+          vehicleMode: newMode,
+          engineType: newEngine,
+        };
+      }
+      return ride;
+    });
+    if (changed) {
+      saveRides(updated);
+      showToast("Dáta boli opravené podľa aktuálnych údajov o vozidlách.");
+    } else {
+      showToast("Všetky dáta sú už aktuálne.");
+    }
+  };
+}
