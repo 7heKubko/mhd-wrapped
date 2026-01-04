@@ -120,9 +120,10 @@ export const vehicleSeriesOVA = [
   { type: "Solaris Urbino 18 III CNG", start: 7851, end: 7865, mode: "Autobus", engineType: "CNG" },
   { type: "Scania UNVI Urbis Doubledecker", start: 7991, end: 7992, mode: "Autobus", engineType: "Diesel" },
 
-  { type: "Iveco Crossway LE Line 12M - Transdev", start: 0, end: 0, mode: "Autobus", engineType: "Diesel" },
-  { type: "Iveco Crossway LE City 12M - Z-Group", start: 1001, end: 1011, mode: "Autobus", engineType: "Diesel" },
-  { type: "Setra S415 LE", start: 0, end: 0, mode: "Autobus", engineType: "Diesel" },
+  { type: "Iveco Crossway LE Line 12M", start: 241001, end: 241011, mode: "Autobus", engineType: "Diesel" },
+  { type: "Iveco Crossway LE City 12M", start: 331001, end: 331026, mode: "Autobus", engineType: "Diesel" },
+  { type: "Iveco Crossway LE City 12M", start: 631001, end: 631011, mode: "Autobus", engineType: "Diesel" },
+  { type: "Setra S415 LE", start: 631301, end: 631351, mode: "Autobus", engineType: "Diesel" },
   { type: "Scania Citywide LE 12M CNG", start: 0, end: 0, mode: "Autobus", engineType: "CNG" },
   { type: "Scania Citywide Suburban LE 15M", start: 0, end: 0, mode: "Autobus", engineType: "Diesel" },
 
