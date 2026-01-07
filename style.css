@@ -422,12 +422,8 @@ input:checked + .slider:before {
   gap: 12px;
   margin-top: 12px;
 }
+ 
 
-
-
-.line-badge:hover {
-  transform: scale(1.08);
-}
 
 .fade-in {
   animation: fadeIn 0.4s ease forwards;
@@ -485,3 +481,17 @@ input:checked + .slider:before {
   gap: 10px;
   margin-top: 14px;
 }
+
+/* Smart filter chips */
+#smartFilters button {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid #ccc;
+}
+#smartFilters button.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+ 

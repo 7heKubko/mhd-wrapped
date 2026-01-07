@@ -13,6 +13,13 @@ import { getCurrentUser } from "./supabase.js";
 
 applyTheme();
 
+// Register Chart.js annotation plugin when available (CDN script)
+if (typeof Chart !== "undefined" && window && window["chartjs-plugin-annotation"]) {
+  try {
+    Chart.register(window["chartjs-plugin-annotation"]);
+  } catch {}
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
   applyTheme();
   const popup = document.getElementById("loginPopup");
@@ -115,6 +122,7 @@ function main() {
   let statsOrder =
     JSON.parse(localStorage.getItem("statsOrder") || "null") ||
     defaultStatsOrder;
+    let chartByYearInstance = null;
   const sectionMap = {
     chartLines: document.querySelector("section:has(#chartLines)"),
     chartVehicles: document.querySelector("section:has(#chartVehicles)"),
@@ -163,7 +171,9 @@ function main() {
         if (idx !== -1) {
           currentYearIdx = idx;
           updateYearLabel();
-          renderYearStats();
+          // Set selectedYear so all charts filter correctly
+          selectedYear = yearSelect.value;
+          rerenderAll();
         }
       }
     });
@@ -182,7 +192,8 @@ function main() {
       if (currentYearIdx < allYears.length - 1) {
         currentYearIdx++;
         updateYearLabel();
-        renderYearStats();
+        selectedYear = allYears[currentYearIdx];
+        rerenderAll();
       }
     };
   if (nextYearBtn)
@@ -190,7 +201,8 @@ function main() {
       if (currentYearIdx > 0) {
         currentYearIdx--;
         updateYearLabel();
-        renderYearStats();
+          selectedYear = allYears[currentYearIdx];
+          rerenderAll();
       }
     };
   // Move the getRides function definition here to ensure it is available
@@ -265,68 +277,7 @@ function main() {
       yearStats.appendChild(li);
     });
   }
-  function renderByWeekdayChart() {
-    const rides = getRides();
-    const days = [
-      "Pondelok",
-      "Utorok",
-      "Streda",
-      "Štvrtok",
-      "Piatok",
-      "Sobota",
-      "Nedeľa",
-    ];
-    const counts = Array(7).fill(0);
-    rides.forEach((r) => {
-      const d = new Date(r.date);
-      const idx = (d.getDay() + 6) % 7; // 0=pondelok
-      counts[idx]++;
-    });
-    const ctx = document.getElementById("chartByWeekday");
-    if (!ctx) return;
-    if (ctx.chart) ctx.chart.destroy();
-    ctx.chart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: days,
-        datasets: [{ data: counts, backgroundColor: "#007aff" }],
-      },
-      options: { plugins: { legend: { display: false } }, responsive: true },
-    });
-  }
-
-  function renderByMonthChart() {
-    const rides = getRides();
-    const months = Array(12).fill(0);
-    rides.forEach((r) => {
-      const m = parseInt(r.date.split("-")[1], 10) - 1;
-      if (m >= 0 && m < 12) months[m]++;
-    });
-    const ctx = document.getElementById("chartByMonth");
-    if (!ctx) return;
-    if (ctx.chart) ctx.chart.destroy();
-    ctx.chart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "Máj",
-          "Jún",
-          "Júl",
-          "Aug",
-          "Sep",
-          "Okt",
-          "Nov",
-          "Dec",
-        ],
-        datasets: [{ data: months, backgroundColor: "#34c759" }],
-      },
-      options: { plugins: { legend: { display: false } }, responsive: true },
-    });
-  }
+  // removed broken duplicate renderStreakHeatmap implementation
 
   function renderLongestStreak() {
     const rides = getRides();
@@ -442,6 +393,36 @@ function main() {
         ],
       },
       options: { responsive: true },
+    });
+  }
+
+  function renderByWeekdayChart() {
+    const rides = getRides();
+    const days = [
+      "Pondelok",
+      "Utorok",
+      "Streda",
+      "Štvrtok",
+      "Piatok",
+      "Sobota",
+      "Nedeľa",
+    ];
+    const counts = Array(7).fill(0);
+    rides.forEach((r) => {
+      const d = new Date(r.date);
+      const idx = (d.getDay() + 6) % 7; // 0=pondelok
+      counts[idx]++;
+    });
+    const ctx = document.getElementById("chartByWeekday");
+    if (!ctx) return;
+    if (ctx.chart) ctx.chart.destroy();
+    ctx.chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: days,
+        datasets: [{ data: counts, backgroundColor: "#007aff" }],
+      },
+      options: { plugins: { legend: { display: false } }, responsive: true },
     });
   }
 
@@ -622,6 +603,8 @@ function main() {
     if (ctx.chart) ctx.chart.destroy();
 
     const lineColors = getLineColors();
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "{}");
+    const favLines = new Set(favorites.lines || []);
     const bgColors = labels.map((line) => lineColors[line] || "#888");
 
     ctx.chart = new Chart(ctx, {
@@ -632,6 +615,8 @@ function main() {
           {
             data,
             backgroundColor: bgColors,
+            borderColor: labels.map((line) => (favLines.has(line) ? "#ffd60a" : undefined)),
+            borderWidth: labels.map((line) => (favLines.has(line) ? 3 : 0)),
           },
         ],
       },
@@ -700,7 +685,6 @@ function main() {
     renderVehiclesChart();
     renderHoursChart();
     renderByWeekdayChart();
-    renderByMonthChart();
     renderByDriveTypeChart();
     renderByHolidayChart();
     renderByVehicleTypeChart();
@@ -710,10 +694,90 @@ function main() {
     renderLongestStreak();
     renderLongestPause();
     renderWrappedStats();
+    renderPerLineMiniCards();
     updateDynamicTopLine();
   }
   reorderSections();
   rerenderAll();
+
+  // Re-render heatmap if data was fixed/updated from other page
+  window.addEventListener("storage", (e) => {
+    if (e.key === "lastDataUpdate") {
+      // Reload local rides cache and update charts that read from it
+      allRides = loadRides();
+      renderPerLineMiniCards();
+    }
+  });
+}
+
+
+function renderPerLineMiniCards() {
+  const container = document.getElementById("perLineMiniCards");
+  if (!container) return;
+  const rides = getRides();
+  container.innerHTML = "";
+  if (!rides.length) return;
+
+  const byLine = new Map();
+  for (const r of rides) {
+    const main = (r.line || "-").split("/")[0];
+    if (!byLine.has(main)) byLine.set(main, []);
+    byLine.get(main).push(r);
+  }
+  const sorted = Array.from(byLine.entries()).sort((a, b) => b[1].length - a[1].length).slice(0, 3);
+  const lineColors = getLineColors();
+
+  function circularMeanHHMM(items) {
+    let sx = 0,
+      sy = 0,
+      n = 0;
+    for (const r of items) {
+      if (!r.time) continue;
+      const [hh, mm] = r.time.split(":").map((v) => parseInt(v, 10) || 0);
+      const minutes = Math.max(0, Math.min(23, hh)) * 60 + Math.max(0, Math.min(59, mm));
+      const ang = (2 * Math.PI * minutes) / (24 * 60);
+      sx += Math.cos(ang);
+      sy += Math.sin(ang);
+      n++;
+    }
+    if (!n) return "--:--";
+    let a = Math.atan2(sy, sx);
+    if (a < 0) a += 2 * Math.PI;
+    let m = Math.round((a * 24 * 60) / (2 * Math.PI));
+    if (m >= 24 * 60) m -= 24 * 60;
+    const H = String(Math.floor(m / 60)).padStart(2, "0");
+    const M = String(m % 60).padStart(2, "0");
+    return `${H}:${M}`;
+  }
+
+  for (const [line, items] of sorted) {
+    const avg = circularMeanHHMM(items);
+    const count = items.length;
+    const badgeColor = lineColors[line] || "#888";
+    const card = document.createElement("div");
+    card.className = "mini-card";
+    card.style.cssText = "border:1px solid var(--border);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;";
+    const badge = document.createElement("span");
+    badge.className = "line-badge";
+    // Reuse badge color classes logic similar to other lists
+    let badgeClass = "line-badge";
+    const city = localStorage.getItem("city") || "bratislava";
+    const n = parseInt(line, 10);
+    if (city === "bratislava") {
+      if (!isNaN(n) && n >= 205 && n <= 999) badgeClass += " line-badge--black";
+      else badgeClass += " line-badge--white";
+    } else if (city === "ostrava") {
+      badgeClass += " line-badge--black";
+    }
+    badge.className = badgeClass;
+    badge.style.setProperty("--badge-color", badgeColor);
+    badge.textContent = line;
+    const text = document.createElement("div");
+    text.innerHTML = `<div style="font-weight:600">Priemer: ${avg}</div><div style="font-size:0.9em;color:var(--muted-text)">${count}×</div>`;
+    card.appendChild(badge);
+    card.appendChild(text);
+    container.appendChild(card);
+  }
 }
 
 function renderByECVChart() {
@@ -743,6 +807,8 @@ function renderByECVChart() {
     vehicle: vehicleByNumber[num] || "neznáme vozidlo",
     count,
   }));
+  const favorites = JSON.parse(localStorage.getItem("favorites") || "{}");
+  const favNumbers = new Set(favorites.numbers || []);
 
   const ctx = document.getElementById("chartByECV");
   if (!ctx) return;
@@ -770,6 +836,8 @@ function renderByECVChart() {
           data,
           backgroundColor: "#34c759", // match Typy vozidiel
           maxBarThickness: dynamicMaxBarThickness,
+          borderColor: labels.map((_, i) => (favNumbers.has(entriesToShow[i][0]) ? "#ffd60a" : undefined)),
+          borderWidth: labels.map((_, i) => (favNumbers.has(entriesToShow[i][0]) ? 3 : 0)),
         },
       ],
     },
@@ -794,7 +862,7 @@ function renderByECVChart() {
           beginAtZero: true,
           ticks: {
             precision: 0,
-            maxRotation: isAll ? 0 : 45,
+            maxRotation: isAll ? 0 : 30,
             minRotation: 0,
             autoSkip: true,
           },
@@ -859,6 +927,41 @@ function renderHoursChart() {
   if (!ctx) return;
   if (ctx.chart) ctx.chart.destroy();
 
+  // Compute circular mean time-of-day (independent of date)
+  let sumX = 0;
+  let sumY = 0;
+  let n = 0;
+  rides.forEach((r) => {
+    if (!r.time || typeof r.time !== "string") return;
+    const parts = r.time.split(":");
+    if (parts.length < 2) return;
+    const h = Math.max(0, Math.min(23, parseInt(parts[0], 10) || 0));
+    const m = Math.max(0, Math.min(59, parseInt(parts[1], 10) || 0));
+    const minutes = h * 60 + m;
+    const theta = (2 * Math.PI * minutes) / (24 * 60);
+    sumX += Math.cos(theta);
+    sumY += Math.sin(theta);
+    n++;
+  });
+
+  let meanInfo = null; // { hourInt, labelText }
+  if (n > 0) {
+    let ang = Math.atan2(sumY, sumX);
+    if (ang < 0) ang += 2 * Math.PI;
+    let meanMinutes = (ang * 24 * 60) / (2 * Math.PI);
+    // Round to nearest minute
+    meanMinutes = Math.round(meanMinutes);
+    if (meanMinutes >= 24 * 60) meanMinutes -= 24 * 60;
+    let meanH = Math.floor(meanMinutes / 60);
+    let meanM = meanMinutes % 60;
+    const hh = String(meanH).padStart(2, "0");
+    const mm = String(meanM).padStart(2, "0");
+    const labelText = `Priemer: ${hh}:${mm}`;
+    // For positioning on category axis, use nearest hour tick
+    const hourInt = meanH; // nearest hour bucket
+    meanInfo = { hourInt, labelText };
+  }
+
   ctx.chart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -871,7 +974,35 @@ function renderHoursChart() {
       ],
     },
     options: {
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        // Draw mean time-of-day vertical line when available
+        ...(meanInfo && window && window["chartjs-plugin-annotation"]
+          ? {
+              annotation: {
+                annotations: {
+                  meanLine: {
+                    type: "line",
+                    xMin: `${meanInfo.hourInt}:00`,
+                    xMax: `${meanInfo.hourInt}:00`,
+                    borderColor: "#007aff",
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    label: {
+                      display: true,
+                      content: meanInfo.labelText,
+                      position: "end",
+                      backgroundColor: "rgba(0,0,0,0.6)",
+                      color: "#fff",
+                      font: { weight: "bold" },
+                      padding: 4,
+                    },
+                  },
+                },
+              },
+            }
+          : {}),
+      },
       responsive: true,
     },
   });

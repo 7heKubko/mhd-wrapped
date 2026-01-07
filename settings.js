@@ -226,6 +226,31 @@ const loginStatus = document.getElementById("loginStatus");
 const loginPopup = document.getElementById("loginPopup");
 const uploadCloudBtn = document.getElementById("uploadCloudBtn");
 const downloadCloudBtn = document.getElementById("downloadCloudBtn");
+const cloudSyncStatusEl = document.getElementById("cloudSyncStatus");
+
+function updateCloudSyncStatus(statusObj) {
+  try {
+    if (statusObj) {
+      localStorage.setItem("cloudSyncStatus", JSON.stringify(statusObj));
+    }
+    const saved = JSON.parse(localStorage.getItem("cloudSyncStatus") || "null");
+    if (cloudSyncStatusEl) {
+      if (!saved) {
+        cloudSyncStatusEl.textContent = "";
+      } else {
+        const when = new Date(saved.time).toLocaleString("sk-SK");
+        const ok = saved.status === "ok";
+        cloudSyncStatusEl.textContent = ok
+          ? `Naposledy synchronizované: ${when}`
+          : `Posledná chyba: ${when}`;
+        cloudSyncStatusEl.style.color = ok ? "#1a661a" : "#a11a1a";
+      }
+    }
+  } catch {}
+}
+
+// Initialize status on load
+updateCloudSyncStatus();
 
 async function updateLoginUI() {
   const user = await getCurrentUser();
@@ -317,6 +342,11 @@ if (uploadCloudBtn) {
       const res = await uploadRidesIfLoggedIn();
       if (res.ok) {
         showToast("Dáta boli nahrané do cloudu!");
+        updateCloudSyncStatus({
+          status: "ok",
+          time: new Date().toISOString(),
+          action: "upload",
+        });
       } else if (res.reason === "not-logged-in") {
         // already handled above
       } else {
@@ -324,9 +354,19 @@ if (uploadCloudBtn) {
           "Chyba pri uploadovaní: " +
             (res.error?.message || res.error || "Neznáma chyba")
         );
+        updateCloudSyncStatus({
+          status: "error",
+          time: new Date().toISOString(),
+          action: "upload",
+        });
       }
     } catch (e) {
       showToast("Chyba pri uploadovaní: " + (e.message || e));
+      updateCloudSyncStatus({
+        status: "error",
+        time: new Date().toISOString(),
+        action: "upload",
+      });
     }
   };
 }
@@ -392,6 +432,11 @@ if (downloadCloudBtn) {
           loginPopup.style.color = "#1a661a";
           loginPopup.style.display = "block";
         }
+        updateCloudSyncStatus({
+          status: "ok",
+          time: new Date().toISOString(),
+          action: "download",
+        });
       }
     } catch (e) {
       if (loginPopup) {
@@ -400,6 +445,11 @@ if (downloadCloudBtn) {
         loginPopup.style.color = "#a11a1a";
         loginPopup.style.display = "block";
       }
+      updateCloudSyncStatus({
+        status: "error",
+        time: new Date().toISOString(),
+        action: "download",
+      });
     }
   };
 }
@@ -432,8 +482,90 @@ if (fixDataBtn) {
     if (changed) {
       saveRides(updated);
       showToast("Dáta boli opravené podľa aktuálnych údajov o vozidlách.");
+      try {
+        localStorage.setItem("lastDataUpdate", String(Date.now()));
+      } catch {}
     } else {
       showToast("Všetky dáta sú už aktuálne.");
     }
   };
 }
+
+// --- Favorites management ---
+const favLineInput = document.getElementById("favLineInput");
+const addFavLineBtn = document.getElementById("addFavLineBtn");
+const favLinesList = document.getElementById("favLinesList");
+const favNumberInput = document.getElementById("favNumberInput");
+const addFavNumberBtn = document.getElementById("addFavNumberBtn");
+const favNumbersList = document.getElementById("favNumbersList");
+
+function getFavorites() {
+  const f = JSON.parse(localStorage.getItem("favorites") || "{}");
+  return { lines: f.lines || [], numbers: f.numbers || [] };
+}
+function setFavorites(f) {
+  localStorage.setItem("favorites", JSON.stringify(f));
+}
+function renderFavorites() {
+  const { lines, numbers } = getFavorites();
+  if (favLinesList) {
+    favLinesList.innerHTML = "";
+    lines.forEach((line, idx) => {
+      const li = document.createElement("li");
+      li.style.margin = "4px 0";
+      li.innerHTML = `${line} <button data-idx="${idx}" class="removeFavLine" style="width:auto;padding:4px 8px;margin-left:8px">Odstrániť</button>`;
+      favLinesList.appendChild(li);
+    });
+    favLinesList.querySelectorAll(".removeFavLine").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = parseInt(btn.getAttribute("data-idx"), 10);
+        const f = getFavorites();
+        f.lines.splice(i, 1);
+        setFavorites(f);
+        renderFavorites();
+      });
+    });
+  }
+  if (favNumbersList) {
+    favNumbersList.innerHTML = "";
+    numbers.forEach((num, idx) => {
+      const li = document.createElement("li");
+      li.style.margin = "4px 0";
+      li.innerHTML = `${num} <button data-idx="${idx}" class="removeFavNumber" style="width:auto;padding:4px 8px;margin-left:8px">Odstrániť</button>`;
+      favNumbersList.appendChild(li);
+    });
+    favNumbersList.querySelectorAll(".removeFavNumber").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = parseInt(btn.getAttribute("data-idx"), 10);
+        const f = getFavorites();
+        f.numbers.splice(i, 1);
+        setFavorites(f);
+        renderFavorites();
+      });
+    });
+  }
+}
+
+if (addFavLineBtn && favLineInput) {
+  addFavLineBtn.addEventListener("click", () => {
+    const v = favLineInput.value.trim();
+    if (!v) return;
+    const f = getFavorites();
+    if (!f.lines.includes(v)) f.lines.push(v);
+    setFavorites(f);
+    favLineInput.value = "";
+    renderFavorites();
+  });
+}
+if (addFavNumberBtn && favNumberInput) {
+  addFavNumberBtn.addEventListener("click", () => {
+    const v = favNumberInput.value.trim();
+    if (!v) return;
+    const f = getFavorites();
+    if (!f.numbers.includes(v)) f.numbers.push(v);
+    setFavorites(f);
+    favNumberInput.value = "";
+    renderFavorites();
+  });
+}
+renderFavorites();

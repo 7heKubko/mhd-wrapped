@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js Annotation plugin for reference lines -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
   <!-- html2canvas for sharing stats as image -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
@@ -97,7 +99,10 @@
         <div class="wrapped-item"><div class="wrapped-label">Najdlhšia séria dní s jazdou</div><div class="wrapped-value" id="longestStreak">-</div></div>
         <div class="wrapped-item"><div class="wrapped-label">Najdlhšia pauza bez MHD</div><div class="wrapped-value" id="longestPause">-</div></div>
       </div>
+      <div id="perLineMiniCards" style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap"></div>
     </section>
+
+    
 
   </main>
 

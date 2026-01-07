@@ -1,4 +1,5 @@
 import { loadRides, saveRides } from "./storage.js";
+import { uploadRidesIfLoggedIn } from "./supabase.js";
 import {
   getVehicleType,
   getVehicleMode,
@@ -236,7 +237,7 @@ export const lineColorsBA = {
   X1: "#ff7f1a",
   X3: "#ff7f1a",
   X4: "#ff7f1a",
-  X9: "#ff7f1a"
+  X9: "#ff7f1a",
 };
 
 export const lineColorsOVA = {
@@ -257,7 +258,6 @@ export const lineColorsOVA = {
   18: "#d9534f",
   19: "#d9534f",
 
-
   21: "#5bc0de",
   22: "#5bc0de",
   23: "#5bc0de",
@@ -269,7 +269,7 @@ export const lineColorsOVA = {
   29: "#5bc0de",
   30: "#5bc0de",
   31: "#5bc0de",
-  
+
   33: "#5bc0de",
   34: "#5bc0de",
   35: "#5bc0de",
@@ -279,7 +279,7 @@ export const lineColorsOVA = {
   39: "#5bc0de",
   40: "#5bc0de",
   41: "#5bc0de",
-  
+
   43: "#5bc0de",
   44: "#5bc0de",
   45: "#5bc0de",
@@ -311,14 +311,13 @@ export const lineColorsOVA = {
   79: "#5bc0de",
 
   81: "#5bc0de",
-  
+
   92: "#5bc0de",
   96: "#5bc0de",
   97: "#5bc0de",
   98: "#5bc0de",
   99: "#5bc0de",
   AE: "#5bc0de",
-
 
   374: "#371c00",
   555: "#371c00",
@@ -327,7 +326,6 @@ export const lineColorsOVA = {
   286: "#371c00",
   641: "#371c00",
 
-
   980: "#371c00",
   985: "#371c00",
   371: "#371c00",
@@ -335,7 +333,6 @@ export const lineColorsOVA = {
   670: "#371c00",
   448: "#371c00",
   288: "#371c00",
-
 
   101: "#00cc8b",
   102: "#00cc8b",
@@ -351,7 +348,6 @@ export const lineColorsOVA = {
   112: "#00cc8b",
   113: "#00cc8b",
 
-  
   S1: "#920682",
   S2: "#920682",
   S3: "#920682",
@@ -374,12 +370,11 @@ export const lineColorsOVA = {
   S32: "#920682",
   S33: "#920682",
   S34: "#920682",
-  
+
   R8: "#fabb00",
   R27: "#d40e0eb0",
   R60: "#d40e0eb0",
   R61: "#d40e0eb0",
-
 };
 
 export function getLineColors() {
@@ -399,6 +394,12 @@ export function applyTheme() {
 export function showToast(text) {
   const toast = document.getElementById("toast");
   if (!toast) return;
+  try {
+    const key = `toastSeen:${text}`;
+    if (sessionStorage.getItem(key)) return;
+    // Mark as shown for this session for repeated identical messages
+    sessionStorage.setItem(key, "1");
+  } catch {}
   toast.textContent = text;
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 2000);
@@ -412,7 +413,9 @@ let filters = {
   number: "",
   vehicle: "",
   dateFrom: "",
-  dateTo: ""
+  dateTo: "",
+  weekendOnly: false,
+  nightOnly: false,
 };
 
 export function formatDate(dateStr, timeStr) {
@@ -422,7 +425,7 @@ export function formatDate(dateStr, timeStr) {
     month: "2-digit",
     year: "numeric",
     hour: "2-digit",
-    minute: "2-digit"
+    minute: "2-digit",
   });
 }
 
@@ -455,17 +458,19 @@ export function renderLastRides() {
   filtered.forEach((r) => {
     const li = document.createElement("li");
     li.classList.add("fade-in");
-    let badgeClass = 'line-badge';
-    const city = localStorage.getItem('city') || 'bratislava';
+    let badgeClass = "line-badge";
+    const city = localStorage.getItem("city") || "bratislava";
     const n = parseInt(r.line, 10);
-    if (city === 'bratislava') {
-      if (!isNaN(n) && n >= 205 && n <= 999) badgeClass += ' line-badge--black';
-      else badgeClass += ' line-badge--white';
-    } else if (city === 'ostrava') {
-      badgeClass += ' line-badge--black';
+    if (city === "bratislava") {
+      if (!isNaN(n) && n >= 205 && n <= 999) badgeClass += " line-badge--black";
+      else badgeClass += " line-badge--white";
+    } else if (city === "ostrava") {
+      badgeClass += " line-badge--black";
     }
     li.innerHTML = `
-      <span class="${badgeClass}" style="--badge-color:${lineColors[r.line] || "#888"}">${r.line}</span>
+      <span class="${badgeClass}" style="--badge-color:${
+      lineColors[r.line] || "#888"
+    }">${r.line}</span>
       ${r.number} - ${r.time}
     `;
     list.appendChild(li);
@@ -569,6 +574,17 @@ export function renderRidesList() {
     if (filters.dateFrom && r.date < filters.dateFrom) return false;
     if (filters.dateTo && r.date > filters.dateTo) return false;
 
+    if (filters.weekendOnly) {
+      const d = new Date(r.date);
+      const day = d.getDay();
+      const isWeekend = day === 0 || day === 6;
+      if (!isWeekend) return false;
+    }
+    if (filters.nightOnly) {
+      const hh = r.time ? parseInt(r.time.split(":")[0], 10) : 0;
+      if (!(hh >= 22 || hh < 5)) return false;
+    }
+
     return true;
   });
 
@@ -592,24 +608,30 @@ export function renderRidesList() {
   pageItems.forEach((r) => {
     const li = document.createElement("li");
     li.classList.add("slide-up");
-    let badgeClass = 'line-badge';
-    const city = localStorage.getItem('city') || 'bratislava';
+    let badgeClass = "line-badge";
+    const city = localStorage.getItem("city") || "bratislava";
     const n = parseInt(r.line, 10);
-    if (city === 'bratislava') {
-      if (!isNaN(n) && n >= 205 && n <= 999) badgeClass += ' line-badge--black';
-      else badgeClass += ' line-badge--white';
-    } else if (city === 'ostrava') {
-      badgeClass += ' line-badge--black';
+    if (city === "bratislava") {
+      if (!isNaN(n) && n >= 205 && n <= 999) badgeClass += " line-badge--black";
+      else badgeClass += " line-badge--white";
+    } else if (city === "ostrava") {
+      badgeClass += " line-badge--black";
     }
     li.innerHTML = `
       <span style="display: flex; align-items: center; gap: 8px;">
         <span>${formatDate(r.date, r.time)}</span>
-        <span class="${badgeClass}" style="--badge-color:${lineColors[r.line] || "#888"}">${r.line}</span>
+        <span class="${badgeClass}" style="--badge-color:${
+      lineColors[r.line] || "#888"
+    }">${r.line}</span>
         <span>${r.number}</span>
       </span>
       <div class="ride-actions">
-        <button class="edit-btn" data-id="${r.id}" title="Upraviť jazdu"><img src="icons/edit_icon.png" alt="Upraviť" style="width:20px;height:20px;vertical-align:middle;opacity:0.7;filter: grayscale(1);"></button>
-        <button class="delete-btn" data-id="${r.id}" title="Vymazať jazdu"><img src="icons/remove_icon.png" alt="Vymazať" style="width:20px;height:20px;vertical-align:middle;opacity:0.7;filter: grayscale(1);"></button>
+        <button class="edit-btn" data-id="${
+          r.id
+        }" title="Upraviť jazdu"><img src="icons/edit_icon.png" alt="Upraviť" style="width:20px;height:20px;vertical-align:middle;opacity:0.7;filter: grayscale(1);"></button>
+        <button class="delete-btn" data-id="${
+          r.id
+        }" title="Vymazať jazdu"><img src="icons/remove_icon.png" alt="Vymazať" style="width:20px;height:20px;vertical-align:middle;opacity:0.7;filter: grayscale(1);"></button>
       </div>
     `;
     list.appendChild(li);
@@ -624,6 +646,14 @@ export function renderRidesList() {
       saveRides(newRides);
       showToast("Jazda vymazaná");
       renderRidesList();
+      (async () => {
+        try {
+          const res = await uploadRidesIfLoggedIn();
+          if (res?.ok) {
+            showToast("Synchronizované s cloudom");
+          }
+        } catch {}
+      })();
     };
   });
 }
@@ -643,7 +673,16 @@ export function startEditRide(id) {
   const btnSave = document.getElementById("editSaveBtn");
   const btnCancel = document.getElementById("editCancelBtn");
 
-  if (!modal || !fId || !fLine || !fNumber || !fDate || !fTime || !btnSave || !btnCancel) {
+  if (
+    !modal ||
+    !fId ||
+    !fLine ||
+    !fNumber ||
+    !fDate ||
+    !fTime ||
+    !btnSave ||
+    !btnCancel
+  ) {
     // Fallback to prompt flow if modal not present
     const newLine = prompt("Nová linka:", ride.line);
     if (!newLine) return;
@@ -653,7 +692,8 @@ export function startEditRide(id) {
     if (!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) return;
     const newTime = prompt("Nový čas (HH:MM):", ride.time);
     if (!newTime || !/^\d{2}:\d{2}$/.test(newTime)) return;
-    const summary = `Uložiť zmeny?\n` +
+    const summary =
+      `Uložiť zmeny?\n` +
       `Linka: ${ride.line} → ${newLine}\n` +
       `EVČ: ${ride.number} → ${newNumber}\n` +
       `Dátum: ${ride.date} → ${newDate}\n` +
@@ -694,7 +734,12 @@ export function startEditRide(id) {
     const newDate = fDate.value;
     const newTime = fTime.value;
 
-    if (!newLine || !newNumber || !/^\d{4}-\d{2}-\d{2}$/.test(newDate) || !/^\d{2}:\d{2}$/.test(newTime)) {
+    if (
+      !newLine ||
+      !newNumber ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(newDate) ||
+      !/^\d{2}:\d{2}$/.test(newTime)
+    ) {
       showToast("Vyplňte všetky polia správne");
       return;
     }
@@ -707,6 +752,14 @@ export function startEditRide(id) {
     saveRides(rides);
     showToast("Jazda upravená");
     renderRidesList();
+    (async () => {
+      try {
+        const res = await uploadRidesIfLoggedIn();
+        if (res?.ok) {
+          showToast("Synchronizované s cloudom");
+        }
+      } catch {}
+    })();
     close();
   };
 }

@@ -41,6 +41,9 @@ function main() {
   const filterDateFrom = document.getElementById("filterDateFrom");
   const filterDateTo = document.getElementById("filterDateTo");
   const clearFiltersBtn = document.getElementById("clearFilters");
+  const chipTrams = document.getElementById("chipTrams");
+  const chipWeekends = document.getElementById("chipWeekends");
+  const chipNights = document.getElementById("chipNights");
   const prevPageBtn = document.getElementById("prevPage");
   const nextPageBtn = document.getElementById("nextPage");
 
@@ -50,7 +53,9 @@ function main() {
       number: filterNumber.value.trim(),
       vehicle: filterVehicle.value.trim(),
       dateFrom: filterDateFrom.value || "",
-      dateTo: filterDateTo.value || ""
+      dateTo: filterDateTo.value || "",
+      weekendOnly: chipWeekends?.classList.contains("active") || false,
+      nightOnly: chipNights?.classList.contains("active") || false,
     });
   }
 
@@ -66,8 +71,33 @@ function main() {
     filterVehicle.value = "";
     filterDateFrom.value = "";
     filterDateTo.value = "";
+    chipTrams?.classList.remove("active");
+    chipWeekends?.classList.remove("active");
+    chipNights?.classList.remove("active");
     updateFilters();
   };
+
+  function toggleChip(btn) {
+    btn.classList.toggle("active");
+    updateFilters();
+  }
+
+  if (chipTrams) {
+    chipTrams.addEventListener("click", () => {
+      if (!chipTrams.classList.contains("active")) {
+        chipTrams.classList.add("active");
+        filterVehicle.value = "Električka";
+      } else {
+        chipTrams.classList.remove("active");
+        filterVehicle.value = "";
+      }
+      updateFilters();
+    });
+  }
+  if (chipWeekends)
+    chipWeekends.addEventListener("click", () => toggleChip(chipWeekends));
+  if (chipNights)
+    chipNights.addEventListener("click", () => toggleChip(chipNights));
 
   prevPageBtn.onclick = () => changePage(-1);
   nextPageBtn.onclick = () => changePage(1);

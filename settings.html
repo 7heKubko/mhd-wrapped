@@ -28,6 +28,20 @@
     </section>
 
     <section class="card fade-in">
+      <h2>Obľúbené (linky a vozidlá)</h2>
+      <div class="setting-row">
+        <input id="favLineInput" placeholder="Pridať obľúbenú linku (napr. 4)">
+        <button id="addFavLineBtn">Pridať linku</button>
+      </div>
+      <ul id="favLinesList" style="list-style:none;padding:0;margin-top:8px"></ul>
+      <div class="setting-row" style="margin-top:12px">
+        <input id="favNumberInput" placeholder="Pridať obľúbené EVČ (napr. 1234)">
+        <button id="addFavNumberBtn">Pridať EVČ</button>
+      </div>
+      <ul id="favNumbersList" style="list-style:none;padding:0;margin-top:8px"></ul>
+    </section>
+
+    <section class="card fade-in">
       <h2>Vzhľad</h2>
 
       <div class="setting-row">
@@ -95,9 +109,10 @@
       <section class="card fade-in">
         <h2>Cloud synchronizácia</h2>
         <div id="loginPopup" style="margin-bottom:12px;display:none;font-weight:600;"></div>
-        <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap">
+        <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
           <button id="uploadCloudBtn">Synchronizovať (upload)</button>
           <button id="downloadCloudBtn">Stiahnuť z cloudu</button>
+          <span id="cloudSyncStatus" style="font-size:0.9em;color:var(--muted-text)"></span>
         </div>
       </section>
 
