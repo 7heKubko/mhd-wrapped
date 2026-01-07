@@ -634,24 +634,79 @@ export function startEditRide(id) {
 
   if (!ride) return;
 
-  const newLine = prompt("Nová linka:", ride.line);
-  if (!newLine) return;
+  const modal = document.getElementById("editRideModal");
+  const fId = document.getElementById("editRideId");
+  const fLine = document.getElementById("editLine");
+  const fNumber = document.getElementById("editNumber");
+  const fDate = document.getElementById("editDate");
+  const fTime = document.getElementById("editTime");
+  const btnSave = document.getElementById("editSaveBtn");
+  const btnCancel = document.getElementById("editCancelBtn");
 
-  const newNumber = prompt("Nové EVČ:", ride.number);
-  if (!newNumber) return;
+  if (!modal || !fId || !fLine || !fNumber || !fDate || !fTime || !btnSave || !btnCancel) {
+    // Fallback to prompt flow if modal not present
+    const newLine = prompt("Nová linka:", ride.line);
+    if (!newLine) return;
+    const newNumber = prompt("Nové EVČ:", ride.number);
+    if (!newNumber) return;
+    const newDate = prompt("Nový dátum (RRRR-MM-DD):", ride.date);
+    if (!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) return;
+    const newTime = prompt("Nový čas (HH:MM):", ride.time);
+    if (!newTime || !/^\d{2}:\d{2}$/.test(newTime)) return;
+    const summary = `Uložiť zmeny?\n` +
+      `Linka: ${ride.line} → ${newLine}\n` +
+      `EVČ: ${ride.number} → ${newNumber}\n` +
+      `Dátum: ${ride.date} → ${newDate}\n` +
+      `Čas: ${ride.time} → ${newTime}`;
+    if (!confirm(summary)) return;
+    ride.line = newLine;
+    ride.number = newNumber;
+    ride.date = newDate;
+    ride.time = newTime;
+    saveRides(rides);
+    showToast("Jazda upravená");
+    renderRidesList();
+    return;
+  }
 
-  const newDate = prompt("Nový dátum (RRRR-MM-DD):", ride.date);
-  if (!newDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDate)) return;
+  // Prefill modal fields
+  fId.textContent = ride.id;
+  fLine.value = ride.line;
+  fNumber.value = ride.number;
+  fDate.value = ride.date;
+  fTime.value = ride.time;
 
-  const newTime = prompt("Nový čas (HH:MM):", ride.time);
-  if (!newTime || !/^\d{2}:\d{2}$/.test(newTime)) return;
+  // Show modal
+  modal.style.display = "flex";
 
-  ride.line = newLine;
-  ride.number = newNumber;
-  ride.date = newDate;
-  ride.time = newTime;
+  const close = () => {
+    modal.style.display = "none";
+    // avoid duplicate handlers on repeated edits
+    btnSave.onclick = null;
+    btnCancel.onclick = null;
+  };
 
-  saveRides(rides);
-  showToast("Jazda upravená");
-  renderRidesList();
+  btnCancel.onclick = () => close();
+
+  btnSave.onclick = () => {
+    const newLine = fLine.value.trim();
+    const newNumber = fNumber.value.trim();
+    const newDate = fDate.value;
+    const newTime = fTime.value;
+
+    if (!newLine || !newNumber || !/^\d{4}-\d{2}-\d{2}$/.test(newDate) || !/^\d{2}:\d{2}$/.test(newTime)) {
+      showToast("Vyplňte všetky polia správne");
+      return;
+    }
+
+    ride.line = newLine;
+    ride.number = newNumber;
+    ride.date = newDate;
+    ride.time = newTime;
+
+    saveRides(rides);
+    showToast("Jazda upravená");
+    renderRidesList();
+    close();
+  };
 }

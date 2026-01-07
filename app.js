@@ -9,7 +9,7 @@ import {
   getLineColors
 } from "./ui.js";
 import { addRide } from "./rides.js";
-import { getCurrentUser } from "./supabase.js";
+import { getCurrentUser, saveRideToCloudIfLoggedIn } from "./supabase.js";
 
 applyTheme();
 
@@ -48,15 +48,28 @@ if (addBtn) {
       return;
     }
 
-    addRide({ line: lineVal, number: numberVal });
+    const ride = addRide({ line: lineVal, number: numberVal });
 
-    if (numbersList && ![...numbersList.options].some((o) => o.value === numberVal)) {
+    if (
+      numbersList &&
+      ![...numbersList.options].some((o) => o.value === numberVal)
+    ) {
       const opt = document.createElement("option");
       opt.value = numberVal;
       numbersList.appendChild(opt);
     }
 
     showToast(`ZADALI STE SPOJ ${lineVal} (${numberVal})`);
+
+    // Immediately save only this ride to cloud (non-blocking)
+    (async () => {
+      try {
+        const res = await saveRideToCloudIfLoggedIn(ride);
+        if (res?.ok) {
+          showToast("Uložené do cloudu");
+        }
+      } catch {}
+    })();
 
     renderLastRides();
     renderQuickStats();

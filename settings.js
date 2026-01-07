@@ -98,6 +98,7 @@ import {
   signUpWithEmail,
   signOut,
   getCurrentUser,
+  uploadRidesIfLoggedIn,
 } from "./supabase.js";
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -189,6 +190,14 @@ document.getElementById("importBtn").onclick = () => {
 
   if (!file) {
     showToast("Vyber súbor na import");
+    return;
+  }
+
+  if (
+    !confirm(
+      "Naozaj chcete importovať dáta? Aktuálne lokálne dáta budú prepísané."
+    )
+  ) {
     return;
   }
 
@@ -305,28 +314,17 @@ if (uploadCloudBtn) {
       return;
     }
     try {
-      const rides = loadRides();
-      const supabase = getSupabase();
-      await supabase.from("rides").delete().eq("user_id", user.id);
-      if (rides.length > 0) {
-        const ridesWithUser = rides.map((r) => ({ ...r, user_id: user.id }));
-        let { error } = await supabase.from("rides").insert(ridesWithUser);
-        if (error) {
-          const msg = String(error.message || "");
-          // Fallback: strip engineType if backend schema doesn't have the column
-          if (msg.includes("engineType") || msg.includes("column")) {
-            const sanitized = ridesWithUser.map(
-              ({ engineType, ...rest }) => rest
-            );
-            const retry = await supabase.from("rides").insert(sanitized);
-            if (retry.error) throw retry.error;
-            showToast("Nahrané bez engineType (server bez stĺpca)");
-          } else {
-            throw error;
-          }
-        }
+      const res = await uploadRidesIfLoggedIn();
+      if (res.ok) {
+        showToast("Dáta boli nahrané do cloudu!");
+      } else if (res.reason === "not-logged-in") {
+        // already handled above
+      } else {
+        showToast(
+          "Chyba pri uploadovaní: " +
+            (res.error?.message || res.error || "Neznáma chyba")
+        );
       }
-      showToast("Dáta boli nahrané do cloudu!");
     } catch (e) {
       showToast("Chyba pri uploadovaní: " + (e.message || e));
     }
@@ -346,6 +344,10 @@ if (downloadCloudBtn) {
       }
       return;
     }
+    const proceed = confirm(
+      "Naozaj chcete stiahnuť všetky dáta? Aktuálne lokálne dáta budú prepísané."
+    );
+    if (!proceed) return;
     try {
       const supabase = getSupabase();
       const { data, error } = await supabase

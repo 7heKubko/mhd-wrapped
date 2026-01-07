@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MHD Wrapped - História</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 </head>
 
 <body>
@@ -66,6 +67,26 @@
   </nav>
 
   <div id="toast"></div>
+
+  <!-- Edit Ride Modal -->
+  <div id="editRideModal" class="modal-backdrop" style="display:none">
+    <div class="modal-card">
+      <h3 style="margin-top:0">Upraviť jazdu</h3>
+      <div style="display:none" id="editRideId"></div>
+      <label>Linka</label>
+      <input id="editLine" placeholder="Linka" inputmode="numeric" />
+      <label>EVČ</label>
+      <input id="editNumber" placeholder="EVČ" inputmode="numeric" />
+      <label>Dátum</label>
+      <input id="editDate" type="date" />
+      <label>Čas</label>
+      <input id="editTime" type="time" />
+      <div class="modal-actions">
+        <button id="editCancelBtn" class="danger" type="button">Zrušiť</button>
+        <button id="editSaveBtn" type="button">Uložiť</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="history.js"></script>
 </body>
