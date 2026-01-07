@@ -816,7 +816,8 @@ function renderHoursChart() {
   const hours = Array(24).fill(0);
 
   rides.forEach((r) => {
-    const hour = new Date(r.date).getHours();
+    // Use recorded ride time (HH:MM) independent of date
+    const hour = r.time ? parseInt(r.time.split(":")[0], 10) : 0;
     hours[hour]++;
   });
 
