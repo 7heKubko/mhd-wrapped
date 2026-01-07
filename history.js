@@ -73,8 +73,9 @@ function main() {
   nextPageBtn.onclick = () => changePage(1);
 
   document.addEventListener("click", (e) => {
-    if (e.target.classList.contains("edit-btn")) {
-      const id = e.target.dataset.id;
+    const btn = e.target.closest?.(".edit-btn");
+    if (btn) {
+      const id = btn.dataset.id;
       startEditRide(id);
     }
   });

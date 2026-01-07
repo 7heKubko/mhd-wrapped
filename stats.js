@@ -718,25 +718,48 @@ function main() {
 
 function renderByECVChart() {
   const rides = getRides();
-  const map = {};
+  const countsByNumber = {};
+  const vehicleByNumber = {};
 
   rides.forEach((r) => {
-    const label = `${r.vehicle || "neznámy"} - ${r.number || "neznámy"}`;
-    if (!map[label]) map[label] = 0;
-    map[label]++;
+    const num = r.number || "neznámy";
+    countsByNumber[num] = (countsByNumber[num] || 0) + 1;
+    if (r.vehicle) vehicleByNumber[num] = r.vehicle;
   });
 
-  const sortedEntries = Object.entries(map).sort(([, a], [, b]) => b - a);
+  const sortedEntries = Object.entries(countsByNumber).sort(
+    ([, a], [, b]) => b - a
+  );
   const entriesToShow = showAllECVs
     ? sortedEntries
     : sortedEntries.slice(0, ECV_TOP_N);
 
-  const labels = entriesToShow.map(([label]) => label);
+  const labels = entriesToShow.map(([num]) =>
+    showAllECVs ? num : `${vehicleByNumber[num] || "neznámy"} - ${num}`
+  );
   const data = entriesToShow.map(([, count]) => count);
+  const tooltipData = entriesToShow.map(([num, count]) => ({
+    num,
+    vehicle: vehicleByNumber[num] || "neznáme vozidlo",
+    count,
+  }));
 
   const ctx = document.getElementById("chartByECV");
   if (!ctx) return;
   if (ctx.chart) ctx.chart.destroy();
+  // Keep vertical bars to match style and avoid pushing layout
+  // No dynamic canvas height; rely on vertical layout with short labels in "all" mode
+
+  const isAll = showAllECVs;
+  const labelCount = labels.length;
+  // Match thick bars for Top 5; auto-thin only when showing all
+  const dynamicMaxBarThickness = isAll
+    ? labelCount <= 6
+      ? 28
+      : labelCount <= 15
+      ? 18
+      : 12
+    : undefined;
 
   ctx.chart = new Chart(ctx, {
     type: "bar",
@@ -745,27 +768,38 @@ function renderByECVChart() {
       datasets: [
         {
           data,
-          backgroundColor: "#ffcc00",
+          backgroundColor: "#34c759", // match Typy vozidiel
+          maxBarThickness: dynamicMaxBarThickness,
         },
       ],
     },
     options: {
-      plugins: { legend: { display: false } },
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const idx = context.dataIndex;
+              const t = tooltipData[idx];
+              const val = context.raw;
+              return `${t.vehicle} - ${t.num}: ${val}×`;
+            },
+          },
+        },
+      },
       responsive: true,
       scales: {
         x: {
-          ticks: {
-            autoSkip: false,
-            maxRotation: 60,
-            minRotation: 0,
-          },
-        },
-        y: {
           beginAtZero: true,
           ticks: {
             precision: 0,
+            maxRotation: isAll ? 0 : 45,
+            minRotation: 0,
+            autoSkip: true,
           },
         },
+        y: { ticks: { autoSkip: false } },
       },
     },
   });
