@@ -99,6 +99,8 @@ import {
   signOut,
   getCurrentUser,
   uploadRidesIfLoggedIn,
+  loadFavoritesFromCloudIfLoggedIn,
+  saveFavoritesToCloudIfLoggedIn,
 } from "./supabase.js";
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -505,6 +507,21 @@ function getFavorites() {
 }
 function setFavorites(f) {
   localStorage.setItem("favorites", JSON.stringify(f));
+  // Attempt to sync to cloud (non-blocking)
+  try {
+    // fire-and-forget with toast indicator
+    void saveFavoritesToCloudIfLoggedIn(f)
+      .then((res) => {
+        if (res?.ok) {
+          showToast("Obľúbené synchronizované do cloudu.");
+        } else if (res?.reason !== "not-logged-in") {
+          showToast("Synchronizácia obľúbených zlyhala.");
+        }
+      })
+      .catch(() => {
+        showToast("Synchronizácia obľúbených zlyhala.");
+      });
+  } catch {}
 }
 function renderFavorites() {
   const { lines, numbers } = getFavorites();
@@ -569,3 +586,54 @@ if (addFavNumberBtn && favNumberInput) {
   });
 }
 renderFavorites();
+
+// Try to sync favorites with cloud on startup
+(async function initFavoritesSync() {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return; // no sync if not logged in
+
+    const localFav = getFavorites();
+    const cloud = await loadFavoritesFromCloudIfLoggedIn();
+    if (!cloud.ok) return;
+    const cloudFav = cloud.favorites || { lines: [], numbers: [] };
+
+    const hasCloud =
+      (cloudFav.lines?.length || 0) > 0 || (cloudFav.numbers?.length || 0) > 0;
+    const hasLocal =
+      (localFav.lines?.length || 0) > 0 || (localFav.numbers?.length || 0) > 0;
+
+    if (hasCloud && !hasLocal) {
+      // Adopt cloud -> local
+      setFavorites(cloudFav);
+      renderFavorites();
+      showToast("Obľúbené načítané z cloudu.");
+    } else if (!hasCloud && hasLocal) {
+      // Push local -> cloud
+      const res = await saveFavoritesToCloudIfLoggedIn(localFav);
+      if (res?.ok) {
+        showToast("Obľúbené synchronizované do cloudu.");
+      } else if (res?.reason !== "not-logged-in") {
+        showToast("Synchronizácia obľúbených zlyhala.");
+      }
+    } else if (hasCloud && hasLocal) {
+      // Merge (union) both sets and persist both sides
+      const merged = {
+        lines: Array.from(
+          new Set([...(localFav.lines || []), ...(cloudFav.lines || [])])
+        ),
+        numbers: Array.from(
+          new Set([...(localFav.numbers || []), ...(cloudFav.numbers || [])])
+        ),
+      };
+      setFavorites(merged);
+      renderFavorites();
+      const res = await saveFavoritesToCloudIfLoggedIn(merged);
+      if (res?.ok) {
+        showToast("Obľúbené zlúčené s cloudom.");
+      } else if (res?.reason !== "not-logged-in") {
+        showToast("Synchronizácia obľúbených zlyhala.");
+      }
+    }
+  } catch {}
+})();

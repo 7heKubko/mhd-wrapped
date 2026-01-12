@@ -111,3 +111,61 @@ export async function saveRideToCloudIfLoggedIn(ride) {
     return { ok: false, error };
   }
 }
+
+// --- Favorites sync ---
+// Load favorites for current user (if logged in)
+// Returns { ok: boolean, favorites?: { lines: string[], numbers: string[] }, reason?: string, error?: any }
+export async function loadFavoritesFromCloudIfLoggedIn() {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return { ok: false, reason: "not-logged-in" };
+
+    const supabase = getSupabase();
+    const { data, error } = await supabase
+      .from("favorites")
+      .select("lines,numbers")
+      .eq("user_id", user.id)
+      .single();
+
+    if (error) {
+      // If table doesn't exist or row not found, treat as empty
+      if (error.code === "PGRST116" /* JSON object requested, multiple (or no) rows returned */ || error.message?.includes("relation \"favorites\" does not exist")) {
+        return { ok: true, favorites: { lines: [], numbers: [] } };
+      }
+      return { ok: false, error };
+    }
+    return {
+      ok: true,
+      favorites: {
+        lines: Array.isArray(data?.lines) ? data.lines : [],
+        numbers: Array.isArray(data?.numbers) ? data.numbers : [],
+      },
+    };
+  } catch (error) {
+    return { ok: false, error };
+  }
+}
+
+// Save favorites for current user (if logged in)
+// Returns { ok: boolean, reason?: string, error?: any }
+export async function saveFavoritesToCloudIfLoggedIn(favorites) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return { ok: false, reason: "not-logged-in" };
+
+    const supabase = getSupabase();
+    const row = {
+      user_id: user.id,
+      lines: Array.isArray(favorites?.lines) ? favorites.lines : [],
+      numbers: Array.isArray(favorites?.numbers) ? favorites.numbers : [],
+      updated_at: new Date().toISOString(),
+    };
+    const { error } = await supabase
+      .from("favorites")
+      .upsert(row, { onConflict: "user_id" });
+    if (error) throw error;
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error };
+  }
+}
