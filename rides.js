@@ -122,7 +122,11 @@ export const vehicleSeriesOVA = [
 
   { type: "Iveco Crossway LE Line 12M", start: 241001, end: 241011, mode: "Autobus", engineType: "Diesel" },
   { type: "Iveco Crossway LE City 12M", start: 331001, end: 331026, mode: "Autobus", engineType: "Diesel" },
+  { type: "Iveco Crossway LE Line 12M", start: 421001, end: 421023, mode: "Autobus", engineType: "Diesel" },
   { type: "Iveco Crossway LE City 12M", start: 631001, end: 631011, mode: "Autobus", engineType: "Diesel" },
+  { type: "Iveco Crossway LE Line 12M", start: 640001, end: 640004, mode: "Autobus", engineType: "Diesel" },
+  { type: "Iveco Crossway LE Line 12M", start: 641001, end: 641019, mode: "Autobus", engineType: "Diesel" },
+  { type: "Iveco Crossway LE Line 12M", start: 741001, end: 741005, mode: "Autobus", engineType: "Diesel" },
   { type: "Setra S415 LE", start: 631301, end: 631351, mode: "Autobus", engineType: "Diesel" },
   { type: "Scania Citywide LE 12M CNG", start: 631202, end: 631211, mode: "Autobus", engineType: "CNG" },
   { type: "Scania Citywide Suburban LE 15M", start: 0, end: 0, mode: "Autobus", engineType: "Diesel" },
