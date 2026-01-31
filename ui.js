@@ -238,6 +238,7 @@ export const lineColorsBA = {
   X3: "#ff7f1a",
   X4: "#ff7f1a",
   X9: "#ff7f1a",
+  X47: "#ff7f1a",
 };
 
 export const lineColorsOVA = {

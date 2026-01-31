@@ -135,7 +135,6 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 applyTheme();
-// Ensure login UI reflects persisted session on initial load
 updateLoginUI();
 
 const citySelect = document.getElementById("citySelect");
@@ -251,7 +250,6 @@ function updateCloudSyncStatus(statusObj) {
   } catch {}
 }
 
-// Initialize status on load
 updateCloudSyncStatus();
 
 async function updateLoginUI() {
@@ -407,7 +405,6 @@ if (downloadCloudBtn) {
       }
 
       if (data) {
-        // Normalize rows to local app schema to ensure edit/delete work
         const normalized = data.map((row) => {
           const num = row.number ?? "";
           const idStr =
@@ -456,7 +453,6 @@ if (downloadCloudBtn) {
   };
 }
 
-// --- Oprava dát (fixDataBtn) ---
 const fixDataBtn = document.getElementById("fixDataBtn");
 if (fixDataBtn) {
   fixDataBtn.onclick = () => {
@@ -493,7 +489,6 @@ if (fixDataBtn) {
   };
 }
 
-// --- Favorites management ---
 const favLineInput = document.getElementById("favLineInput");
 const addFavLineBtn = document.getElementById("addFavLineBtn");
 const favLinesList = document.getElementById("favLinesList");
@@ -507,9 +502,7 @@ function getFavorites() {
 }
 function setFavorites(f) {
   localStorage.setItem("favorites", JSON.stringify(f));
-  // Attempt to sync to cloud (non-blocking)
   try {
-    // fire-and-forget with toast indicator
     void saveFavoritesToCloudIfLoggedIn(f)
       .then((res) => {
         if (res?.ok) {
@@ -587,11 +580,10 @@ if (addFavNumberBtn && favNumberInput) {
 }
 renderFavorites();
 
-// Try to sync favorites with cloud on startup
 (async function initFavoritesSync() {
   try {
     const user = await getCurrentUser();
-    if (!user) return; // no sync if not logged in
+    if (!user) return;
 
     const localFav = getFavorites();
     const cloud = await loadFavoritesFromCloudIfLoggedIn();
