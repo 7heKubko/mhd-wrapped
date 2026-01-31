@@ -413,6 +413,7 @@ let filters = {
   line: "",
   number: "",
   vehicle: "",
+  vehicleMode: "",
   dateFrom: "",
   dateTo: "",
   weekendOnly: false,
@@ -470,8 +471,8 @@ export function renderLastRides() {
     }
     li.innerHTML = `
       <span class="${badgeClass}" style="--badge-color:${
-      lineColors[r.line] || "#888"
-    }">${r.line}</span>
+        lineColors[r.line] || "#888"
+      }">${r.line}</span>
       ${r.number} - ${r.time}
     `;
     list.appendChild(li);
@@ -571,6 +572,8 @@ export function renderRidesList() {
     if (filters.line && !r.line.includes(filters.line)) return false;
     if (filters.number && r.number !== filters.number) return false;
     if (filters.vehicle && r.vehicle !== filters.vehicle) return false;
+    if (filters.vehicleMode && r.vehicleMode !== filters.vehicleMode)
+      return false;
 
     if (filters.dateFrom && r.date < filters.dateFrom) return false;
     if (filters.dateTo && r.date > filters.dateTo) return false;
@@ -587,6 +590,13 @@ export function renderRidesList() {
     }
 
     return true;
+  });
+
+  // Sort by datetime descending (newest first)
+  filtered.sort((a, b) => {
+    const ad = new Date(`${a.date}T${a.time || "00:00"}`);
+    const bd = new Date(`${b.date}T${b.time || "00:00"}`);
+    return bd - ad;
   });
 
   const perPage = 10;
@@ -622,8 +632,8 @@ export function renderRidesList() {
       <span style="display: flex; align-items: center; gap: 8px;">
         <span>${formatDate(r.date, r.time)}</span>
         <span class="${badgeClass}" style="--badge-color:${
-      lineColors[r.line] || "#888"
-    }">${r.line}</span>
+          lineColors[r.line] || "#888"
+        }">${r.line}</span>
         <span>${r.number}</span>
       </span>
       <div class="ride-actions">
@@ -643,6 +653,9 @@ export function renderRidesList() {
   document.querySelectorAll(".delete-btn").forEach((btn) => {
     btn.onclick = () => {
       const id = btn.dataset.id;
+      // Ask for confirmation before deleting
+      const ok = confirm("Naozaj chcete vymazať túto jazdu?");
+      if (!ok) return;
       const newRides = loadRides().filter((r) => r.id !== id);
       saveRides(newRides);
       showToast("Jazda vymazaná");

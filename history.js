@@ -52,6 +52,7 @@ function main() {
       line: filterLine.value.trim(),
       number: filterNumber.value.trim(),
       vehicle: filterVehicle.value.trim(),
+      vehicleMode: chipTrams?.classList.contains("active") ? "Električka" : "",
       dateFrom: filterDateFrom.value || "",
       dateTo: filterDateTo.value || "",
       weekendOnly: chipWeekends?.classList.contains("active") || false,
@@ -82,18 +83,8 @@ function main() {
     updateFilters();
   }
 
-  if (chipTrams) {
-    chipTrams.addEventListener("click", () => {
-      if (!chipTrams.classList.contains("active")) {
-        chipTrams.classList.add("active");
-        filterVehicle.value = "Električka";
-      } else {
-        chipTrams.classList.remove("active");
-        filterVehicle.value = "";
-      }
-      updateFilters();
-    });
-  }
+  if (chipTrams)
+    chipTrams.addEventListener("click", () => toggleChip(chipTrams));
   if (chipWeekends)
     chipWeekends.addEventListener("click", () => toggleChip(chipWeekends));
   if (chipNights)
