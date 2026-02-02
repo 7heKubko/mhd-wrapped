@@ -156,6 +156,11 @@ export const lineColorsBA = {
   S60: "#126dd4",
   S70: "#126dd4",
 
+  S182: "#fecc00",
+  S183: "#dd2e0e",
+  S184: "#1c7742",
+  S185: "#264796",
+
   205: "#bfbfb9",
   209: "#bfbfb9",
   215: "#bfbfb9",
@@ -238,7 +243,7 @@ export const lineColorsBA = {
   X3: "#ff7f1a",
   X4: "#ff7f1a",
   X9: "#ff7f1a",
-  X47: "#ff7f1a",
+  X47: "#ff7f1a"
 };
 
 export const lineColorsOVA = {

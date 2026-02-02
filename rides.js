@@ -58,6 +58,11 @@ export const vehicleSeriesBA = [
   { type: "Vectron", start: 383, end: 383, mode: "Vlak", engineType: "Electro" },
   { type: "Vectron", start: 193, end: 193, mode: "Vlak", engineType: "Electro" },
   { type: "Princezná", start: 263, end: 263, mode: "Vlak", engineType: "Electro" },
+  
+  { type: "ČKD EMU 89.0", start: 89, end: 89, mode: "Vlak", engineType: "Electro" },
+  { type: "Stadler GTW 2/6 425", start: 425, end: 425, mode: "Vlak", engineType: "Electro" },
+  { type: "Stadler GTW 2/6 495", start: 495, end: 495, mode: "Vlak", engineType: "Electro" },
+  { type: "SLM-BBC EMU 29.0 + R 29.0", start: 405, end: 405, mode: "Vlak", engineType: "Electro" },
 
   { type: "Anča", start: 810, end: 812, mode: "Vlak", engineType: "Diesel" },
   { type: "Rakva", start: 843, end: 843, mode: "Vlak", engineType: "Diesel" },
