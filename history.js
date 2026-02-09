@@ -42,6 +42,9 @@ function main() {
   const filterDateTo = document.getElementById("filterDateTo");
   const clearFiltersBtn = document.getElementById("clearFilters");
   const chipTrams = document.getElementById("chipTrams");
+  const chipBuses = document.getElementById("chipBuses");
+  const chipSuburban = document.getElementById("chipSuburban");
+  const chipTbuses = document.getElementById("chipTbuses");
   const chipWeekends = document.getElementById("chipWeekends");
   const chipNights = document.getElementById("chipNights");
   const prevPageBtn = document.getElementById("prevPage");
@@ -52,7 +55,7 @@ function main() {
       line: filterLine.value.trim(),
       number: filterNumber.value.trim(),
       vehicle: filterVehicle.value.trim(),
-      vehicleMode: chipTrams?.classList.contains("active") ? "Električka" : "",
+      vehicleMode: chipTrams?.classList.contains("active") ? "Električka" : chipBuses?.classList.contains("active") ? "Autobus" : chipTbuses?.classList.contains("active") ? "Trolejbus" : "",
       dateFrom: filterDateFrom.value || "",
       dateTo: filterDateTo.value || "",
       weekendOnly: chipWeekends?.classList.contains("active") || false,
@@ -73,6 +76,8 @@ function main() {
     filterDateFrom.value = "";
     filterDateTo.value = "";
     chipTrams?.classList.remove("active");
+    chipBuses?.classList.remove("active");
+    chipTbuses?.classList.remove("active");
     chipWeekends?.classList.remove("active");
     chipNights?.classList.remove("active");
     updateFilters();
@@ -85,6 +90,10 @@ function main() {
 
   if (chipTrams)
     chipTrams.addEventListener("click", () => toggleChip(chipTrams));
+  if (chipBuses)
+    chipBuses.addEventListener("click", () => toggleChip(chipBuses));
+  if (chipTbuses)
+    chipTbuses.addEventListener("click", () => toggleChip(chipTbuses));
   if (chipWeekends)
     chipWeekends.addEventListener("click", () => toggleChip(chipWeekends));
   if (chipNights)

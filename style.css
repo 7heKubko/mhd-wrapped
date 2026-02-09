@@ -1,9 +1,7 @@
-/* Spodný padding pod filter bar pre konzistentný odstup */
 .stats-filter-bar {
   margin-bottom: 28px !important;
 }
-/* Drag & drop sortable list for settings */
-/* Sortable list for settings - modern card look */
+
 .sortable-list {
   list-style: none;
   padding: 0;
@@ -49,7 +47,6 @@
   letter-spacing: 2px;
 }
 
-/* Mesačné a ročné prepínače a zoznamy - zjednotené */
 .month-switch, .year-switch {
   display: flex;
   align-items: center;
@@ -81,8 +78,8 @@
   background: var(--card);
   border-radius: 8px;
   padding: 8px 14px;
-  font-size: 14px; /* Reduced font size */
-  word-wrap: break-word; /* Ensure long text wraps */
+  font-size: 14px;
+  word-wrap: break-word;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -97,7 +94,7 @@
   padding: 2px 8px;
   font-weight: 600;
   margin-right: 6px;
-  color: #111; /* default fallback */
+  color: #111;
 }
 .line-badge--black {
   color: #111 !important;
@@ -193,19 +190,19 @@ button.danger {
 
 .quick-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjust grid for responsiveness */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 12px;
 }
 
 .stat-box {
   background: var(--bg);
-  padding: 10px; /* Slightly reduce padding */
+  padding: 10px;
   border-radius: 12px;
   text-align: center;
 }
 
 .stat-label {
-  font-size: 12px; /* Further reduce label font size */
+  font-size: 12px;
   opacity: 0.7;
 }
 
@@ -407,7 +404,6 @@ input:checked + .slider:before {
   padding-right: 6px;
   position: relative;
 
-  /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: var(--text) transparent;
 }
@@ -450,7 +446,6 @@ input:checked + .slider:before {
   }
 }
 
-/* Modal (mobile-friendly) */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -482,7 +477,6 @@ input:checked + .slider:before {
   margin-top: 14px;
 }
 
-/* Smart filter chips */
 #smartFilters button {
   background: var(--card);
   color: var(--text);

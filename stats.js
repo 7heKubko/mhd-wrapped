@@ -1,19 +1,11 @@
 import { applyTheme, showToast, getLineColors } from "./ui.js";
 import { loadRides, saveRides } from "./storage.js";
-import {
-  getTotal,
-  getTopLine,
-  getFavBus,
-  getPersona,
-  getFavVehicleMode,
-  getFavModelOnLine,
-} from "./wrapped.js";
+import { getTotal, getTopLine, getFavBus, getPersona, getFavVehicleMode, getFavModelOnLine } from "./wrapped.js";
 import { getVehicleEngineType } from "./rides.js";
 import { getCurrentUser } from "./supabase.js";
 
 applyTheme();
 
-// Register Chart.js annotation plugin when available (CDN script)
 if (typeof Chart !== "undefined" && window && window["chartjs-plugin-annotation"]) {
   try {
     Chart.register(window["chartjs-plugin-annotation"]);
@@ -52,20 +44,15 @@ window.addEventListener("DOMContentLoaded", async () => {
   main();
 });
 
-// Ensure selectedYear is defined at the top of the file
 let selectedYear = "all";
-
-// Ensure allRides is defined at the top of the file
 let allRides = loadRides();
 
-// Migrate older rides missing engineType based on vehicle number
 function migrateEngineType() {
   if (!Array.isArray(allRides) || !allRides.length) return;
   let changed = false;
   allRides = allRides.map((r) => {
     const eng = r.number ? getVehicleEngineType(r.number) : null;
     if (eng && eng !== "unknown") {
-      // Update if missing, unknown, or mismatched with current mapping
       if (!r.engineType || r.engineType === "unknown" || r.engineType !== eng) {
         changed = true;
         return { ...r, engineType: eng };
@@ -77,25 +64,12 @@ function migrateEngineType() {
 }
 migrateEngineType();
 
-// Ensure showAllECVs is defined at the top of the file
 let showAllECVs = false;
-
-// Ensure ECV_TOP_N is defined at the top of the file
 const ECV_TOP_N = 5;
-
-// Ensure VEHICLE_TYPE_TOP_N is defined at the top of the file
 const VEHICLE_TOP_N = 5;
-
-// Ensure LINES_TOP_N is defined at the top of the file
 const LINES_TOP_N = 5;
-
-// Ensure showAllVehicles is defined at the top of the file
 let showAllVehicles = false;
-
-// Ensure showAllLines is defined at the top of the file
 let showAllLines = false;
-
-// Ensure showAllVehicleTypes is defined at the top of the file
 let showAllVehicleTypes = false;
 
 function getRides() {
@@ -171,7 +145,6 @@ function main() {
         if (idx !== -1) {
           currentYearIdx = idx;
           updateYearLabel();
-          // Set selectedYear so all charts filter correctly
           selectedYear = yearSelect.value;
           rerenderAll();
         }
@@ -205,7 +178,6 @@ function main() {
           rerenderAll();
       }
     };
-  // Move the getRides function definition here to ensure it is available
   function getRides() {
     if (selectedYear === "all") return allRides;
     return allRides.filter((r) => r.date.startsWith(selectedYear + "-"));
@@ -277,7 +249,6 @@ function main() {
       yearStats.appendChild(li);
     });
   }
-  // removed broken duplicate renderStreakHeatmap implementation
 
   function renderLongestStreak() {
     const rides = getRides();
@@ -556,7 +527,6 @@ function main() {
     const wNightRides = document.getElementById("wNightRides");
     if (wNightRides) wNightRides.textContent = nightRides;
 
-    // New statistics
     const uniqueLines = new Set(rides.map((ride) => ride.line)).size;
     const uniqueVehicles = new Set(rides.map((ride) => ride.number)).size;
     document.getElementById("wUniqueLines").textContent = uniqueLines;
@@ -688,7 +658,7 @@ function main() {
     renderByDriveTypeChart();
     renderByHolidayChart();
     renderByVehicleTypeChart();
-    renderByECVChart(); // Ensure ECV chart is rendered
+    renderByECVChart();
     renderMonthStats();
     renderYearStats();
     renderLongestStreak();
@@ -700,10 +670,8 @@ function main() {
   reorderSections();
   rerenderAll();
 
-  // Re-render heatmap if data was fixed/updated from other page
   window.addEventListener("storage", (e) => {
     if (e.key === "lastDataUpdate") {
-      // Reload local rides cache and update charts that read from it
       allRides = loadRides();
       renderPerLineMiniCards();
     }
@@ -759,7 +727,6 @@ function renderPerLineMiniCards() {
     card.style.cssText = "border:1px solid var(--border);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;";
     const badge = document.createElement("span");
     badge.className = "line-badge";
-    // Reuse badge color classes logic similar to other lists
     let badgeClass = "line-badge";
     const city = localStorage.getItem("city") || "bratislava";
     const n = parseInt(line, 10);
@@ -813,12 +780,9 @@ function renderByECVChart() {
   const ctx = document.getElementById("chartByECV");
   if (!ctx) return;
   if (ctx.chart) ctx.chart.destroy();
-  // Keep vertical bars to match style and avoid pushing layout
-  // No dynamic canvas height; rely on vertical layout with short labels in "all" mode
 
   const isAll = showAllECVs;
   const labelCount = labels.length;
-  // Match thick bars for Top 5; auto-thin only when showing all
   const dynamicMaxBarThickness = isAll
     ? labelCount <= 6
       ? 28
@@ -834,7 +798,7 @@ function renderByECVChart() {
       datasets: [
         {
           data,
-          backgroundColor: "#34c759", // match Typy vozidiel
+          backgroundColor: "#34c759",
           maxBarThickness: dynamicMaxBarThickness,
           borderColor: labels.map((_, i) => (favNumbers.has(entriesToShow[i][0]) ? "#ffd60a" : undefined)),
           borderWidth: labels.map((_, i) => (favNumbers.has(entriesToShow[i][0]) ? 3 : 0)),
@@ -918,7 +882,6 @@ function renderHoursChart() {
   const hours = Array(24).fill(0);
 
   rides.forEach((r) => {
-    // Use recorded ride time (HH:MM) independent of date
     const hour = r.time ? parseInt(r.time.split(":")[0], 10) : 0;
     hours[hour]++;
   });
@@ -927,7 +890,6 @@ function renderHoursChart() {
   if (!ctx) return;
   if (ctx.chart) ctx.chart.destroy();
 
-  // Compute circular mean time-of-day (independent of date)
   let sumX = 0;
   let sumY = 0;
   let n = 0;
@@ -944,12 +906,11 @@ function renderHoursChart() {
     n++;
   });
 
-  let meanInfo = null; // { hourInt, labelText }
+  let meanInfo = null;
   if (n > 0) {
     let ang = Math.atan2(sumY, sumX);
     if (ang < 0) ang += 2 * Math.PI;
     let meanMinutes = (ang * 24 * 60) / (2 * Math.PI);
-    // Round to nearest minute
     meanMinutes = Math.round(meanMinutes);
     if (meanMinutes >= 24 * 60) meanMinutes -= 24 * 60;
     let meanH = Math.floor(meanMinutes / 60);
@@ -957,8 +918,7 @@ function renderHoursChart() {
     const hh = String(meanH).padStart(2, "0");
     const mm = String(meanM).padStart(2, "0");
     const labelText = `Priemer: ${hh}:${mm}`;
-    // For positioning on category axis, use nearest hour tick
-    const hourInt = meanH; // nearest hour bucket
+    const hourInt = meanH;
     meanInfo = { hourInt, labelText };
   }
 
@@ -976,7 +936,6 @@ function renderHoursChart() {
     options: {
       plugins: {
         legend: { display: false },
-        // Draw mean time-of-day vertical line when available
         ...(meanInfo && window && window["chartjs-plugin-annotation"]
           ? {
               annotation: {

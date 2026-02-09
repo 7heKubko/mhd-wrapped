@@ -348,7 +348,6 @@ if (uploadCloudBtn) {
           action: "upload",
         });
       } else if (res.reason === "not-logged-in") {
-        // already handled above
       } else {
         showToast(
           "Chyba pri uploadovaní: " +

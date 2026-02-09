@@ -1,7 +1,4 @@
 import { loadRides } from "./storage.js";
-
-// Supabase client initialization (singleton)
-// Use UMD CDN version loaded in HTML
 const SUPABASE_URL = "https://xnvsdyzsavhmlzoevjqg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_wKjDkYyoZSK3eHZ-gaKdwA_EUXvXkl_";
 
@@ -25,7 +22,6 @@ export function getSupabase() {
 
 export function getCurrentUser() {
   const supabase = getSupabase();
-  // Prefer local session to avoid unnecessary network calls and ensure persistence
   return supabase.auth
     .getSession()
     .then(({ data }) => data.session?.user || null)
@@ -50,8 +46,6 @@ export function signOut() {
   return supabase.auth.signOut();
 }
 
-// Upload all local rides to Supabase for the current user (if logged in)
-// Returns { ok: boolean, reason?: string, error?: any }
 export async function uploadRidesIfLoggedIn() {
   try {
     const user = await getCurrentUser();
@@ -60,11 +54,9 @@ export async function uploadRidesIfLoggedIn() {
     const rides = loadRides();
     const supabase = getSupabase();
 
-    // Replace user data entirely to keep cloud in sync with local
     await supabase.from("rides").delete().eq("user_id", user.id);
 
     if (rides.length > 0) {
-      // Whitelist only known safe columns to prevent 400 on unknown fields
       const safeRows = rides.map((r) => ({
         line: r.line,
         number: r.number,
@@ -85,8 +77,6 @@ export async function uploadRidesIfLoggedIn() {
   }
 }
 
-// Insert a single ride immediately for the current user (if logged in)
-// Returns { ok: boolean, reason?: string, error?: any }
 export async function saveRideToCloudIfLoggedIn(ride) {
   try {
     const user = await getCurrentUser();
@@ -112,9 +102,6 @@ export async function saveRideToCloudIfLoggedIn(ride) {
   }
 }
 
-// --- Favorites sync ---
-// Load favorites for current user (if logged in)
-// Returns { ok: boolean, favorites?: { lines: string[], numbers: string[] }, reason?: string, error?: any }
 export async function loadFavoritesFromCloudIfLoggedIn() {
   try {
     const user = await getCurrentUser();
@@ -128,8 +115,7 @@ export async function loadFavoritesFromCloudIfLoggedIn() {
       .single();
 
     if (error) {
-      // If table doesn't exist or row not found, treat as empty
-      if (error.code === "PGRST116" /* JSON object requested, multiple (or no) rows returned */ || error.message?.includes("relation \"favorites\" does not exist")) {
+      if (error.code === "PGRST116" || error.message?.includes("relation \"favorites\" does not exist")) {
         return { ok: true, favorites: { lines: [], numbers: [] } };
       }
       return { ok: false, error };
@@ -146,8 +132,6 @@ export async function loadFavoritesFromCloudIfLoggedIn() {
   }
 }
 
-// Save favorites for current user (if logged in)
-// Returns { ok: boolean, reason?: string, error?: any }
 export async function saveFavoritesToCloudIfLoggedIn(favorites) {
   try {
     const user = await getCurrentUser();

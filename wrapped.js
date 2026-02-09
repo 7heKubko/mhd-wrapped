@@ -1,4 +1,3 @@
-// Returns the most common vehicle mode (bus, tram, tbus, coach, etc.)
 export function getFavVehicleMode(rides) {
   const map = {};
   rides.forEach((r) => {
@@ -11,7 +10,6 @@ export function getFavVehicleMode(rides) {
   return [sorted[0][0], sorted[0][1]];
 }
 
-// Returns the most common vehicle model for a given line
 export function getFavModelOnLine(rides, line) {
   const map = {};
   rides.forEach((r) => {
@@ -60,8 +58,32 @@ export function getFavBus(rides) {
 export function getPersona(rides) {
   const total = rides.length;
 
-  if (total === 0) return "Nováčik";
-  if (total < 20) return "Príležitostný cestujúci";
-  if (total < 100) return "MHD nadšenec";
-  return "MHD legenda";
+if (total === 0) return "Nováčik";
+if (total < 50) return "Príležitostný cestujúci";
+if (total < 100) return "MHD nadšenec";
+if (total < 200) return "MHD záhradník";
+
+if (total < 400) return "Lovec lístkov";
+if (total < 600) return "Zabudol označiť lístok";
+if (total < 800) return "Sedí na nesprávnom mieste";
+if (total < 1000) return "Pozná vodiča po mene";
+
+if (total < 1200) return "MHD filozof";
+if (total < 1400) return "Expert na meškania";
+if (total < 1600) return "Číta CP aj v spánku";
+if (total < 1800) return "Zaspal konečnú";
+
+if (total < 2000) return "Majster prestupov";
+if (total < 2200) return "Revizorov šiesty zmysel";
+if (total < 2400) return "Vodičova pravá ruka";
+if (total < 2600) return "MHD kartograf";
+
+if (total < 2800) return "Pán zastávok";
+if (total < 3000) return "Cestoval aj v depe";
+if (total < 3200) return "MHD poloboh";
+if (total < 3400) return "Legendárny pasažier";
+
+if (total < 5000) return "MHD legenda";
+return "MHD nesmrteľný";
+
 }

@@ -1,7 +1,6 @@
 const KEY = "mhd-wrapped-rides";
 
 export function loadRides() {
-  // Try localStorage first
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
@@ -9,7 +8,6 @@ export function loadRides() {
       if (Array.isArray(data)) return data;
     }
   } catch {}
-  // Fallback to sessionStorage (e.g., iOS Safari Private Mode)
   try {
     const raw = sessionStorage.getItem(KEY);
     if (raw) {
@@ -22,12 +20,10 @@ export function loadRides() {
 
 export function saveRides(rides) {
   const payload = JSON.stringify(rides);
-  // Attempt localStorage
   try {
     localStorage.setItem(KEY, payload);
     return;
   } catch {}
-  // Fallback to sessionStorage
   try {
     sessionStorage.setItem(KEY, payload);
   } catch {}

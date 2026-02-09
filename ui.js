@@ -401,7 +401,6 @@ export function showToast(text) {
   try {
     const key = `toastSeen:${text}`;
     if (sessionStorage.getItem(key)) return;
-    // Mark as shown for this session for repeated identical messages
     sessionStorage.setItem(key, "1");
   } catch {}
   toast.textContent = text;
@@ -595,7 +594,6 @@ export function renderRidesList() {
     return true;
   });
 
-  // Sort by datetime descending (newest first)
   filtered.sort((a, b) => {
     const ad = new Date(`${a.date}T${a.time || "00:00"}`);
     const bd = new Date(`${b.date}T${b.time || "00:00"}`);
@@ -656,7 +654,6 @@ export function renderRidesList() {
   document.querySelectorAll(".delete-btn").forEach((btn) => {
     btn.onclick = () => {
       const id = btn.dataset.id;
-      // Ask for confirmation before deleting
       const ok = confirm("Naozaj chcete vymazať túto jazdu?");
       if (!ok) return;
       const newRides = loadRides().filter((r) => r.id !== id);
@@ -700,7 +697,7 @@ export function startEditRide(id) {
     !btnSave ||
     !btnCancel
   ) {
-    // Fallback to prompt flow if modal not present
+
     const newLine = prompt("Nová linka:", ride.line);
     if (!newLine) return;
     const newNumber = prompt("Nové EVČ:", ride.number);
@@ -726,19 +723,16 @@ export function startEditRide(id) {
     return;
   }
 
-  // Prefill modal fields
   fId.textContent = ride.id;
   fLine.value = ride.line;
   fNumber.value = ride.number;
   fDate.value = ride.date;
   fTime.value = ride.time;
 
-  // Show modal
   modal.style.display = "flex";
 
   const close = () => {
     modal.style.display = "none";
-    // avoid duplicate handlers on repeated edits
     btnSave.onclick = null;
     btnCancel.onclick = null;
   };
