@@ -1,10 +1,6 @@
 import { loadRides, saveRides } from "./storage.js";
 import { uploadRidesIfLoggedIn } from "./supabase.js";
-import {
-  getVehicleType,
-  getVehicleMode,
-  getVehicleEngineType,
-} from "./rides.js";
+import { getVehicleType, getVehicleMode, getVehicleEngineType } from "./rides.js";
 
 export function migrateRidesIfNeeded() {
   const rides = loadRides();
