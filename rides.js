@@ -136,6 +136,7 @@ export const vehicleSeriesOVA = [
   { type: "Scania Citywide LE 12M CNG", start: 631202, end: 631211, mode: "Autobus", engineType: "CNG" },
   { type: "Scania Citywide Suburban LE 15M", start: 0, end: 0, mode: "Autobus", engineType: "Diesel" },
   { type: "Scania Citywide Suburban LE 12,6M", start: 220001, end: 220006, mode: "Autobus", engineType: "CNG" },
+  { type: "Sor CNG 12", start: 431101, end: 431113, mode: "Autobus", engineType: "CNG" },
 
   { type: "Turbozmrd", start: 361, end: 361, mode: "Vlak", engineType: "Diesel" },
   { type: "Rýchle Eso", start: 362, end: 362, mode: "Vlak", engineType: "Electro" },
