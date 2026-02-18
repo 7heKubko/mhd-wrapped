@@ -290,6 +290,7 @@ export const lineColorsOVA = {
   48: "#5bc0de",
   49: "#5bc0de",
 
+  50: "#5bc0de",
   52: "#5bc0de",
   54: "#5bc0de",
   55: "#5bc0de",
